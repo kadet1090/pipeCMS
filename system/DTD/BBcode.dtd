@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    PUBLIC ID  : -//pipe-software//BBcode//EN
+    SYSTEM ID  : ../system/DTD/BBcode.dtd
+-->
+<!ELEMENT list (BBcode*)>
+    <!ELEMENT BBcode EMPTY>
+    <!ATTLIST BBcode tag CDATA #REQUIRED>
+    <!ATTLIST BBcode closeTag (true|false) "true">
+    <!ATTLIST BBcode params CDATA #IMPLIED>
+    <!ATTLIST BBcode param (true|false) "false">
+    <!ATTLIST BBcode html CDATA>
+    <!ATTLIST BBcode callback CDATA>

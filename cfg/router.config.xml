@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE router SYSTEM "../system/DTD/router.dtd">
+<router>
+    <delimeter>,</delimeter>
+    <space>-</space>
+    <extension>htm</extension>
+    <staticParams>
+	<staticParam name="controller"	default="index" />
+	<staticParam name="action"	default="index" />
+    </staticParams>
+    <regEXPparams>
+        <paramGroup name="news">
+            <param name="name"	regEXP="[a-zA-Z\_0-9\-]{1,25}" />
+            <param name="id"	regEXP="[0-9]{1,4}" />
+        </paramGroup>
+	<paramGroup name="category">
+            <param name="name"	regEXP="[a-zA-Z\_\-0-9]{1,25}" />
+            <param name="id"	regEXP="[0-9]{1,4}" />
+        </paramGroup>
+	<paramGroup name="categoryPage">
+            <param name="name"	regEXP="[a-zA-Z\_\-0-9]{1,25}" />
+            <param name="id"	regEXP="[0-9]{1,4}" />
+	    <param name="value" regEXP="page" />
+	    <param name="page"	regEXP="[0-9]{1,5}" />
+        </paramGroup>
+	<paramGroup name="page">
+	    <param name="page"	regEXP="[0-9]{1,5}" />
+	</paramGroup>
+	<paramGroup name="helperPage">
+	    <param name="param"	regEXP="page" />
+	    <param name="page"	regEXP="[0-9]{1,5}" />
+	</paramGroup>
+	<paramGroup name="profile">
+	    <param name="login"	regEXP="[a-zA-Z0-9\_\-]*" />
+	    <param name="id"	regEXP="[0-9]{1,11}" />
+	</paramGroup>
+	<paramGroup name="pm">
+	    <param name="title"	regEXP="[a-zA-Z0-9\_\-]*" />
+	    <param name="id"	regEXP="[0-9]{1,11}" />
+	</paramGroup>
+	<paramGroup name="addGroup">
+            <param name="login"	regEXP="[a-zA-Z0-9\_\-]*" />
+	    <param name="userId" regEXP="[0-9]{1,11}" />
+	    <param name="name"	regEXP="[a-zA-Z\_\-]{1,25}" />
+            <param name="id"	regEXP="[0-9]{1,4}" />
+	</paramGroup>
+	<paramGroup name="showPage">
+            <param name="page"	regEXP="[a-zA-Z0-9\_\-]*" />
+	</paramGroup>
+    </regEXPparams>
+</router>

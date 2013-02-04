@@ -1,0 +1,17 @@
+(25-01-2012)
++ added helper controller, may be changed
++ added roots of pm system
++ roots of ACP
++ exclude paging from controllers, now helper doing it
++ added basic page system
++ extended menu support
++ optymalization
++ added db prefix support
+* some changes in config file
+* router changes
+* basic css cleanup
+* class map now support multi directory searching and prints find classes into browser window
+* log still not working
+- code is still messy
+[14:24 08.08.12] : kadet
++ a lot of changes

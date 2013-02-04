@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    PUBLIC ID  : -//pipe-software//config//EN
+    SYSTEM ID  : ../system/DTD/config.dtd
+-->
+<!ELEMENT config ANY>
+    <!ELEMENT info (keywords, description, title, delimeter, author, charset, footer)>
+	<!ELEMENT keywords (#PCDATA)>
+	<!ELEMENT description (#PCDATA)>
+	<!ELEMENT title (#PCDATA)>
+	<!ELEMENT keywodelimeterrds (#PCDATA)>
+	<!ELEMENT author (#PCDATA)>
+	<!ELEMENT charset (#PCDATA)>
+	<!ELEMENT footer (#PCDATA)>
+    <!ELEMENT path (#PCDATA)>
+    <!ELEMENT tplDir (#PCDATA)>
+    <!ELEMENT defaultLanguage (#PCDATA)>
+    <!ELEMENT defaultGroupID (#PCDATA)>
+    <!ELEMENT newsPerPage (#PCDATA)>
+    <!ELEMENT usersPerPage (#PCDATA)>

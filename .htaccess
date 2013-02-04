@@ -1,0 +1,35 @@
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule (.+) index.php?q=$1
+
+#<FilesMatch "\.(flv|gif|jpg|jpeg|png|ico)$">
+#    Header set Cache-Control "public, max-age=2592000"
+#</FilesMatch>
+#<FilesMatch "\.(js|css|pdf|swf)$">
+#    Header set Cache-Control "max-age=604800"
+#</FilesMatch>
+#<FilesMatch "\.(html|htm|txt)$">
+#    Header set Cache-Control "max-age=600"
+#</FilesMatch>
+#<FilesMatch "\.(pl|php|cgi|spl|scgi|fcgi)$">
+#    Header unset Cache-Control
+#</FilesMatch>
+
+## ALTERNATE EXPIRES CACHING
+# htaccesselite.com/d/use-htaccess-to-speed-up-your-site-discussion-vt67.html
+#ExpiresActive On
+#ExpiresDefault A604800
+#ExpiresByType image/x-icon A2592000
+#ExpiresByType application/x-javascript A2592000
+#ExpiresByType text/css A2592000
+#ExpiresByType text/html A300
+#<FilesMatch "\.(pl|php|cgi|spl|scgi|fcgi)$">
+#ExpiresActive Off
+#</FilesMatch>
+## META HTTP-EQUIV REPLACEMENTS
+#<FilesMatch "\.(html|htm|php)$">
+#Header set imagetoolbar "no"
+#</FilesMatch>
+
+#AddDefaultCharset UTF-8

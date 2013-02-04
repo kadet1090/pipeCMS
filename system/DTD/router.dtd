@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    PUBLIC ID  : -//pipe-software//router//EN
+    SYSTEM ID  : ../system/DTD/router.dtd
+-->
+<!ELEMENT router (delimeter, space, extension, staticParams, regEXPparams)>
+    <!ELEMENT delimeter (#PCDATA)>
+    <!ELEMENT space (#PCDATA)>
+    <!ELEMENT extension (#PCDATA)>
+    <!ELEMENT staticParams (staticParam*)>
+	<!ELEMENT staticParam EMPTY>
+    	<!ATTLIST staticParam name CDATA #REQUIRED>
+	<!ATTLIST staticParam default CDATA #REQUIRED>
+    <!ELEMENT regEXPparams (paramGroup*)>
+	<!ELEMENT paramGroup (param*)>
+	<!ATTLIST paramGroup name CDATA #REQUIRED>
+	    <!ELEMENT param EMPTY>
+	    <!ATTLIST param name CDATA #REQUIRED>
+	    <!ATTLIST param regEXP CDATA #REQUIRED>

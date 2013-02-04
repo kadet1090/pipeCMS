@@ -1,0 +1,11 @@
+nbproject
+cfg/config.xml
+cfg/dataBase.config.xml
+cfg/*.txt
+*.sql
+test.php
+*.log
+usersData
+data
+/templates/pipe-new/
+/templates/pipe-software/
