@@ -36,7 +36,10 @@ class user
     
     public function getAvatar()
     {
-	return file_exists('usersData/avatars/'.$this->login.'.png') ? 'usersData/avatars/'.$this->login.'.png' : 'usersData/avatars/default.png'; 
+        if(file_exists('usersData/avatars/'.$this->login.'.png'))
+            return 'usersData/avatars/'.$this->login.'.png';
+        else
+            return 'http://www.gravatar.com/avatar/'.md5(strtolower(trim($this->mail))).'?d=identicon&s=100';
     }
     
     public function isOnline()
