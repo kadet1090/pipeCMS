@@ -11,8 +11,13 @@ class userModel extends dataBaseModel
 	'ban'		=> 'UPDATE `%p%users` SET `banned` = \'1\' WHERE `id` = {1}', 
 	'unban'		=> 'UPDATE `%p%users` SET `banned` = \'0\' WHERE `id` = {1}',
 	'edit'		=> 'UPDATE `%p%users` SET  `mail` = {2}, `fullname` = {3}, `sex` = {4}, `place` = {5}, `desc` = {6}, `twitter` = {7}, `xmpp` = {8}, `gg` = {9}, `url` = {10}, `register_date` = {11}, `br_date` = {12}, `additional_fields` = {13} WHERE `id` = {1}',
-	'getLimited'	=> 'SELECT * FROM `%p%users` LIMIT {1}, {2}',
-	'getUser'	=> 'SELECT * FROM `%p%users` WHERE `id` = {1}',
+	'getLimited'	=> 'SELECT `%p%users`.*, `%p%users_groups`.`prefix` as `prefix`, `%p%users_groups`.`suffix` as `suffix`, `%p%users_groups`.`color` as `color`
+            FROM `%p%users`, `%p%users_groups` 
+            WHERE `%p%users_groups`.`id` = `%p%users`.`main_group`
+            LIMIT {1}, {2}',
+	'getUser'	=> 'SELECT `%p%users`.*, `%p%users_groups`.`prefix` as `prefix`, `%p%users_groups`.`suffix` as `suffix`, `%p%users_groups`.`color` as `color`
+            FROM `%p%users`, `%p%users_groups` 
+            WHERE `%p%users`.`id` = {1} AND `%p%users_groups`.`id` = `%p%users`.`main_group`',
 	'getLimitedFromGroup' => 'SELECT * FROM `%p%users` WHERE `groups` LIKE \'%|{3}|%\' LIMIT {1}, {2}',
 	'getGroup'	=> array('SELECT * FROM `%p%users_groups` WHERE `id` = {1}', 'stdClass'),
 	'setGroups'	=> 'UPDATE `%p%users` SET `groups` = {1} WHERE `id` = {2}',
@@ -35,12 +40,13 @@ class userModel extends dataBaseModel
 	$groups = (is_array($groups) ? $groups : array($groups));
         
         $userData->_permissions = array();
+        $userData->clean = $userData->login;
 	foreach($groups as $group)
+        {
             $userData->_permissions = getPermissions($group->permissions, $userData->_permissions);
+        }
         
         $userData->_permissions = getPermissions($userData->permissions, $userData->_permissions);
-	
-        var_dump($userData->_permissions);
         
         $userData->groups = $groups;
 	$userData->additional_fields = unserialize($userData->additional_fields);
@@ -60,13 +66,13 @@ class userModel extends dataBaseModel
     
     public function getGroups(array $groups)
     {
-	$qL = 'SELECT * FROM `%p%users_groups` WHERE ';
+	$SQL = 'SELECT * FROM `%p%users_groups` WHERE ';
 	foreach($groups as $id => $val)
 	{
 	    $groups[$id] = "`id` = '".addslashes($val)."'";
 	}
-	$qL .= implode(' OR ', $groups);
-	return $this->proccessSQL($qL, 'stdClass');
+	$SQL .= implode(' OR ', $groups);
+	return $this->proccessSQL($SQL, 'stdClass');
     }
     
     public function getAdditionalFields()
