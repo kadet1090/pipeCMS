@@ -18,32 +18,29 @@ class userModel extends dataBaseModel
 	'setGroups'	=> 'UPDATE `%p%users` SET `groups` = {1} WHERE `id` = {2}',
 	'updateLastActivity' => 'UPDATE `%p%users` SET `last_activity` = {1} WHERE `id` = {2}',
 	'_getAdditionalFields' => array('SELECT * FROM `%p%additional_fields`', 'stdClass'),
-	'_addAdditionalField' => array('', 'stdClass'),
-	'_updateAddtionalField' => array('', 'stdClass')
-	    );
+	'_setAdditionalField' => array('', 'stdClass'),
+    );
     
     protected $_defaultDAOname = 'user';
     
     public function getUserData($userID)
     {
+        # get user data and if user not exists return false
 	$userData = $this->getUser($userID);
 	if(!$userData) return false;
         
-	$groupIDs = explode(",", $userData->groups);
+	$groupIDs = explode(",", str_replace('|', '', $userData->groups));
         
-	foreach($groupIDs as $id => $groupID)
-	   $groupIDs[$id] = str_replace('|', '', $groupID);
-        
-	$groupPermissions = array();
 	$groups = $this->getGroups($groupIDs);
 	$groups = (is_array($groups) ? $groups : array($groups));
+        
+        $userData->_permissions = array();
 	foreach($groups as $group)
-	{
-	    $a = (isset($group->permission) ? explode(',', $group->permission) : array());
-	    $groupPermissions = array_merge($groupPermissions, $a);
-	}
+            $userData->_permissions = getPermissions($group->permissions, $userData->_permissions);
+        
+        $userData->_permissions = getPermissions($userData->permissions, $userData->_permissions);
 	
-	$userData->_permissions = array_merge($groupPermissions, (isset($userData->permissions) ? explode(',', $userData->permissions) : array()));
+        var_dump($userData->_permissions);
         
         $userData->groups = $groups;
 	$userData->additional_fields = unserialize($userData->additional_fields);
@@ -58,7 +55,7 @@ class userModel extends dataBaseModel
     
     public function getUsersCountInGroup($group)
     {
-	return self::$connection->executeQuery('SELECT COUNT(*) FROM `%p%users` WHERE `groups` LIKE \'%|'.$group.'|%\'')->fetchColumn();
+	return self::$connection->executeQuery('SELECT COUNT(*) FROM `%p%users` WHERE `groups` LIKE \'%|'.addslashes($group).'|%\'')->fetchColumn();
     }
     
     public function getGroups(array $groups)
@@ -66,7 +63,7 @@ class userModel extends dataBaseModel
 	$qL = 'SELECT * FROM `%p%users_groups` WHERE ';
 	foreach($groups as $id => $val)
 	{
-	    $groups[$id] = "`id` = '".$val."'";
+	    $groups[$id] = "`id` = '".addslashes($val)."'";
 	}
 	$qL .= implode(' OR ', $groups);
 	return $this->proccessSQL($qL, 'stdClass');

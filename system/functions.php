@@ -203,4 +203,28 @@ function array_grep(array $array, $regexp)
 	    $result[$key] = $val;
     return $result;
 }
+
+// TODO: clean
+function getPermissions($permissions, $current) {
+    $permissions = explode(', ', str_replace('*', 'all', $permissions));
+    
+    foreach($permissions as $perm) {
+        $active = !(substr($perm, 0, 1) == '-');
+        
+        $perm = substr($perm, 0, 1) != '-' ?
+                $perm :
+                substr($perm, 1);
+        
+        if(strpos($perm, '/') === false)
+            $perm .= '/all';
+        
+        # get category and name of permission
+        $category = strstr($perm, '/', true);
+        $name     = substr(strstr($perm, '/'), 1);
+        
+        $current[$category][$name] = $active;
+    }
+    
+    return $current;
+}
 ?>
