@@ -52,9 +52,15 @@ class dataBaseModel extends model
 	foreach($arguments as $argID => $argument)
 	{
 	    if(is_int($argument)) 
+            {
 		$query = str_replace('{'.($argID+1).'}', $argument, $query);
-	    else
-		$query = str_replace('{'.($argID+1).'}', '\''.addslashes($argument).'\'', $query);	    
+                $query = str_replace('['.($argID+1).']', $argument, $query);
+            }
+            else
+            {
+		$query = str_replace('{'.($argID+1).'}', '\''.addslashes($argument).'\'', $query);
+                $query = str_replace('['.($argID+1).']', addslashes($argument), $query);
+            }
 	}
 
 	return self::$connection->executeQuery($query);

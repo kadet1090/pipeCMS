@@ -34,14 +34,14 @@ class usersController extends controller
 	    throw new messageException(language::get('error'), language::get('errWrongURL'));
     }
     
-    public function inGroup($d = null)
+    public function inGroup($ID = null, $group = null)
     {
 	view::$robots = "all";
 	view::addTitleChunk(language::get('users'));
 	$model = new userModel(); // tworzenie modelu danych
 	if(self::$router->match('category') || self::$router->match('categoryPage') || !empty($d))
 	{
-	    if(empty($d)) $ID = self::$router->id;	else $ID = $d;
+	    if(empty($ID)) $ID = self::$router->id;
 	    
 	    $page = self::$router->page;
 	    if(empty($page)) $page = 1;
@@ -50,12 +50,15 @@ class usersController extends controller
 		view::addTitleChunk(language::get('page'));
 		view::addTitleChunk($page);
 	    }
-	    
-	    $userCount = $model->getUsersCountInGroup($ID);
+            if(empty($group))
+                $group = $model->getGroup($ID);
+            
+	    $userCount = $group->count;
 	    
 	    $view = new HTMLview('user/group/inGroup.tpl'); //tworzenie bufora treści
 	    $view->usersCount = $userCount;
-	    if(empty($d)) $view->group = $model->getGroup($ID);
+            $view->group = $group;
+            
 	    $users = $model->getLimitedFromGroup(($page - 1)  * (int)self::$config->usersPerPage, (int)self::$config->usersPerPage, (int)$ID);
 	    if(empty($users))	throw new messageException(language::get('info'), language::get('noUsers'));
 	    
@@ -80,9 +83,12 @@ class usersController extends controller
 	    $view = new HTMLview('user/group/overview.tpl'); //tworzenie bufora treśc
 
 	    $group = $model->getGroup(self::$router->id);
-	    $group->admin = $model->getUser($group->admin);
+            
+            if(!empty($group->admin))
+                $group->admin = $model->getUser($group->admin);
+            
 	    $view->group = $group;
-	    $view->users = $this->inGroup(self::$router->id);
+	    $view->users = $this->inGroup(self::$router->id, $group);
 	    return $view;
 	}
 	else

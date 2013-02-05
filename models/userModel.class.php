@@ -18,8 +18,8 @@ class userModel extends dataBaseModel
 	'getUser'	=> 'SELECT `%p%users`.*, `%p%users_groups`.`prefix` as `prefix`, `%p%users_groups`.`suffix` as `suffix`, `%p%users_groups`.`color` as `color`
             FROM `%p%users`, `%p%users_groups` 
             WHERE `%p%users`.`id` = {1} AND `%p%users_groups`.`id` = `%p%users`.`main_group`',
-	'getLimitedFromGroup' => 'SELECT * FROM `%p%users` WHERE `groups` LIKE \'%|{3}|%\' LIMIT {1}, {2}',
-	'getGroup'	=> array('SELECT * FROM `%p%users_groups` WHERE `id` = {1}', 'stdClass'),
+	'getLimitedFromGroup' => 'SELECT *, (SELECT COUNT(*) FROM `%p%users` WHERE `groups` LIKE \'%|[3]|%\') AS `count` FROM `%p%users` WHERE `groups` LIKE \'%|[3]|%\' LIMIT {1}, {2}',
+	'getGroup'	=> array('SELECT *, (SELECT COUNT(*) FROM `%p%users` WHERE `groups` LIKE \'%|[1]|%\') AS `count` FROM `%p%users_groups` WHERE `id` = {1}', 'stdClass'),
 	'setGroups'	=> 'UPDATE `%p%users` SET `groups` = {1} WHERE `id` = {2}',
 	'updateLastActivity' => 'UPDATE `%p%users` SET `last_activity` = {1} WHERE `id` = {2}',
 	'_getAdditionalFields' => array('SELECT * FROM `%p%additional_fields`', 'stdClass'),
@@ -40,11 +40,8 @@ class userModel extends dataBaseModel
 	$groups = (is_array($groups) ? $groups : array($groups));
         
         $userData->_permissions = array();
-        $userData->clean = $userData->login;
 	foreach($groups as $group)
-        {
             $userData->_permissions = getPermissions($group->permissions, $userData->_permissions);
-        }
         
         $userData->_permissions = getPermissions($userData->permissions, $userData->_permissions);
         

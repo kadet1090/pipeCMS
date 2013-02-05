@@ -3,8 +3,31 @@
 class pmModel extends dataBaseModel
 {
     protected $_predefinedQueries = array(
-	'getLimitedTo'	=> 'SELECT *, (SELECT `login` FROM `%p%users` WHERE `%p%users`.`id` = `%p%pm`.`author`) AS `authorLogin` FROM `%p%pm` WHERE `receiver` = {1} LIMIT {2}, {3}',
-	'getMessage'	=> 'SELECT *, (SELECT `login` FROM `%p%users` WHERE `%p%users`.`id` = `%p%pm`.`author`) AS `authorLogin` FROM `%p%pm` WHERE `id` = {1}',
+	'getLimitedTo'	=> 'SELECT 
+            `%p%pm`.*,
+            `%p%users`.`login`             AS `authorLogin`,
+            `%p%users_groups`.`suffix`     AS `suffix`,
+            `%p%users_groups`.`prefix`     AS `prefix`,
+            `%p%users_groups`.`color`      AS `color`
+        FROM `%p%pm`, `%p%users`, `%p%users_groups`
+        WHERE 
+            `%p%users`.`id` = `%p%pm`.`author` AND
+            `%p%users_groups`.`id` = `%p%users`.`main_group` AND 
+            `%p%pm`.`receiver` = {1} 
+        LIMIT {2}, {3}',
+        
+	'getMessage'	=> 'SELECT 
+            `%p%pm`.*,
+            `%p%users`.`login`             AS `authorLogin`,
+            `%p%users_groups`.`suffix`     AS `suffix`,
+            `%p%users_groups`.`prefix`     AS `prefix`,
+            `%p%users_groups`.`color`      AS `color`
+        FROM `%p%pm`, `%p%users`, `%p%users_groups`
+        WHERE 
+            `%p%users`.`id` = `%p%pm`.`author` AND
+            `%p%users_groups`.`id` = `%p%users`.`main_group` AND 
+            `%p%pm`.`id` = {1}',
+        
 	'send'		=> 'INSERT INTO `%p%pm`(`title`, `content`, `author`, `receiver`, `date`) VALUES({1}, {2}, {3}, {4}, {5})'
     );
     

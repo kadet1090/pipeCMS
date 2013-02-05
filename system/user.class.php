@@ -9,6 +9,11 @@ class user
 	return (isset($this->_varibles[$name]) ? $this->_varibles[$name] : null);
     }
     
+    public function __isset($name)
+    {
+	return isset($this->_varibles[$name]) && !empty($this->_varibles[$name]);
+    }
+    
     public function __set($name, $mValue)
     {
 	$this->_varibles[$name] = $mValue;
@@ -36,8 +41,8 @@ class user
     
     public function getAvatar()
     {
-        if(file_exists('usersData/avatars/'.$this->clean.'.png'))
-            return 'usersData/avatars/'.$this->clean.'.png';
+        if(file_exists('usersData/avatars/'.$this->login.'.png'))
+            return 'usersData/avatars/'.$this->login.'.png';
         else
             return 'http://www.gravatar.com/avatar/'.md5(strtolower(trim($this->mail))).'?d=identicon&s=100';
     }

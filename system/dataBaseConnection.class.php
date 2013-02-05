@@ -159,12 +159,12 @@ class dataBaseConnection
 	$this->_pDO->setAttribute($attribute, $mValue);
     }
     
-    public function executeQuery($qL)
+    public function executeQuery($SQL)
     {
 	try
 	{
-	    if(DEBUG_MODE) self::$log->addToLog($qL, "sql");
-	    $result = $this->_pDO->query(trim(str_replace("%p%", $this->prefix, $qL)));
+	    if(DEBUG_MODE) self::$log->addToLog(trim(str_replace("%p%", $this->prefix, $SQL)), "sql");
+	    $result = $this->_pDO->query(trim(str_replace("%p%", $this->prefix, $SQL)));
 	    self::$ns++;
 	    return $result;
 	}

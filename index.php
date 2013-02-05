@@ -1,5 +1,5 @@
 <?php
-    define("DEBUG_MODE", false);
+    define("DEBUG_MODE", true);
 
     $startTime = microtime(true); // Czas wystartowania skryptu (potrzebne aby sprawdzić czas wykonywania skryptu)
     date_default_timezone_set('Europe/Warsaw');
@@ -14,7 +14,7 @@
     //-------------------------------------------------------------------------------------//
     $loader = new autoloader('./', array('usePrefix' => false, 'usePostfix' => false), $map);
     $loader->ragister();
-    //-------------------------------------------------------------------------------------//
+    //-------------------------------------------------------------------------------------//  
     $frontController = new frontController();
     $frontController->work($startTime);
 ?>
