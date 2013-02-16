@@ -6,22 +6,22 @@ class user
     
     public function __get($name)
     {
-	return (isset($this->_varibles[$name]) ? $this->_varibles[$name] : null);
+        return (isset($this->_varibles[$name]) ? $this->_varibles[$name] : null);
     }
     
     public function __isset($name)
     {
-	return isset($this->_varibles[$name]) && !empty($this->_varibles[$name]);
+        return isset($this->_varibles[$name]) && !empty($this->_varibles[$name]);
     }
     
     public function __set($name, $mValue)
     {
-	$this->_varibles[$name] = $mValue;
+        $this->_varibles[$name] = $mValue;
     }
     
     public function hasPermission($permission)
     {
-	if(!$this->isLogged)
+        if(!$this->isLogged)
             return false;
         
         if(strstr($permission, '/') == false)
@@ -49,12 +49,12 @@ class user
     
     public function isOnline()
     {
-	return time() - $this->last_activity < 360;
+        return time() - $this->last_activity < 360;
     }
     
     public function isAdmin()
     {
-	return time() - $this->last_activity < 360;
+        return time() - $this->last_activity < 360;
     }
 }
 ?>

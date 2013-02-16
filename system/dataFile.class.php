@@ -17,22 +17,22 @@ abstract class dataFile
     
     public function __get($name)
     {
-	return (isset($this->_data->$name) ? $this->_data->$name : null);
+        return (isset($this->_data->$name) ? $this->_data->$name : null);
     }
     
     public function __set($name, $mValue)
     {
-	$this->_data->$name = $mValue;
+        $this->_data->$name = $mValue;
     }
     
     public function __isset($name)
     {
-	return isset($this->_data->$name);
+        return isset($this->_data->$name);
     }
     
     public function __construct($filePath)
     {
-	$this->_filePath = $filePath;
+        $this->_filePath = $filePath;
     }
     
     public function load() {}

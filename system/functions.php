@@ -9,7 +9,7 @@ if(PHP_VERSION_ID < 50300)
       **/
     function strStrBefore($haystack,$mNeedle)
     {
-	return array_shift(explode($mNeedle,$haystack,2));
+        return array_shift(explode($mNeedle,$haystack,2));
     }
 }
 else
@@ -22,7 +22,7 @@ else
       **/
     function strStrBefore($haystack,$mNeedle)
     {
-	return strstr($haystack, $mNeedle, true);
+        return strstr($haystack, $mNeedle, true);
     }
 }
 
@@ -34,21 +34,21 @@ else
 function ArrayToObject($array, $oname = 'stdClass')
 {
     if(!is_array($array))
-	return $array;
+        return $array;
     
     $object = new $oname();
     if (is_array($array) && !empty($array))
     {
-	foreach ($array as $name => $value)
-	{
-	    $name = strtolower(trim($name));
-	    if (!empty($name) || $name === '0' || $name != '@attributes')
-		$object->$name = ArrayToObject($value, $oname);
-	}
-	return $object;
+        foreach ($array as $name => $value)
+        {
+            $name = strtolower(trim($name));
+            if (!empty($name) || $name === '0' || $name != '@attributes')
+                $object->$name = ArrayToObject($value, $oname);
+        }
+        return $object;
     } 
     else
-	return $array;
+        return $array;
 }
 
 
@@ -60,40 +60,40 @@ function ArrayToObject($array, $oname = 'stdClass')
 function ObjectToArray($object)
 {
     if(!is_object($object))
-	return $object;
+        return $object;
 
     $array = array();
     
     if(is_object($object) && !empty($object))
     {
-	foreach((array)$object as $name => $value)
-	{
-	    $name = strtolower(trim($name));
-	    if(!empty($name) || $name === '0')
-	    {
-		$array[$name] = ObjectToArray($value);
-	    }
-	}
-	return $array;
+        foreach((array)$object as $name => $value)
+        {
+            $name = strtolower(trim($name));
+            if(!empty($name) || $name === '0')
+            {
+                $array[$name] = ObjectToArray($value);
+            }
+        }
+        return $array;
     }
     else
-	return $object;
+        return $object;
 }
 
 function nl($text, $br = false)
 {
     $text = trim($text);
     if($br)
-	$text = preg_replace('<br />', '%\n%', $text);
+        $text = preg_replace('<br />', '%\n%', $text);
     else
     {
         $tags = array('ul', 'li', 'table', 'tr', 'td', 'th', 'ol', 'pre');
-	$text = str_replace("\n", '<br />', $text);
+        $text = str_replace("\n", '<br />', $text);
         $text = preg_replace('#<br />(</?('.implode('|', $tags).'))#', '$1', $text);
-	
-	if(preg_match_all('/\<pre (.*?)\>(.*?)\<\/pre\>/', $text, $match))
-	    for($i = 0, $count = count($match[0]); $i < $count; $i++)
-		$text = str_replace('<pre '.$match[1][$i].'>'.$match[2][$i].'</pre>','<pre '.$match[1][$i].'>'.str_replace('<br />', "\n", $match[2][$i]).'</pre>', $text);
+        
+        if(preg_match_all('/\<pre (.*?)\>(.*?)\<\/pre\>/', $text, $match))
+            for($i = 0, $count = count($match[0]); $i < $count; $i++)
+                $text = str_replace('<pre '.$match[1][$i].'>'.$match[2][$i].'</pre>','<pre '.$match[1][$i].'>'.str_replace('<br />', "\n", $match[2][$i]).'</pre>', $text);
     }
     
     return $text;
@@ -101,7 +101,7 @@ function nl($text, $br = false)
 function array_diff2($array1, $array2) // aghh PHP SUX!
 {
     foreach($array1 as $mKey => $mValue)
-	if(array_search($mValue, $array2)) unset($array1[array_search($mValue, $array2)]);
+        if(array_search($mValue, $array2)) unset($array1[array_search($mValue, $array2)]);
     return $array1;
 }
 
@@ -119,37 +119,37 @@ function substrws($text, $lenght)
     
     if($breakPos > 0)
     {
-	return mb_substr($text, 0, $breakPos);
+        return mb_substr($text, 0, $breakPos);
     }
     elseif((mb_strlen($text) > $lenght)) 
     {
         $whitespaceposition = mb_strpos($text, ' ', $lenght) - 1;
         if($whitespaceposition > 0) 
-	{
+        {
 
             $chars = count_chars(mb_substr($text, 0, ($whitespaceposition + 1)), 1);
             if((isset($chars[ord('<')]) ? $chars[ord('<')] : 0) > (isset($chars[ord('>')]) ? $chars[ord('>')] : 0)) 
-	    {
+            {
                 $whitespaceposition = mb_strpos($text, ">", $whitespaceposition);
             }
             $text = mb_substr($text, 0, ($whitespaceposition + 1));
         }
         // close unclosed html tags
         if(preg_match_all("|(<([\w]+)[^>]*>)|", $text, $buffer)) 
-	{	
+        {        
             if(!empty($buffer[1])) 
-	    {
+            {
                 preg_match_all("|</([a-zA-Z]+)>|", $text, $buffer2);
                 if(count($buffer[2]) != count($buffer2[1])) 
-		{
-		    $array1 = ($buffer[2]);
-		    $array2 = ($buffer2[1]);
+                {
+                    $array1 = ($buffer[2]);
+                    $array2 = ($buffer2[1]);
                     $closing_tags = array_diff2($array1, $array2);
                     $closing_tags = array_reverse($closing_tags);
                     foreach($closing_tags as $tag) 
-		    {
-			if($tag != "br" && $tag != "img")
-			    $text .= '</'.$tag.'>';
+                    {
+                        if($tag != "br" && $tag != "img")
+                            $text .= '</'.$tag.'>';
                     }
                 }
             }
@@ -163,8 +163,8 @@ function prepareMenu($menu, $parent = NULL, $self = NULL)
     $return = array();
     
     foreach($menu as $element) 
-	if($element->parent == $parent)
-	    $return[(int)$element->pos] = prepareMenu($menu, $element->id, $element);
+        if($element->parent == $parent)
+            $return[(int)$element->pos] = prepareMenu($menu, $element->id, $element);
         
     if($self != NULL) $return['self'] = $self;
     
@@ -199,8 +199,8 @@ function array_grep(array $array, $regexp)
 {
     $result = array();
     foreach($array as $key => $val) 
-	if(preg_match($regexp, $key))
-	    $result[$key] = $val;
+        if(preg_match($regexp, $key))
+            $result[$key] = $val;
     return $result;
 }
 

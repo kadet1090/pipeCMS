@@ -1,0 +1,21 @@
+@import url('css/header.css');
+@import url('css/menu.css');
+@import url('css/content.css');
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    background: url('img/bg.png');
+    font-family: "Segoe UI";
+}
+
+body > * {
+    padding: 0 50px;
+}
+
+#main {
+    margin-top: 20px;
+}

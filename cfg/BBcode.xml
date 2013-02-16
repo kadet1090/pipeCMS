@@ -37,6 +37,7 @@
     <BBcode tag="h6"    closeTag="true"     html='&lt;h6&gt;{text}&lt;/h6&gt;' />
     <BBcode tag="h7"    closeTag="true"     html='&lt;h7&gt;{text}&lt;/h7&gt;' />
     <BBcode tag="quote"	closeTag="true"	    html='&lt;blockquote&gt;{text}&lt;div class="author"&gt;{param}&lt;/div&gt;&lt;/blockquote&gt;' param="true"/>
+    <BBcode tag="quote"	closeTag="true"	    html='&lt;blockquote&gt;{text}&lt;/blockquote&gt;'/>
     <BBcode tag="align" closeTag="true"     html='&lt;p align="{param}"&gt;{text}&lt;/p&gt;' param="true"/>
     <BBcode tag="table" closeTag="true"     html='&lt;table class="data-table"&gt;{text}&lt;/table&gt;' />
     <BBcode tag="table" closeTag="true"     html='&lt;table class="data-table" style="width: {param}"&gt;{text}&lt;/table&gt;' param="true"/>
@@ -45,5 +46,4 @@
     <BBcode tag="cell"  closeTag="true"     html='&lt;td&gt;{text}&lt;/td&gt;' />
     <BBcode tag="hcell" closeTag="true"     html='&lt;th&gt;{text}&lt;/th&gt;' />
     <BBcode tag="hcell" closeTag="true"     html='&lt;th width="{param}"&gt;{text}&lt;/th&gt;' param="true"/>
-    <BBcode tag="upper" closeTag="true"     callback='return strtoupper({text});' />
 </list>

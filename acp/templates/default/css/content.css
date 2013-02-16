@@ -1,0 +1,99 @@
+article {
+    display: block;
+    color: #292929;
+    margin-left: 154px;
+    box-sizing: border-box;
+}
+
+article h1 {
+    font-family: "Segoe UI semibold";
+    font-size: 32pt;
+}
+
+article h2 {
+    font-family: "Segoe UI semibold";
+    font-size: 24pt;
+}
+
+article table th, article table td {
+    padding: 0 10px;
+}
+
+article table th {
+    background: url('../img/menu-header.png');
+    width: auto;
+    height: 24px;
+    line-height: 24px;
+    font-weight: normal;
+    text-shadow: black 0 1px 0;
+    text-align: left;
+    color: white;
+}
+
+article table {
+    border-spacing: 1px 0;
+    margin-left: -1px;
+    background: rgba(0, 0, 0, 0.15);
+    width: 100%;
+    table-layout: auto;
+}
+
+article table tr:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+section > * {
+    margin-bottom: 4px;
+}
+
+article table td {
+    border-bottom: #292929 1px solid;
+    line-height: 22px;
+}
+
+section {
+    width: 50%;
+    box-sizing: border-box;
+}
+
+section.right {
+    float: right;
+    padding-left: 2px;
+}
+
+section.left {
+    float: left;
+    padding-right: 2px;
+}
+
+div.warning {
+    border-radius: 2px;
+    background: rgba(255, 242, 0, .3);
+    border: solid 1px #b9bb00;
+    padding: 10px;
+}
+
+div.error {
+    border-radius: 2px;
+    background: rgba(229, 0, 0, .3);
+    border: solid 1px #e50000;
+    padding: 10px;
+}
+
+div.info {
+    border-radius: 2px;
+    background: rgba(27, 161, 226, .3);
+    border: solid 1px #1ba1e2;
+    padding: 10px;
+}
+
+div.ok {
+    border-radius: 2px;
+    background: rgba(49, 154, 49, .3);
+    border: solid 1px #319a31;
+    padding: 10px;
+}
+
+.auto {
+    width: auto;
+}

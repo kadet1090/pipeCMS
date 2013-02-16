@@ -16,22 +16,22 @@ abstract class model
     
     public function __get($name)
     {
-	return (isset($this->_data[$name]) ? $this->_data[$name] : null);
+        return (isset($this->_data[$name]) ? $this->_data[$name] : null);
     }
     
     public function clearAll()
     {
-	$this->_data = array();
+        $this->_data = array();
     }
     
     public function deleteEntry($name)
     {
-	$this->_data[$name] = null;
+        $this->_data[$name] = null;
     }
     
     public function getData()
     {
-	return $this->_data;
+        return $this->_data;
     }
     
     abstract function __call($name, $arguments);

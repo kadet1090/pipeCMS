@@ -1,0 +1,118 @@
+header {
+    height: 120px;
+    background: gray url('../img/header.png') repeat-x;
+    text-shadow: 0 0 3px black;
+    border-bottom: #292929 solid 2px;
+    color: white;
+}
+
+header h1 {
+    font-size: 40pt;
+    font-weight: 500;
+}
+
+header h2 {
+    margin-left: 15px;
+    color: #f7941d;
+    margin-top: -5px;
+}
+
+#user {
+    float: right;
+    margin-top: -5px;
+}
+
+#user a, #top-menu ul li a {
+    color: #f7941d;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+#user a:hover {
+    color: #f7bc1d;
+}
+
+#top-menu {
+    height: 30px;
+    border-bottom: #292929 solid 1px;
+    background: gray url('../img/menu.png') repeat-x;
+}
+
+#top-menu ul {
+    list-style: none;
+    text-shadow: 0 0 3px black;
+}
+
+#top-menu > ul > li {
+    float: left;
+    display: block;
+    margin-right: 5px;
+}
+
+#top-menu > ul > li.more > a:after {
+    margin-left: 7px;
+    content: '↓';
+}
+
+#top-menu > ul > li:hover, #top-menu > ul > li.active {
+    border-bottom: 3px #f7941d solid;
+    height: 28px
+}
+
+#top-menu ul li a {
+    color: white;
+    padding: 0 10px;
+    display: block;
+    line-height: 30px;
+    white-space: nowrap;
+}
+
+#top-menu > ul > li:hover > a, #top-menu > ul > li.active > a {
+    color: #f7941d;
+    transition: 0.3s;
+    -o-transition: 0.3s;
+    -moz-transition: 0.3s;
+}
+
+#top-menu > ul ul {
+    position: absolute;
+    margin-top: 1px;
+    z-index: 2;
+    text-shadow: none;
+    display: none;
+}
+
+#top-menu > ul ul li a {
+    color: #292929;
+}
+
+#top-menu > ul ul li {
+    position: relative;
+    background: #f7941d;
+    border-bottom: #292929 solid 2px;
+    padding-right: 25px;
+    min-width: 200px;
+}
+
+#top-menu > ul ul li.more > a:after {
+    position: absolute;
+    right: 15px;
+    content: '›';
+}
+
+#top-menu > ul ul li:hover {
+    background: #292929;
+    transition: 0.2s;
+    -o-transition: 0.2s;
+    -moz-transition: 0.2s;
+}
+
+#top-menu > ul ul li a:hover, #top-menu > ul ul li:hover > a {
+    color: #f7941d;
+}
+
+#top-menu > ul ul ul {
+    top: 0;
+    left: 200px;
+    margin-top: 0;
+}

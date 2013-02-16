@@ -3,7 +3,7 @@
 class pmModel extends dataBaseModel
 {
     protected $_predefinedQueries = array(
-	'getLimitedTo'	=> 'SELECT 
+        'getLimitedTo'        => 'SELECT 
             `%p%pm`.*,
             `%p%users`.`login`             AS `authorLogin`,
             `%p%users_groups`.`suffix`     AS `suffix`,
@@ -16,7 +16,7 @@ class pmModel extends dataBaseModel
             `%p%pm`.`receiver` = {1} 
         LIMIT {2}, {3}',
         
-	'getMessage'	=> 'SELECT 
+        'getMessage'        => 'SELECT 
             `%p%pm`.*,
             `%p%users`.`login`             AS `authorLogin`,
             `%p%users_groups`.`suffix`     AS `suffix`,
@@ -28,12 +28,12 @@ class pmModel extends dataBaseModel
             `%p%users_groups`.`id` = `%p%users`.`main_group` AND 
             `%p%pm`.`id` = {1}',
         
-	'send'		=> 'INSERT INTO `%p%pm`(`title`, `content`, `author`, `receiver`, `date`) VALUES({1}, {2}, {3}, {4}, {5})'
+        'send'                => 'INSERT INTO `%p%pm`(`title`, `content`, `author`, `receiver`, `date`) VALUES({1}, {2}, {3}, {4}, {5})'
     );
     
     public function getMessagesCount($userID)
     {
-	return self::$connection->executeQuery('SELECT COUNT(*) FROM `%p%pm` WHERE `receiver` = \''.$userID.'\'')->fetchColumn();
+        return self::$connection->executeQuery('SELECT COUNT(*) FROM `%p%pm` WHERE `receiver` = \''.$userID.'\'')->fetchColumn();
     }
 }
 ?>

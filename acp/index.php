@@ -5,7 +5,7 @@
     date_default_timezone_set('Europe/Warsaw');
     session_start();
     //--------------------------------------includowanie-----------------------------------//
-    require '../system/functions.php';		
+    require '../system/functions.php';                
     require '../system/classMap.class.php';
     require '../system/autoloader.class.php';
     //-------------------------------------------------------------------------------------//

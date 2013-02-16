@@ -33,7 +33,7 @@ class log
     public function __construct($logFileName)
     {
         if(!is_string($logFileName)) throw new frameworkException('Param $fileName must be a string!', 1365, nextraException::LVL_NORMAL);
-	$this->_logFileName = $logFileName;
+        $this->_logFileName = $logFileName;
         //$this->_logFile = new file($logFileName, file::WRITE);
     }
 
@@ -45,12 +45,12 @@ class log
     public function addToLog($tekst2Write, $prefix = '')
     {
         //$this->_logFile->write('['.date('H:i:s j.m.o').'] '.$prefix.': '.$tekst2Write."\n");
-	file_put_contents($this->_logFileName, '['.date('H:i:s j.m.o').'] '.$prefix.': '.$tekst2Write."\n", FILE_APPEND);
+        file_put_contents($this->_logFileName, '['.date('H:i:s j.m.o').'] '.$prefix.': '.$tekst2Write."\n", FILE_APPEND);
     }
     
     public function clearLog()
     {
-	file_put_contents($this->_logFileName, '');
+        file_put_contents($this->_logFileName, '');
     }
 }
 ?>

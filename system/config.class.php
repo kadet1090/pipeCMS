@@ -31,8 +31,8 @@ class config implements Countable, IteratorAggregate
       **/
     public function  __construct(dataFile $dataFile)
     {
-	$this->_dataFile = $dataFile;
-	$this->_dataFile->load();
+        $this->_dataFile = $dataFile;
+        $this->_dataFile->load();
     }
 
     /** Metoda magiczna GET
@@ -72,7 +72,7 @@ class config implements Countable, IteratorAggregate
     {
         if(!isset($array))
             $array = ObjectToArray($this->_config);
-	
+        
         $list = '<ul>\n';
         foreach ($array as $key => $value)
         {
@@ -120,7 +120,7 @@ class config implements Countable, IteratorAggregate
     
     public function saveToFile()
     {
-	$this->_dataFile->save();
+        $this->_dataFile->save();
     }
 }
 

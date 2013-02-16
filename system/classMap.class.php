@@ -40,8 +40,8 @@ class classMap implements singleton, classMapInterface
      */
     public static function  getInstance()
     {
-	if(self::$instance == null)
-	    self::$instance = new classMap();
+        if(self::$instance == null)
+            self::$instance = new classMap();
         return self::$instance;
     }
 
@@ -58,28 +58,28 @@ class classMap implements singleton, classMapInterface
     {
         if(!isset($this->map))
         {
-	    $directories = func_get_args();
-	    foreach($directories as $directory)
-	    {
-		$it = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($directory), RecursiveIteratorIterator::SELF_FIRST);
-		foreach($it as $file)
-		{
-		    if($file->isDir() || strstr($file->getPath(), ".svn"))
-			continue;
-		    else
-		    {
-			if(strstr($file->getFilename(), '.class.php') != false)
-			    $map[strStrBefore($file->getFilename(), '.class.php')] = $file->getPath().DIRECTORY_SEPARATOR.$file->getFilename();
-			elseif(strstr($file->getFilename(), '.interface.php') != false)
-			    $map[strStrBefore($file->getFilename(), '.interface.php').'Interface'] = $file->getPath().DIRECTORY_SEPARATOR.$file->getFilename();
-			else
-			    continue;
-		    }
-		}
-	    }
-	    var_dump($map);
-	    $this->map = $map;
-	    return $map;
+            $directories = func_get_args();
+            foreach($directories as $directory)
+            {
+                $it = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($directory), RecursiveIteratorIterator::SELF_FIRST);
+                foreach($it as $file)
+                {
+                    if($file->isDir() || strstr($file->getPath(), ".svn"))
+                        continue;
+                    else
+                    {
+                        if(strstr($file->getFilename(), '.class.php') != false)
+                            $map[strStrBefore($file->getFilename(), '.class.php')] = $file->getPath().DIRECTORY_SEPARATOR.$file->getFilename();
+                        elseif(strstr($file->getFilename(), '.interface.php') != false)
+                            $map[strStrBefore($file->getFilename(), '.interface.php').'Interface'] = $file->getPath().DIRECTORY_SEPARATOR.$file->getFilename();
+                        else
+                            continue;
+                    }
+                }
+            }
+            var_dump($map);
+            $this->map = $map;
+            return $map;
         }
         else
             return $this->map;

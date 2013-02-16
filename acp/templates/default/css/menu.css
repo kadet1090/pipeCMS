@@ -1,0 +1,50 @@
+#side-menu {
+    float: left;
+    margin-right: 4px;
+    width: 150px;
+    position: relative;
+}
+
+#side-menu dl {
+    background: rgba(0, 0, 0, 0.25);
+    width: 150px;
+    margin-bottom: 4px;
+}
+
+#side-menu dl dt:after {
+    content: '»';
+    float: right;
+    margin-right: 8px;
+}
+
+#side-menu dl dt {
+    height: 24px;
+    line-height: 24px;
+    padding-left: 8px;
+    color: white;
+    background: url('../img/menu-header.png');
+    cursor: pointer;
+    text-shadow: black 0 1px 0;
+}
+
+#side-menu dl dd a {
+    height: 18px;
+    line-height: 22px;
+    display: block;
+    padding: 2px;
+    color: #292929;
+}
+
+#side-menu dl dd a:hover {
+    background: rgba(0, 0, 0, 0.2);
+    transition: 0.2s;
+    -o-transition: 0.2s;
+    -moz-transition: 0.2s;
+}
+
+#side-menu dl dd a span {
+    float: right;
+    line-height: 22px;
+    margin-top: -2px;
+    display: block;
+}

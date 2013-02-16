@@ -14,33 +14,33 @@ abstract class view
     
     public function setTemplateFileName($tmpFN)
     {
-	$this->_templateFileName = $tmpFN;
-	return $this;
+        $this->_templateFileName = $tmpFN;
+        return $this;
     }
     
     public function __construct($tmpFN = '') 
     {
-	$this->_templateFileName = $tmpFN;
+        $this->_templateFileName = $tmpFN;
     }
     
     public function assign($name, $mValue)
     {
-	$this->_data[$name] = $mValue;
+        $this->_data[$name] = $mValue;
     }
     
     public function __set($name, $value) 
     {
-	$this->assign($name, $value);
+        $this->assign($name, $value);
     }
     
     public static function addTitleChunk($text)
     {
-	self::$_title[] = $text;
+        self::$_title[] = $text;
     }
 
     public static function getTitle()
     {
-	return implode(controller::$config->info->delimeter, self::$_title);
+        return implode(controller::$config->info->delimeter, self::$_title);
     }
     
 }
