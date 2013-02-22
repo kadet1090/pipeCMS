@@ -71,7 +71,13 @@ class BBcode
     
     public static function parse($BBcodeString)
     {        
+        $md5 = md5($BBcodeString);
+        
+        if(file_exists('data/cache/bbcode/'.$md5.'.txt'))
+            return file_get_contents('data/cache/bbcode/'.$md5.'.txt');
+        
         $BBcodeString = preg_replace_callback('#\[code(.*?)\](.*?)\[/code\]#si', create_function('$matches', 'return "[code".$matches[1]."]".str_replace("]", "\\]", $matches[2])."[/code]";'), $BBcodeString);
+        $BBcodeString = preg_replace_callback('#\[bbcode\](.*?)\[/bbcode\]#si', create_function('$matches', 'return "[bbcode]".str_replace("]", "\\]", $matches[1])."[/bbcode]";'), $BBcodeString);
         $BBcodeString = str_replace('"', '&quot;', $BBcodeString);
         
         // Don't ask.... :D
@@ -88,7 +94,10 @@ class BBcode
             $BBcodeString = preg_replace_callback($exp, self::$_exp["callback"][$no], $BBcodeString);
         }
         
-        return str_replace('\\]', ']', $BBcodeString);
+        $parsed = str_replace('\\]', ']', $BBcodeString);
+        file_put_contents('data/cache/bbcode/'.$md5.'.txt', $parsed);
+        
+        return $parsed;
     }
 }
 ?>

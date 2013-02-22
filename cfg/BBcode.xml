@@ -5,26 +5,25 @@
     <BBcode tag="u"	closeTag="true"	    html='&lt;u&gt;{text}&lt;/u&gt;'/>
     <BBcode tag="i"	closeTag="true"	    html='&lt;i&gt;{text}&lt;/i&gt;'/>
     <BBcode tag="s"	closeTag="true"	    html='&lt;span style="text-decoration: line-through;" &gt;{text}&lt;/span&gt;'/>
-    <BBcode tag="link"	closeTag="true"	    html='&lt;a href="{url}" &gt;{text}&lt;/a&gt;'  params="url"	/>
     <BBcode tag="url"	closeTag="true"	    html='&lt;a href="{param}" &gt;{text}&lt;/a&gt;' param="true"/>
-    <BBcode tag="link"	closeTag="false"    html='&lt;a href="{url}" &gt;{url}&lt;/a&gt;'   params="url"/>
-    <BBcode tag="url"	closeTag="false"    html='&lt;a href="{param}" &gt;{param}&lt;/a&gt;'	param="true"/>
+    <BBcode tag="url"	closeTag="true"     html='&lt;a href="{text}" &gt;{text}&lt;/a&gt;' param="false"/>
     <BBcode tag="img"	closeTag="true"	    html='&lt;img src="{text}" alt="image" /&gt;'/>
-    <BBcode tag="img"	closeTag="false"    html='&lt;img src="{param}" alt="image" /&gt;'  param="true"/>
-    <BBcode tag="img"	closeTag="true"	    html='&lt;img src="{url}" alt="{text}" /&gt;'   params="url"/>
+    <BBcode tag="img"	closeTag="false"    html='&lt;img src="{param}" alt="image" /&gt;' param="true"/>
+    <BBcode tag="img"	closeTag="true"	    html='&lt;img src="{url}" alt="{text}" /&gt;' params="url"/>
     <BBcode tag="img"	closeTag="true"	    html='&lt;img src="{url}" alt="{text}" class="align-{align}"/&gt;'  params="url, align"/>
     <BBcode tag="img"	closeTag="false"    html='&lt;img src="{url}" class="align-{align}"/&gt;'               params="url, align"/>
-    <BBcode tag="img"	closeTag="true"	    html='&lt;img src="{url}" alt="{text}" class="align-{align}" style="width: {width};"/&gt;'  params="url, align, widsth"/>
+    <BBcode tag="img"	closeTag="true"	    html='&lt;img src="{url}" alt="{text}" class="align-{align}" style="width: {width};"/&gt;'  params="url, align, width"/>
     <BBcode tag="img"	closeTag="false"    html='&lt;img src="{url}" class="align-{align}" style="width: {width}"/&gt;' params="url, align, width"/>
     <BBcode tag="img"	closeTag="true"	    html='&lt;img src="{param}" alt="{text}" /&gt;' param="true"/>
     <BBcode tag="font"	closeTag="true"	    html='&lt;span style="font-family: {param}"&gt;{text}&lt;/span&gt;' param="true"/>
     <BBcode tag="center" closeTag="true"    html='&lt;div class="centered"&gt;{text}&lt;/div&gt;'/>
     <BBcode tag="list"	closeTag="true"	    html='&lt;ul&gt;{text}&lt;/ul&gt;'/>
+    <BBcode tag="numlist" closeTag="true"   html='&lt;ol&gt;{text}&lt;/ol&gt;'/>
     <BBcode tag="\*"	closeTag="true"	    html='&lt;li&gt;{text}&lt;/li&gt;'/>
     <BBcode tag="color"	closeTag="true"	    html='&lt;span style="color: {param};" &gt;{text}&lt;/span&gt;' param="true"/>
-    <BBcode tag="size"	closeTag="true"	    html='&lt;span style="font-size: {param}pt;" &gt;{text}&lt;/span&gt;' param="true"/>
+    <BBcode tag="size"	closeTag="true"	    html='&lt;span style="font-size: {param};" &gt;{text}&lt;/span&gt;' param="true"/>
     <BBcode tag="hr"	closeTag="false"    html='&lt;hr /&gt;'/>
-    <BBcode tag="acr"	closeTag="true"	    html='&lt;span style="text-decoration: line-through;" &gt;{text}&lt;/span&gt;'/>
+    <BBcode tag="acr"	closeTag="true"	    html='&lt;abbr title="{param}"&gt;{text}&lt;/abbr&gt;' param="true"/>
     <BBcode tag="break" closeTag="false"    html='&lt;hr class="break" /&gt;' />
     <BBcode tag="more"  closeTag="false"    html='&lt;hr class="break" /&gt;' />
     <BBcode tag="code"	closeTag="true"	    html='&lt;pre class="brush: {param}"&gt;{text}&lt;/pre&gt;' param="true"/>
@@ -35,7 +34,6 @@
     <BBcode tag="h4"    closeTag="true"     html='&lt;h4&gt;{text}&lt;/h4&gt;' />
     <BBcode tag="h5"    closeTag="true"     html='&lt;h5&gt;{text}&lt;/h5&gt;' />
     <BBcode tag="h6"    closeTag="true"     html='&lt;h6&gt;{text}&lt;/h6&gt;' />
-    <BBcode tag="h7"    closeTag="true"     html='&lt;h7&gt;{text}&lt;/h7&gt;' />
     <BBcode tag="quote"	closeTag="true"	    html='&lt;blockquote&gt;{text}&lt;div class="author"&gt;{param}&lt;/div&gt;&lt;/blockquote&gt;' param="true"/>
     <BBcode tag="quote"	closeTag="true"	    html='&lt;blockquote&gt;{text}&lt;/blockquote&gt;'/>
     <BBcode tag="align" closeTag="true"     html='&lt;p align="{param}"&gt;{text}&lt;/p&gt;' param="true"/>
@@ -44,6 +42,8 @@
     <BBcode tag="table" closeTag="true"     html='&lt;table class="data-table align-{align}" style="width: {width}"&gt;{text}&lt;/table&gt;' params="align, width"/>
     <BBcode tag="row"   closeTag="true"     html='&lt;tr&gt;{text}&lt;/tr&gt;' />
     <BBcode tag="cell"  closeTag="true"     html='&lt;td&gt;{text}&lt;/td&gt;' />
-    <BBcode tag="hcell" closeTag="true"     html='&lt;th&gt;{text}&lt;/th&gt;' />
-    <BBcode tag="hcell" closeTag="true"     html='&lt;th width="{param}"&gt;{text}&lt;/th&gt;' param="true"/>
+    <BBcode tag="header" closeTag="true"    html='&lt;th&gt;{text}&lt;/th&gt;' />
+    <BBcode tag="header" closeTag="true"    html='&lt;th width="{param}"&gt;{text}&lt;/th&gt;' param="true"/>
+    <BBcode tag="sub"   closeTag="true"     html='&lt;sub&gt;{text}&lt;/sub&gt;' />
+    <BBcode tag="sup"   closeTag="true"     html='&lt;sup&gt;{text}&lt;/sup&gt;' />
 </list>

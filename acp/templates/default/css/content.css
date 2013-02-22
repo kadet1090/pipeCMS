@@ -54,6 +54,7 @@ article table td {
 section {
     width: 50%;
     box-sizing: border-box;
+    -moz-box-sizing: border-box;
 }
 
 section.right {

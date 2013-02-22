@@ -89,7 +89,7 @@ function nl($text, $br = false)
     {
         $tags = array('ul', 'li', 'table', 'tr', 'td', 'th', 'ol', 'pre');
         $text = str_replace("\n", '<br />', $text);
-        $text = preg_replace('#<br />(</?('.implode('|', $tags).'))#', '$1', $text);
+        $text = preg_replace('#<br />\s*(</?('.implode('|', $tags).'))#', '$1', $text);
         
         if(preg_match_all('/\<pre (.*?)\>(.*?)\<\/pre\>/', $text, $match))
             for($i = 0, $count = count($match[0]); $i < $count; $i++)
