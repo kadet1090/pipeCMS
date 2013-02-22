@@ -158,6 +158,7 @@ function substrws($text, $lenght)
     return $text;
 }
 
+// TODO: Menu class
 function prepareMenu($menu, $parent = NULL, $self = NULL)
 {
     $return = array();
@@ -169,7 +170,7 @@ function prepareMenu($menu, $parent = NULL, $self = NULL)
     if($self != NULL) $return['self'] = $self;
     
     ksort($return);
-    return is_array($return) ? $return : array($return);
+    return $return;
 }
 
 function pass($password)

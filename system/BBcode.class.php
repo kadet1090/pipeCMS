@@ -73,8 +73,8 @@ class BBcode
     {        
         $md5 = md5($BBcodeString);
         
-        if(file_exists('data/cache/bbcode/'.$md5.'.txt'))
-            return file_get_contents('data/cache/bbcode/'.$md5.'.txt');
+        if(cache::available('BBcode', $md5))
+            return cache::get('BBcode', $md5);
         
         $BBcodeString = preg_replace_callback('#\[code(.*?)\](.*?)\[/code\]#si', create_function('$matches', 'return "[code".$matches[1]."]".str_replace("]", "\\]", $matches[2])."[/code]";'), $BBcodeString);
         $BBcodeString = preg_replace_callback('#\[bbcode\](.*?)\[/bbcode\]#si', create_function('$matches', 'return "[bbcode]".str_replace("]", "\\]", $matches[1])."[/bbcode]";'), $BBcodeString);
@@ -82,20 +82,14 @@ class BBcode
         
         // Don't ask.... :D
         $pattern = '#('.str_replace(array('#si', '#'), '', implode('|', self::$_bBcodeExp['html'])).')#si';
-        while(true)
-        {
+        while(preg_match($pattern, $BBcodeString))
              $BBcodeString = preg_replace(self::$_bBcodeExp["html"], self::$_exp["html"], $BBcodeString);
-             if(!preg_match($pattern, $BBcodeString))
-                     break;
-        }
         
         foreach(self::$_bBcodeExp['callback'] as $no => $exp) 
-        {
             $BBcodeString = preg_replace_callback($exp, self::$_exp["callback"][$no], $BBcodeString);
-        }
         
         $parsed = str_replace('\\]', ']', $BBcodeString);
-        file_put_contents('data/cache/bbcode/'.$md5.'.txt', $parsed);
+        cache::set('BBcode', $md5, $parsed);
         
         return $parsed;
     }
