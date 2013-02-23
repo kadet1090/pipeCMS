@@ -54,7 +54,7 @@ class user
     
     public function isAdmin()
     {
-        return time() - $this->last_activity < 360;
+        return $this->hasPermission('acp');
     }
 }
 ?>

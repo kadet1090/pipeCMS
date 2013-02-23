@@ -1,6 +1,18 @@
 <?php
 class HTMLview extends view
 {
+    /**
+     * name => [src => string, body => string]
+     * @var array
+     */
+    public static $additionalJS = array();
+    
+    /**
+     * name => [src => string, body => string]
+     * @var array
+     */
+    public static $additionalCSS = array();
+    
     public function render() 
     {
         if(!isset($this->_templateFileName))
