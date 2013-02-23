@@ -25,7 +25,7 @@ class user
             return false;
         
         if(strstr($permission, '/') == false)
-            return isset($this->_permissions[$permission]) && $this->_permissions['all'];
+            return isset($this->_permissions[$permission]) && array_search(true, $this->_permissions[$permission]) !== false;
         
         $cat = strstr($permission, '/', true);
         $perm = substr(strstr($permission, '/'), 1);
@@ -41,8 +41,8 @@ class user
     
     public function getAvatar()
     {
-        if(file_exists('usersData/avatars/'.$this->login.'.png'))
-            return 'usersData/avatars/'.$this->login.'.png';
+        if(file_exists('data/avatar/'.$this->login.'.png'))
+            return 'data/avatar/'.$this->login.'.png';
         else
             return 'http://www.gravatar.com/avatar/'.md5(strtolower(trim($this->mail))).'?d=identicon&s=100';
     }

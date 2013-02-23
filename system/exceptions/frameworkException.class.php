@@ -8,5 +8,5 @@
   * @version 1.0
   * @package errors
   **/
-class frameworkException extends Exception  {}
+class frameworkException extends Exception {}
 ?>

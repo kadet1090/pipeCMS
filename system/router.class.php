@@ -149,8 +149,8 @@ class router implements singleton, routerInterface
         {
             if(is_array($this->_uRI)) $uRL = $this->_uRI;
             else $uRL = explode($this->_delimeter, $this->_uRI);
-            $uRL = arrayDelete($uRL, count($this->_staticParams));
             
+            $uRL = arrayDelete($uRL, count($this->_staticParams));
             $param = implode($this->_delimeter, array_values($this->_regexParams[$name]));
             return (bool)preg_match('/^'.$param.'$/', implode($this->_delimeter, $uRL));
         }
@@ -175,9 +175,9 @@ class router implements singleton, routerInterface
 
     public function loadFromConfig(config $config)
     {
-        if(isset($config->delimeter))        $this->_delimeter  = $config->delimeter;
-        if(isset($config->extension))        $this->_extension  = $config->extension;
-        if(isset($config->space))        $this->_space            = $config->space;
+        if(isset($config->delimeter))    $this->_delimeter  = $config->delimeter;
+        if(isset($config->extension))    $this->_extension  = $config->extension;
+        if(isset($config->space))        $this->_space      = $config->space;
         
         foreach($config->staticParams->staticParam as $param)
         {

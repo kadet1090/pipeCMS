@@ -223,33 +223,7 @@ class userController extends controller
                 $mail = $model->mailUsed(self::$router->post('mail'));
                 if($mail && $mail->id != self::$router->id)        throw new messageException(language::get('error'), language::get('errUsedMail'));
                             
-                #avatar upload
-                if(is_uploaded_file($_FILES['avatar']['tmp_name']))
-                {        
-                    switch($_FILES['avatar']['type'])
-                    {
-                        case 'image/png':
-                            $image = imagecreatefrompng($_FILES['avatar']['tmp_name']);
-                            break;
-                        case 'image/jpeg':
-                            $image = imagecreatefromjpeg($_FILES['avatar']['tmp_name']);
-                            break;
-                        case 'image/gif':
-                            $image = imagecreatefromgif($_FILES['avatar']['tmp_name']);
-                            break;
-                        default:
-                            unlink($_FILES['avatar']['tmp_name']);
-                            throw new messageException(language::get('error'), language::get('errBadType'));
-                            break;
-                    }
-                    unlink($_FILES['avatar']['tmp_name']);
-                    if($_FILES['avatar']['size'] > 200 * 1024) throw new messageException(language::get('error'), language::get('errTooBigFileSize'));
-                    if(imagesx($image) > 100 || imagesy($image) > 100) throw new messageException(language::get('error'), language::get('errTooBigImg'));
-                    
-                    imagesavealpha($image, true);
-                    imagepng($image, 'usersData/avatars/'.self::$router->login.'.png');
-                }
-                #end of avatar upload
+                $this->_uploadAvatar(self::$router->login);
                 
                 /*login, mail, fullname, sex, place, desc, twitter, xmpp, gg, url, groups, register_date, br_date, additional_fields*/
                 $model->edit(self::$router->id,
@@ -366,8 +340,49 @@ class userController extends controller
             throw new messageException(language::get('error'), language::get('errNotLoggedIn'), array('url' => array('user', 'login')));
     }
     
-    public function joinGroup()            { return $this->addGroup(); }
+    public function joinGroup()     { return $this->addGroup(); }
     public function leaveGroup()    { return $this->removeGroup(); }
     
+    private function _uploadAvatar($username)
+    {
+        try 
+        {
+            $data = uploader::upload('avatar', 'avatar', $username, true, array('image/png', 'image/jpeg', 'image/gif'));
+
+            switch($data['type'])
+            {
+                case 'image/png':
+                    $image = imagecreatefrompng($data['path']);
+                    break;
+                case 'image/jpeg':
+                    $image = imagecreatefromjpeg($data['path']);
+                    break;
+                case 'image/gif':
+                    $image = imagecreatefromgif($data['path']);
+                    break;
+            }
+            if(imagesx($image) > 100 || imagesy($image) > 100) throw new messageException(language::get('error'), language::get('errTooBigImg'));
+
+            imagesavealpha($image, true);
+            imagepng($image, 'usersData/avatars/'.self::$router->login.'.png');
+        }
+        catch (frameworkException $e)
+        {
+            switch($e->getCode())
+            {
+                case uploader::UPLOAD_ERROR:
+                    $msg = language::get('errUpload');
+                    break;
+                case uploader::WRONG_TYPE:
+                    $msg = language::get('errWrongType');
+                    break;
+                case uploader::TOO_BIG:
+                    $msg = language::get('errTooBigFileSize');
+                    break;
+            }
+            
+            throw new messageException(language::get('error'), $msg);
+        }
+    }
 }
 ?>
