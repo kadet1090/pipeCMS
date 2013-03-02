@@ -1,13 +1,11 @@
 <?php
 class dataBaseConnection
 {
-    #zmienne prywatne
-    
     /** PDO object
       * @access protected
       * @var PDO 
       **/
-    protected $_pDO;
+    protected $_PDO;
     
     /** DB user name
       * @access protected
@@ -49,8 +47,6 @@ class dataBaseConnection
     
     public $prefix;
     
-    #funkcje publiczne
-    
     /** constructor
       * @access public
       * @param string $n
@@ -74,7 +70,7 @@ class dataBaseConnection
         {
             foreach($this->_config->option as $option)
                 $options[constant('PDO::'.$option['name'])] = $option['value'];
-            $this->_pDO = new PDO($this->_n, $this->_userName, $this->_password, $options);
+            $this->_PDO = new PDO($this->_n, $this->_userName, $this->_password, $options);
             foreach($this->_config->attribute as $attribute)
                 $this->setPDOattribute(constant('PDO::'.$attribute['name']), constant('PDO::'.$attribute['value']));
             
@@ -103,7 +99,7 @@ class dataBaseConnection
             if(isset($this->_config->database->userName)) $this->_userName = $this->_config->database->userName;
             $this->_n .= 'host='.(isset($this->_config->database->host) ? $this->_config->database->host : 'localhost');
         }
-        catch(Exception $e)
+        catch(Exception $exception)
         {
             self::$log->addToLog('('.$exception->getCode().') '.$exception->getMessage()." : ".$exception->getFile()."[".$exception->getLine()."]", "connectionError");
             echo $e;
@@ -156,23 +152,32 @@ class dataBaseConnection
     
     public function setPDOattribute($attribute, $mValue)
     {
-        $this->_pDO->setAttribute($attribute, $mValue);
+        $this->_PDO->setAttribute($attribute, $mValue);
     }
     
-    public function executeQuery($SQL)
+    public function executeQuery($SQL, $arguments = array())
     {
         try
         {
             if(DEBUG_MODE) self::$log->addToLog(trim(str_replace("%p%", $this->prefix, $SQL)), "sql");
-            $result = $this->_pDO->query(trim(str_replace("%p%", $this->prefix, $SQL)));
+            $prepared = $this->_PDO->prepare(trim(str_replace("%p%", $this->prefix, $SQL)));
+            
+            foreach($arguments as $num => $value) {
+                if(is_numeric($value)) 
+                    $prepared->bindValue(':'.($num+1), $value, PDO::PARAM_INT);
+                else
+                    $prepared->bindValue(':'.($num+1), $value);
+            }
+            
+            $prepared->execute();
+            
             self::$ns++;
-            return $result;
+            return $prepared;
         }
         catch(PDOException $exception)
         {
             self::$log->addToLog('('.$exception->getCode().') '.$exception->getMessage()." : ".$exception->getFile()."[".$exception->getLine()."]", "error");
-            echo '<pre>'.$exception.'</pre>'; // TODO: obsługa błędów
-            return false;
+            throw $exception;
         }
     }
 }

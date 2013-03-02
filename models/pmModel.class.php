@@ -13,8 +13,8 @@ class pmModel extends dataBaseModel
         WHERE 
             `%p%users`.`id` = `%p%pm`.`author` AND
             `%p%users_groups`.`id` = `%p%users`.`main_group` AND 
-            `%p%pm`.`receiver` = {1} 
-        LIMIT {2}, {3}',
+            `%p%pm`.`receiver` = :1 
+        LIMIT :2, :3',
         
         'getMessage'        => 'SELECT 
             `%p%pm`.*,
@@ -26,9 +26,9 @@ class pmModel extends dataBaseModel
         WHERE 
             `%p%users`.`id` = `%p%pm`.`author` AND
             `%p%users_groups`.`id` = `%p%users`.`main_group` AND 
-            `%p%pm`.`id` = {1}',
+            `%p%pm`.`id` = :1',
         
-        'send'                => 'INSERT INTO `%p%pm`(`title`, `content`, `author`, `receiver`, `date`) VALUES({1}, {2}, {3}, {4}, {5})'
+        'send'                => 'INSERT INTO `%p%pm`(`title`, `content`, `author`, `receiver`, `date`) VALUES(:1, :2, :3, :4, :5)'
     );
     
     public function getMessagesCount($userID)

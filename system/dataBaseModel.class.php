@@ -49,21 +49,7 @@ class dataBaseModel extends model
         if(is_array($this->_predefinedQueries[$name])) $query = $this->_predefinedQueries[$name][0];
         else $query = $this->_predefinedQueries[$name];
         
-        foreach($arguments as $argID => $argument)
-        {
-            if(is_int($argument)) 
-            {
-                $query = str_replace('{'.($argID+1).'}', $argument, $query);
-                $query = str_replace('['.($argID+1).']', $argument, $query);
-            }
-            else
-            {
-                $query = str_replace('{'.($argID+1).'}', '\''.addslashes($argument).'\'', $query);
-                $query = str_replace('['.($argID+1).']', addslashes($argument), $query);
-            }
-        }
-
-        return self::$connection->executeQuery($query);
+        return self::$connection->executeQuery($query, $arguments);
     }
     
     public function __call($name, $arguments)

@@ -2,33 +2,33 @@
 class userModel extends dataBaseModel
 {
     protected $_predefinedQueries = array(
-        'getPassword'        => 'SELECT `password`, `id`, `banned` FROM `%p%users` WHERE `login` = {1}',
-        'userExist'        => 'SELECT `login` FROM `%p%users` WHERE `login` = {1}',
-        'userExistID'        => 'SELECT `login` FROM `%p%users` WHERE `id` = {1}',
-        'mailUsed'        => 'SELECT `id` FROM `%p%users` WHERE `mail` = {1}',
-        'register'        => 'INSERT INTO `%p%users`(`login`, `password`, `mail`, `fullname`, `sex`, `place`, `desc`, `twitter`, `xmpp`, `gg`, `url`, `groups`, `register_date`, `br_date`, `additional_fields`) VALUES({1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}, {10}, {11}, {12}, {13}, {14}, {15})',
-        'delete'        => 'DELETE FROM `%p%users` WHERE `id` = {1}',
-        'ban'                => 'UPDATE `%p%users` SET `banned` = \'1\' WHERE `id` = {1}', 
-        'unban'                => 'UPDATE `%p%users` SET `banned` = \'0\' WHERE `id` = {1}',
-        'edit'                => 'UPDATE `%p%users` SET  `mail` = {2}, `fullname` = {3}, `sex` = {4}, `place` = {5}, `desc` = {6}, `twitter` = {7}, `xmpp` = {8}, `gg` = {9}, `url` = {10}, `register_date` = {11}, `br_date` = {12}, `additional_fields` = {13} WHERE `id` = {1}',
-        'getLimited'        => 'SELECT `%p%users`.*, `%p%users_groups`.`prefix` as `prefix`, `%p%users_groups`.`suffix` as `suffix`, `%p%users_groups`.`color` as `color`
+        'getPassword'   => 'SELECT `password`, `id`, `banned` FROM `%p%users` WHERE `login` = :1',
+        'userExist'     => 'SELECT `login` FROM `%p%users` WHERE `login` = :1',
+        'userExistID'   => 'SELECT `login` FROM `%p%users` WHERE `id` = :1',
+        'mailUsed'      => 'SELECT `id` FROM `%p%users` WHERE `mail` = :1',
+        'register'      => 'INSERT INTO `%p%users`(`login`, `password`, `mail`, `fullname`, `sex`, `place`, `desc`, `twitter`, `xmpp`, `gg`, `url`, `groups`, `register_date`, `br_date`, `additional_fields`) VALUES(:1, :2, :3, :4, :5, :6, :7, :8, :9, :10, :11, :12, :13, :14, :15)',
+        'delete'        => 'DELETE FROM `%p%users` WHERE `id` = :1',
+        'ban'           => 'UPDATE `%p%users` SET `banned` = \'1\' WHERE `id` = :1', 
+        'unban'         => 'UPDATE `%p%users` SET `banned` = \'0\' WHERE `id` = :1',
+        'edit'          => 'UPDATE `%p%users` SET  `mail` = :2, `fullname` = :3, `sex` = :4, `place` = :5, `desc` = :6, `twitter` = :7, `xmpp` = :8, `gg` = :9, `url` = :10, `register_date` = :11, `br_date` = :12, `additional_fields` = :13 WHERE `id` = :1',
+        'getLimited'    => 'SELECT `%p%users`.*, `%p%users_groups`.`prefix` as `prefix`, `%p%users_groups`.`suffix` as `suffix`, `%p%users_groups`.`color` as `color`
             FROM `%p%users`, `%p%users_groups` 
             WHERE `%p%users_groups`.`id` = `%p%users`.`main_group`
-            LIMIT {1}, {2}',
-        'getUser'        => 'SELECT `%p%users`.*, `%p%users_groups`.`prefix` as `prefix`, `%p%users_groups`.`suffix` as `suffix`, `%p%users_groups`.`color` as `color`
+            LIMIT :1, :2',
+        'getUser'       => 'SELECT `%p%users`.*, `%p%users_groups`.`prefix` as `prefix`, `%p%users_groups`.`suffix` as `suffix`, `%p%users_groups`.`color` as `color`
             FROM `%p%users`, `%p%users_groups` 
-            WHERE `%p%users`.`id` = {1} AND `%p%users_groups`.`id` = `%p%users`.`main_group`',
+            WHERE `%p%users`.`id` = :1 AND `%p%users_groups`.`id` = `%p%users`.`main_group`',
         
         'getLimitedFromGroup' => 'SELECT `%p%users`.*, `%p%users_groups`.`prefix`, `%p%users_groups`.`suffix`, `%p%users_groups`.`color`, (SELECT COUNT(*) FROM `%p%users` WHERE `groups` LIKE \'%|[3]|%\') AS `count`
             FROM `%p%users`, `%p%users_groups`
             WHERE `%p%users_groups`.`id` = `%p%users`.`main_group` AND `%p%users`.`groups` LIKE \'%|[3]|%\'
-            LIMIT {1}, {2}',
+            LIMIT :1, :2',
         
-        'getGroup'        => array('SELECT *, (SELECT COUNT(*) FROM `%p%users` WHERE `groups` LIKE \'%|[1]|%\') AS `count` FROM `%p%users_groups` WHERE `id` = {1}', 'stdClass'),
-        'setGroups'        => 'UPDATE `%p%users` SET `groups` = {1} WHERE `id` = {2}',
-        'updateLastActivity' => 'UPDATE `%p%users` SET `last_activity` = {1} WHERE `id` = {2}',
-        '_getAdditionalFields' => array('SELECT * FROM `%p%additional_fields`', 'stdClass'),
-        '_setAdditionalField' => array('', 'stdClass'),
+        'getGroup'      => array('SELECT *, (SELECT COUNT(*) FROM `%p%users` WHERE `groups` LIKE \'%|[1]|%\') AS `count` FROM `%p%users_groups` WHERE `id` = :1', 'stdClass'),
+        'setGroups'     => 'UPDATE `%p%users` SET `groups` = :1 WHERE `id` = :2',
+        'updateLastActivity'    => 'UPDATE `%p%users` SET `last_activity` = :1 WHERE `id` = :2',
+        '_getAdditionalFields'  => array('SELECT * FROM `%p%additional_fields`', 'stdClass'),
+        '_setAdditionalField'   => array('', 'stdClass'),
     );
     
     protected $_defaultDAOname = 'user';

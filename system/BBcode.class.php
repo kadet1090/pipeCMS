@@ -12,7 +12,7 @@
  */
 class BBcode 
 {
-    protected static $_bBcodeExp = array(
+    protected static $_BBcodeExp = array(
         'html' => array(),
         'callback' => array()
     );
@@ -27,46 +27,78 @@ class BBcode
         $BBcode->load();
         foreach($BBcode->BBcode as $code)
         {
-            $params = array();
-            $code['bbCode'] = '\['.$code['tag'];
-
-            if($code['param'] == 'true') 
-            {
-                $params[0] = 'param';
-                $code['bbCode'] .= '=&quot;(.*?)&quot;';
-            }
-            
-            if(isset($code['params']))
-            {
-                $params = explode(', ', $code['params']);
-                foreach($params as $param)
-                    $code['bbCode'] .= ' '.$param.'=&quot;(.*?)&quot;';
-            }
-            
-            $code['bbCode'] .= '\]';
-            if($code['closeTag'] == 'true') $code['bbCode'] .= '(.*?)\[/'.$code['tag'].'\]';
             if(isset($code['callback']))
             {
-                $code['callback'] = str_replace('{text}', '$matches['.(count($params)+1).']', $code['callback']);
-                
-                foreach($params as $key => $name)
-                    $code['callback'] = str_replace('{'.$name.'}', '$matches['.($key+1).']', $code['callback']);
-                
-                self::$_bBcodeExp['callback'][] = '#'.$code['bbCode'].'#xi';
-                self::$_exp['callback'][] = create_function('$matches', $code['callback']);
+                self::addCallback(
+                    $code["tag"], 
+                    $code['callback'], 
+                    $code['closeTag'] == 'true', 
+                    $code['param'] == 'true' ? true : (
+                        isset($code['params']) ? explode(', ', $code['params']) : false
+                    )
+                );
             }
             else
             {
-                $code['html'] = str_replace('{text}', '$'.(count($params)+1), $code['html']);
-
-                foreach($params as $key => $name)
-                    $code['html'] = str_replace('{'.$name.'}', '$'.($key+1), $code['html']);
-
-                self::$_bBcodeExp['html'][] = '#'.$code['bbCode'].'#si';
-                self::$_exp['html'][] = $code['html'];
+                self::addHtml(
+                    $code["tag"], 
+                    $code['html'], 
+                    $code['closeTag'] == 'true', 
+                    $code['param'] == 'true' ? true : (
+                        isset($code['params']) ? explode(', ', $code['params']) : false
+                    )
+                );
             }
         }
-        //var_dump(self::$_exp, self::$_bBcodeExp);
+  //      var_dump(self::$_exp, self::$_BBcodeExp);
+    }
+    
+    public static function addHtml($tag, $html, $close = false, $params = false) {
+        $regex = self::_regex($tag, $close, $params);
+       
+        if($params === true)
+            $params = array('param');
+        elseif(!is_array($params))
+            $params = array();
+        
+        $html = str_replace('{text}', '$'.(count($params)+1), $html);
+        foreach($params as $key => $name)
+            $html = str_replace('{'.$name.'}', '$'.($key+1), $html);
+
+        self::$_BBcodeExp['html'][] = '#'.$regex.'#si';
+        self::$_exp['html'][] = $html;
+    }
+    
+    public static function addCallback($tag, $callback, $close = false, $params = false) {
+        $regex = self::_regex($tag, $close, $params);
+       
+        if($params === true)
+            $params = array('param');
+        elseif(!is_array($params))
+            $params = array();
+        
+        foreach($params as $key => $name)
+            $callback = str_replace('{'.$name.'}', '$matches['.($key+1).']', $callback);
+
+        self::$_BBcodeExp['callback'][] = '#'.$regex.'#si';
+        self::$_exp['callback'][] = create_function('$matches', $callback);
+    }
+    
+    private static function _regex($tag, $close, $params) {
+        $regex  = '\['.$tag;
+
+        if($params === true) 
+            $regex .= '=&quot;(.*?)&quot;';
+        elseif(is_array($params))
+            foreach($params as $param)
+                $regex .= ' '.$param.'=&quot;(.*?)&quot;';
+        
+        $regex .= '\]';
+        
+        if($close)
+            $regex .= '(.*?)\[/'.$tag.'\]';
+        
+        return $regex;
     }
     
     public static function parse($BBcodeString)
@@ -81,11 +113,11 @@ class BBcode
         $BBcodeString = str_replace('"', '&quot;', $BBcodeString);
         
         // Don't ask.... :D
-        $pattern = '#('.str_replace(array('#si', '#'), '', implode('|', self::$_bBcodeExp['html'])).')#si';
+        $pattern = '#('.str_replace(array('#si', '#'), '', implode('|', self::$_BBcodeExp['html'])).')#si';
         while(preg_match($pattern, $BBcodeString))
-             $BBcodeString = preg_replace(self::$_bBcodeExp["html"], self::$_exp["html"], $BBcodeString);
+             $BBcodeString = preg_replace(self::$_BBcodeExp["html"], self::$_exp["html"], $BBcodeString);
         
-        foreach(self::$_bBcodeExp['callback'] as $no => $exp) 
+        foreach(self::$_BBcodeExp['callback'] as $no => $exp) 
             $BBcodeString = preg_replace_callback($exp, self::$_exp["callback"][$no], $BBcodeString);
         
         $parsed = str_replace('\\]', ']', $BBcodeString);

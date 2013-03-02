@@ -15,6 +15,13 @@
     $loader = new autoloader('./', array('usePrefix' => false, 'usePostfix' => false), $map);
     $loader->ragister();
     //-------------------------------------------------------------------------------------//  
-    $frontController = new frontController();
-    $frontController->work($startTime);
+    try {
+        $frontController = new frontController();
+        $frontController->work($startTime);
+    } catch (Exception $exception) {
+        $view = new HTMLview('fatal-exception.tpl');
+        $view->exception = $exception;
+
+        echo $view;
+    }
 ?>

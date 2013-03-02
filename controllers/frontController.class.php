@@ -30,20 +30,20 @@ class frontController extends controller {
     public function work($startTime)
     {
         $DBmodel = new mainModel();
-        
+
         # get required views
         $pattern    = new HTMLview('pattern.tpl');
         $menuView   = new HTMLview('menu.tpl');
-        
+
         # load menu
         $menuView->menu = $DBmodel->getMenu(language::getLang());
         $pattern->menu = $menuView;
-        
+
         # set panel for user
         $pattern->userInfo = self::$user->isLogged ? 
             new HTMLview('user/panel-info.tpl') : 
             new HTMLview('user/panel-login-form.tpl');
-        
+
         # get required controller and action
         $controllerName = self::$router->controller.'Controller';
         $action = self::$router->action;
@@ -58,17 +58,17 @@ class frontController extends controller {
                 $message            = new HTMLview('message.tpl');
                 $message->message   = $e;
                 $pattern->page      = $message;
-            }
+            } 
         }
         else
         {
             $pattern->page = $this->getErrorPage(404);
         }
-        
+
         # some statistics
         $pattern->gt    = round(microtime(true) - $startTime, 6);
         $pattern->sql   = dataBaseConnection::$ns;
-        
+
         # print our page
         echo $pattern;
     }
