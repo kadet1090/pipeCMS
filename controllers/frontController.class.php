@@ -29,15 +29,11 @@ class frontController extends controller {
     
     public function work($startTime)
     {
-        $DBmodel = new mainModel();
-
         # get required views
         $pattern    = new HTMLview('pattern.tpl');
-        $menuView   = new HTMLview('menu.tpl');
 
         # load menu
-        $menuView->menu = $DBmodel->getMenu(language::getLang());
-        $pattern->menu = $menuView;
+        menu::$lang = language::getLang();
 
         # set panel for user
         $pattern->userInfo = self::$user->isLogged ? 

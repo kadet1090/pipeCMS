@@ -1,6 +1,6 @@
 <?php
 class user
-{
+{ 
     protected $_varibles = array();
     public $isLogged = false;
     
@@ -21,6 +21,9 @@ class user
     
     public function hasPermission($permission)
     {
+        if(empty($permission))
+            return true;
+        
         if(!$this->isLogged)
             return false;
         

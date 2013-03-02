@@ -26,6 +26,7 @@ abstract class view
     public function assign($name, $mValue)
     {
         $this->_data[$name] = $mValue;
+        return $this;
     }
     
     public function __set($name, $value) 

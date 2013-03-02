@@ -158,21 +158,6 @@ function substrws($text, $lenght)
     return $text;
 }
 
-// TODO: Menu class
-function prepareMenu($menu, $parent = NULL, $self = NULL)
-{
-    $return = array();
-    
-    foreach($menu as $element) 
-        if($element->parent == $parent)
-            $return[(int)$element->pos] = prepareMenu($menu, $element->id, $element);
-        
-    if($self != NULL) $return['self'] = $self;
-    
-    ksort($return);
-    return $return;
-}
-
 function pass($password)
 {
     return md5(base64_encode($password."4#Q@T?"));
