@@ -39,10 +39,10 @@
 	    <param name="id"	regEXP="[0-9]{1,11}" />
 	</paramGroup>
 	<paramGroup name="addGroup">
-            <param name="login"	regEXP="[a-zA-Z0-9\_\-]*" />
-	    <param name="userId" regEXP="[0-9]{1,11}" />
-	    <param name="name"	regEXP="[a-zA-Z\_\-]{1,25}" />
-            <param name="id"	regEXP="[0-9]{1,4}" />
+            <param name="login"	 regEXP="[a-zA-Z0-9\_\-]*" />
+	    <param name="id"     regEXP="[0-9]{1,11}" />
+	    <param name="name"   regEXP="[a-zA-Z\_\-]{1,25}" />
+            <param name="userId" regEXP="[0-9]{1,4}" />
 	</paramGroup>
 	<paramGroup name="showPage">
             <param name="page"	regEXP="[a-zA-Z0-9\_\-]*" />

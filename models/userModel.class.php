@@ -2,7 +2,7 @@
 class userModel extends dataBaseModel
 {
     protected $_predefinedQueries = array(
-        'getPassword'   => 'SELECT `password`, `id`, `banned` FROM `%p%users` WHERE `login` = :1',
+        'getPassword'   => array('SELECT `password`, `id`, `banned` FROM `%p%users` WHERE `login` = :1', true),
         'userExist'     => 'SELECT `login` FROM `%p%users` WHERE `login` = :1',
         'userExistID'   => 'SELECT `login` FROM `%p%users` WHERE `id` = :1',
         'mailUsed'      => 'SELECT `id` FROM `%p%users` WHERE `mail` = :1',
@@ -11,24 +11,27 @@ class userModel extends dataBaseModel
         'ban'           => 'UPDATE `%p%users` SET `banned` = \'1\' WHERE `id` = :1', 
         'unban'         => 'UPDATE `%p%users` SET `banned` = \'0\' WHERE `id` = :1',
         'edit'          => 'UPDATE `%p%users` SET  `mail` = :2, `fullname` = :3, `sex` = :4, `place` = :5, `desc` = :6, `twitter` = :7, `xmpp` = :8, `gg` = :9, `url` = :10, `register_date` = :11, `br_date` = :12, `additional_fields` = :13 WHERE `id` = :1',
+        
         'getLimited'    => 'SELECT `%p%users`.*, `%p%users_groups`.`prefix` as `prefix`, `%p%users_groups`.`suffix` as `suffix`, `%p%users_groups`.`color` as `color`
             FROM `%p%users`, `%p%users_groups` 
             WHERE `%p%users_groups`.`id` = `%p%users`.`main_group`
             LIMIT :1, :2',
-        'getUser'       => 'SELECT `%p%users`.*, `%p%users_groups`.`prefix` as `prefix`, `%p%users_groups`.`suffix` as `suffix`, `%p%users_groups`.`color` as `color`
+        
+        'getUser'       => array('SELECT `%p%users`.*, `%p%users_groups`.`prefix` as `prefix`, `%p%users_groups`.`suffix` as `suffix`, `%p%users_groups`.`color` as `color`
             FROM `%p%users`, `%p%users_groups` 
-            WHERE `%p%users`.`id` = :1 AND `%p%users_groups`.`id` = `%p%users`.`main_group`',
+            WHERE `%p%users`.`id` = :1 AND `%p%users_groups`.`id` = `%p%users`.`main_group`', true),
         
-        'getLimitedFromGroup' => 'SELECT `%p%users`.*, `%p%users_groups`.`prefix`, `%p%users_groups`.`suffix`, `%p%users_groups`.`color`, (SELECT COUNT(*) FROM `%p%users` WHERE `groups` LIKE \'%|[3]|%\') AS `count`
+        'getLimitedFromGroup' => 'SELECT `%p%users`.*, `%p%users_groups`.`prefix`, `%p%users_groups`.`suffix`, `%p%users_groups`.`color`, (SELECT COUNT(*) FROM `%p%users` WHERE `groups` LIKE :3) AS `count`
             FROM `%p%users`, `%p%users_groups`
-            WHERE `%p%users_groups`.`id` = `%p%users`.`main_group` AND `%p%users`.`groups` LIKE \'%|[3]|%\'
+            WHERE `%p%users_groups`.`id` = `%p%users`.`main_group` AND `%p%users`.`groups` LIKE :3
             LIMIT :1, :2',
-        
-        'getGroup'      => array('SELECT *, (SELECT COUNT(*) FROM `%p%users` WHERE `groups` LIKE \'%|[1]|%\') AS `count` FROM `%p%users_groups` WHERE `id` = :1', 'stdClass'),
+
+        'getGroup'      => array('SELECT *, (SELECT COUNT(*) FROM `%p%users` WHERE `groups` LIKE :2) AS `count` FROM `%p%users_groups` WHERE `id` = :1', true, 'stdClass'),
         'setGroups'     => 'UPDATE `%p%users` SET `groups` = :1 WHERE `id` = :2',
+        'setMainGroup'  => 'UPDATE `%p%users` SET `main_group` = :1 WHERE `id` = :2',
         'updateLastActivity'    => 'UPDATE `%p%users` SET `last_activity` = :1 WHERE `id` = :2',
-        '_getAdditionalFields'  => array('SELECT * FROM `%p%additional_fields`', 'stdClass'),
-        '_setAdditionalField'   => array('', 'stdClass'),
+        '_getAdditionalFields'  => array('SELECT * FROM `%p%additional_fields`', false, 'stdClass'),
+        '_setAdditionalField'   => '',
     );
     
     protected $_defaultDAOname = 'user';
@@ -40,13 +43,12 @@ class userModel extends dataBaseModel
         if(!$userData) return false;
         
         $groupIDs = explode(",", str_replace('|', '', $userData->groups));
-        
         $groups = $this->getGroups($groupIDs);
-        $groups = (is_array($groups) ? $groups : array($groups));
         
         $userData->_permissions = array();
-        foreach($groups as $group)
-            $userData->_permissions = getPermissions($group->permissions, $userData->_permissions);
+        if($groups)
+            foreach($groups as $group)
+                $userData->_permissions = getPermissions($group->permissions, $userData->_permissions);
         
         $userData->_permissions = getPermissions($userData->permissions, $userData->_permissions);
         
@@ -74,14 +76,13 @@ class userModel extends dataBaseModel
             $groups[$id] = "`id` = '".addslashes($val)."'";
         }
         $SQL .= implode(' OR ', $groups);
-        return $this->proccessSQL($SQL, 'stdClass');
+        return $this->proccessSQL($SQL, array(), false, 'stdClass');
     }
     
     public function getAdditionalFields()
     {
         $res = $this->_getAdditionalFields();
         if(!$res) return array();
-        if(!is_array($res)) $res = array($res);
 
         foreach($res as $row => $field)
         {

@@ -2,7 +2,7 @@
 class newsModel extends dataBaseModel
 {
     protected $_predefinedQueries = array(
-        'get'                => 'SELECT 
+        'get' => array('SELECT 
                 `%p%news`.*,
                 `%p%users`.`login`             AS `authorName`,
                 `%p%users_groups`.`suffix`     AS `suffix`,
@@ -14,7 +14,7 @@ class newsModel extends dataBaseModel
                 `%p%news_categories`.`id` = `%p%news`.`category` AND 
                 `%p%users`.`id` = `%p%news`.`author` AND
                 `%p%users_groups`.`id` = `%p%users`.`main_group` AND
-                `%p%news`.`id` = :1',
+                `%p%news`.`id` = :1', true),
         
         'getLimited' => 'SELECT 
                 `%p%news`.*,
@@ -51,7 +51,7 @@ class newsModel extends dataBaseModel
         'edit'              => 'UPDATE `%p%news` SET `title` = :2, `content` = :3, `category` = :4 WHERE `id` = :1',
         'delete'            => 'DELETE FROM `%p%news` WHERE `id` = :1',
         'getCategories'     => 'SELECT * FROM `%p%news_categories`',
-        'getCategory'       => 'SELECT * FROM `%p%news_categories` WHERE `id` = :1',
+        'getCategory'       => array('SELECT * FROM `%p%news_categories` WHERE `id` = :1', true),
         'increaseViews'     => 'UPDATE `%p%news` SET `views` = `views`+1 WHERE `id` = :1'
     );
     

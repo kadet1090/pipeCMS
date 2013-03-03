@@ -208,7 +208,8 @@ function getPermissions($permissions, $current) {
         $category = strstr($perm, '/', true);
         $name     = substr(strstr($perm, '/'), 1);
         
-        $current[$category][$name] = $active;
+        if($active || !isset($current[$category][$name]))
+            $current[$category][$name] = $active;
     }
     
     return $current;

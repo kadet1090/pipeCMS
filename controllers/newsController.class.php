@@ -122,35 +122,35 @@ class newsController extends controller
         
         if(self::$router->match('news'))
         {
-            if(self::$user->isLogged)
+            if(self::$user->hasPermission('news/edit'))
             {
-                if(self::$user->hasPermission('news/edit'))
+                $newsModel = new newsModel();
+
+                if(self::$router->post('submit') == null)
                 {
-                    $newsModel = new newsModel();
+                    $categories = $newsModel->getCategories();
+                    $view = new HTMLview( 'news/edit-form.tpl');
+                    $news = $newsModel->get(self::$router->id);
                     
-                    if(self::$router->post('submit') == null)
-                    {
-                        $categories = $newsModel->getCategories();
-                        $view = new HTMLview( 'news/edit-form.tpl');
-                        $view->news = $newsModel->get(self::$router->id);
-                        $view->categories = (is_array($categories) ? $categories : array($categories));
-                        return $view;
-                    }
-                    else
-                    {
-                        if(self::$router->post('title') == null)throw new messageException(language::get('error'), language::get('errTitleNotSet'), array('url' => array('news', 'edit', self::$router->name, self::$router->id)));
-                        if(self::$router->post('content') == null)throw new messageException(language::get('error'), language::get('errContentNotSet'), array('url' => array('news', 'edit', self::$router->name, self::$router->id)));
-                        if(self::$router->post('category') == null)throw new messageException(language::get('error'), language::get('errCategoryNotSet'), array('url' => array('news', 'edit', self::$router->name, self::$router->id)));
-                        
-                        $newsModel->edit(self::$router->id, self::$router->post('title'), (self::$router->post('html') != NULL ? self::$router->post('content') : htmlspecialchars(self::$router->post('content'))), self::$router->post('category'));
-                        throw new messageException(language::get('success'), language::get('editNewsSuccess'), array('url' => array('index', 'index')));
-                    }
+                    if(!$news)
+                        throw new messageException(language::get('error'), language::get('errNewsNotExist'));
+                    
+                    $view->news = $news;
+                    $view->categories = $categories;
+                    return $view;
                 }
                 else
-                    throw new messageException(language::get('error'), language::get('errNoPermission'), array('url' => array('index', 'index')));
+                {
+                    if(self::$router->post('title') == null)throw new messageException(language::get('error'), language::get('errTitleNotSet'), array('url' => array('news', 'edit', self::$router->name, self::$router->id)));
+                    if(self::$router->post('content') == null)throw new messageException(language::get('error'), language::get('errContentNotSet'), array('url' => array('news', 'edit', self::$router->name, self::$router->id)));
+                    if(self::$router->post('category') == null)throw new messageException(language::get('error'), language::get('errCategoryNotSet'), array('url' => array('news', 'edit', self::$router->name, self::$router->id)));
+
+                    $newsModel->edit(self::$router->id, self::$router->post('title'), (self::$router->post('html') != NULL ? self::$router->post('content') : htmlspecialchars(self::$router->post('content'))), self::$router->post('category'));
+                    throw new messageException(language::get('success'), language::get('editNewsSuccess'), array('url' => array('index', 'index')));
+                }
             }
             else
-                throw new messageException(language::get('error'), language::get('errNotLoggedIn'), array('url' => array('index', 'index')));
+                throw new messageException(language::get('error'), language::get('errNoPermission'), array('url' => array('index', 'index')));
         }
         else
             throw new messageException(language::get('error'), language::get('errWrongURL'), array('url' => array('index', 'index')));
@@ -197,9 +197,12 @@ class newsController extends controller
             
             $view = new HTMLview( 'news/all.tpl'); //tworzenie bufora treści
             $news = $newsModel->getLimitedFromCategory(($page - 1)  * (int)self::$config->newsPerPage,(int)self::$config->newsPerPage, language::getLang(), self::$router->id);
-            if(empty($news))throw new messageException(language::get('info'), language::get('noNews'), array('text' => ''));
+            //if(empty($news))throw new messageException(language::get('info'), language::get('noNews'), array('text' => ''));
             
             $category = $newsModel->getCategory(self::$router->id);
+            if(!$category)
+                throw new messageException(language::get('error'), language::get('errCategoryNotExist'));
+            
             view::addTitleChunk($category->name);
             $view->category = $category;
             $view->title = $category->name;

@@ -16,7 +16,7 @@ class pmModel extends dataBaseModel
             `%p%pm`.`receiver` = :1 
         LIMIT :2, :3',
         
-        'getMessage'        => 'SELECT 
+        'getMessage'        => array('SELECT 
             `%p%pm`.*,
             `%p%users`.`login`             AS `authorLogin`,
             `%p%users_groups`.`suffix`     AS `suffix`,
@@ -26,7 +26,7 @@ class pmModel extends dataBaseModel
         WHERE 
             `%p%users`.`id` = `%p%pm`.`author` AND
             `%p%users_groups`.`id` = `%p%users`.`main_group` AND 
-            `%p%pm`.`id` = :1',
+            `%p%pm`.`id` = :1', true),
         
         'send'                => 'INSERT INTO `%p%pm`(`title`, `content`, `author`, `receiver`, `date`) VALUES(:1, :2, :3, :4, :5)'
     );
