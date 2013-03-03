@@ -15,7 +15,7 @@
     <BBcode tag="img"	closeTag="true"	    html='&lt;img src="{url}" alt="{text}" class="align-{align}" style="width: {width};"/&gt;'  params="url, align, width"/>
     <BBcode tag="img"	closeTag="false"    html='&lt;img src="{url}" class="align-{align}" style="width: {width}"/&gt;' params="url, align, width"/>
     <BBcode tag="img"	closeTag="true"	    html='&lt;img src="{param}" alt="{text}" /&gt;' param="true"/>
-    <BBcode tag="font"	closeTag="true"	    html='&lt;span style="font-family: {param}"&gt;{text}&lt;/span&gt;' param="true"/>
+    <BBcode tag="font"  closeTag="true"	    html='&lt;span style="font-family: {param}"&gt;{text}&lt;/span&gt;' param="true"/>
     <BBcode tag="center" closeTag="true"    html='&lt;div class="centered"&gt;{text}&lt;/div&gt;'/>
     <BBcode tag="list"	closeTag="true"	    html='&lt;ul&gt;{text}&lt;/ul&gt;'/>
     <BBcode tag="numlist" closeTag="true"   html='&lt;ol&gt;{text}&lt;/ol&gt;'/>
@@ -36,7 +36,7 @@
     <BBcode tag="h6"    closeTag="true"     html='&lt;h6&gt;{text}&lt;/h6&gt;' />
     <BBcode tag="quote"	closeTag="true"	    html='&lt;blockquote&gt;{text}&lt;div class="author"&gt;{param}&lt;/div&gt;&lt;/blockquote&gt;' param="true"/>
     <BBcode tag="quote"	closeTag="true"	    html='&lt;blockquote&gt;{text}&lt;/blockquote&gt;'/>
-    <BBcode tag="align" closeTag="true"     html='&lt;p align="{param}"&gt;{text}&lt;/p&gt;' param="true"/>
+    <BBcode tag="align" closeTag="true"     html='&lt;span style="float: {param};"&gt;{text}&lt;/span&gt;' param="true"/>
     <BBcode tag="table" closeTag="true"     html='&lt;table class="data-table"&gt;{text}&lt;/table&gt;' />
     <BBcode tag="table" closeTag="true"     html='&lt;table class="data-table" style="width: {param}"&gt;{text}&lt;/table&gt;' param="true"/>
     <BBcode tag="table" closeTag="true"     html='&lt;table class="data-table align-{align}" style="width: {width}"&gt;{text}&lt;/table&gt;' params="align, width"/>
@@ -46,4 +46,5 @@
     <BBcode tag="header" closeTag="true"    html='&lt;th width="{param}"&gt;{text}&lt;/th&gt;' param="true"/>
     <BBcode tag="sub"   closeTag="true"     html='&lt;sub&gt;{text}&lt;/sub&gt;' />
     <BBcode tag="sup"   closeTag="true"     html='&lt;sup&gt;{text}&lt;/sup&gt;' />
+    <BBcode tag="clear" closeTag="false"    html='&lt;hr style="visibility: hidden; clear: both; margin: 0; height: 0; padding 0;"/&gt;' />
 </list>

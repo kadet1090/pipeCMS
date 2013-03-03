@@ -8,7 +8,7 @@ class pageController extends controller
         {
             $pageModel = new pageModel();
             $page = $pageModel->getByPublicID($pageName);
-
+            //var_dump($page);
             if($page)
             {
                 view::addTitleChunk($page->title);

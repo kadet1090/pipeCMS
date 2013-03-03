@@ -120,7 +120,7 @@ class BBcode
         foreach(self::$_BBcodeExp['callback'] as $no => $exp) 
             $BBcodeString = preg_replace_callback($exp, self::$_exp["callback"][$no], $BBcodeString);
         
-        $parsed = str_replace('\\]', ']', $BBcodeString);
+        $parsed = str_replace(array('\\]', '&quot;'), array(']', '"'), $BBcodeString);
         cache::set('BBcode', $md5, $parsed);
         
         return $parsed;
