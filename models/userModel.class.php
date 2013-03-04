@@ -5,7 +5,7 @@ class userModel extends dataBaseModel
         'getPassword'   => array('SELECT `password`, `id`, `banned` FROM `%p%users` WHERE `login` = :1', true),
         'userExist'     => 'SELECT `login` FROM `%p%users` WHERE `login` = :1',
         'userExistID'   => 'SELECT `login` FROM `%p%users` WHERE `id` = :1',
-        'mailUsed'      => 'SELECT `id` FROM `%p%users` WHERE `mail` = :1',
+        'mailUsed'      => array('SELECT `id` FROM `%p%users` WHERE `mail` = :1', true),
         'register'      => 'INSERT INTO `%p%users`(`login`, `password`, `mail`, `fullname`, `sex`, `place`, `desc`, `twitter`, `xmpp`, `gg`, `url`, `groups`, `register_date`, `br_date`, `additional_fields`) VALUES(:1, :2, :3, :4, :5, :6, :7, :8, :9, :10, :11, :12, :13, :14, :15)',
         'delete'        => 'DELETE FROM `%p%users` WHERE `id` = :1',
         'ban'           => 'UPDATE `%p%users` SET `banned` = \'1\' WHERE `id` = :1', 

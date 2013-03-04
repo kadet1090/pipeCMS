@@ -12,12 +12,12 @@
  */
 class pmController extends controller
 {
-    public function index()
+    public function index($params = array(), $data = array())
     {
         return $this->page(1);
     }
     
-    public function page($page = null)
+    public function page($params = array(), $data = array())
     {
         view::addTitleChunk(language::get("privateMessages"));
         view::$robots = "nofollow";
@@ -25,7 +25,7 @@ class pmController extends controller
         {
             if(self::$user->isLogged)
             {
-                if(empty($page)) $page = self::$router->page;
+                if(empty($page)) $page = $params['page'];
                 if($page > 1)
                 {
                    view::addTitleChunk(language::get('page'));
@@ -53,7 +53,7 @@ class pmController extends controller
             throw new messageException(language::get("error"), language::get("errWrongUrl"));
     }
     
-    public function show()
+    public function show($params = array(), $data = array())
     {
         view::$robots = "nofollow";
         if(self::$router->match("pm"))
@@ -61,7 +61,7 @@ class pmController extends controller
             if(self::$user->isLogged)
             {
                 $model = new pmModel();
-                $message = $model->getMessage(self::$router->id);
+                $message = $model->getMessage($params['id']);
                 if($message)
                 {
                     if($message->receiver == self::$user->id)
@@ -84,32 +84,32 @@ class pmController extends controller
     }
     
     
-    public function compose()
+    public function compose($params = array(), $data = array())
     {
         if(self::$user->isLogged)
         {
-            if(self::$router->post("submit") == null)
+            if(!isset($data["submit"]))
             {
                 $view = new HTMLview("pm/compose.tpl");
                 if(self::$router->match("profile"))
                 {
                     $model = new userModel();
-                    $view->user = $model->getUser(self::$router->id);
+                    $view->user = $model->getUser($params['id']);
                 }
                 return $view;
             }
             else
             {
                 $model = new userModel();
-                if(self::$router->post('title') == null)            throw new messageException(language::get('error'), language::get('errTitleNotSet'));
-                if(self::$router->post('receiver') == null)            throw new messageException(language::get('error'), language::get('errReceiverNotSet'));
-                if(self::$router->post('content') == null)            throw new messageException(language::get('error'), language::get('errContentNotSet'));
-                if(!preg_match("#[1-9][0-9]*#", self::$router->post('receiver'))) throw new messageException(language::get('error'), language::get('errBadReceiverID'));
-                if(self::$user->id == (int)self::$router->post('receiver')) throw new messageException(language::get('error'), language::get('errMsgToYourself'));
-                if(!$model->userExistID(self::$router->post('receiver'))) throw new messageException(language::get('error'), language::get('errUserNotExist'));
+                if(!isset($data['title']))            throw new messageException(language::get('error'), language::get('errTitleNotSet'));
+                if(!isset($data['receiver']))            throw new messageException(language::get('error'), language::get('errReceiverNotSet'));
+                if(!isset($data['content']))            throw new messageException(language::get('error'), language::get('errContentNotSet'));
+                if(!preg_match("#[1-9][0-9]*#", $data['receiver'])) throw new messageException(language::get('error'), language::get('errBadReceiverID'));
+                if(self::$user->id == (int)$data['receiver']) throw new messageException(language::get('error'), language::get('errMsgToYourself'));
+                if(!$model->userExistID($data['receiver'])) throw new messageException(language::get('error'), language::get('errUserNotExist'));
                 
                 $model = new pmModel();
-                $model->send(self::$router->post('title'), self::$router->post('content'), self::$user->id, (int)self::$router->post('receiver'), time());
+                $model->send($data['title'], $data['content'], self::$user->id, (int)$data['receiver'], time());
                 
                 throw new messageException(language::get("success"), language::get("pwSendSuccess"));
             }
@@ -118,7 +118,7 @@ class pmController extends controller
             throw new messageException(language::get("error"), language::get("errNotLoggedIn"));
     }
     
-    public function reply()
+    public function reply($params = array(), $data = array())
     {
         if(self::$user->isLogged)
         {
@@ -126,12 +126,12 @@ class pmController extends controller
             {
                 $model = new pmModel();
                 $userModel = new userModel();
-                $message = $model->getMessage(self::$router->id);
+                $message = $model->getMessage($params['id']);
                 
                 if($message)
                 {
                     $view = new HTMLview("pm/compose.tpl");
-                    $view->user = $userModel->getUser(self::$router->id);
+                    $view->user = $userModel->getUser($params['id']);
                     $view->title = "RE: ".$message->title;
                     return $view;
                 }

@@ -20,23 +20,23 @@ class captha
     
     private function generateImage()
     {        
-        $chars                = "abcdefghijklmnopqrstuvwxyz123456789";
-        $str                = "";
+        $chars           = "abcdefghijklmnopqrstuvwxyz123456789";
+        $str             = "";
         for($h = 0, $length = (strlen($chars) - 1); $h < 8; ++$h)
             $str .= substr($chars, mt_rand(0, $length), 1);
         
-        $cfg                = array();
-        $cfg["width"]        = 250;
-        $cfg["height"]        = 80;
+        $cfg             = array();
+        $cfg["width"]    = 250;
+        $cfg["height"]   = 80;
         
-        $image                = imagecreate($cfg["width"], $cfg["height"]);
+        $image           = imagecreate($cfg["width"], $cfg["height"]);
         
-        $cfg["size"]        = 28;
-        $cfg["font"]        = "./data/Tr2n.ttf";
-        $cfg["bg"]        = imagecolorallocatealpha($image, 221, 221, 221, 127);
-        $cfg["color"]        = imagecolorallocate($image, 0, 0, 0);
+        $cfg["size"]     = 28;
+        $cfg["font"]     = "./data/Tr2n.ttf";
+        $cfg["bg"]       = imagecolorallocatealpha($image, 221, 221, 221, 127);
+        $cfg["color"]    = imagecolorallocate($image, 0, 0, 0);
         
-        $cfg["box"]        = imagettfbbox($cfg["size"], 0, $cfg["font"], $str);
+        $cfg["box"]      = imagettfbbox($cfg["size"], 0, $cfg["font"], $str);
         $cfg["x"]        = ($cfg["width"] - ($cfg["box"][4] - $cfg["box"][0])) / 2;
         $cfg["y"]        = ($cfg["height"] - ($cfg["box"][5] - $cfg["box"][1])) / 2;
         

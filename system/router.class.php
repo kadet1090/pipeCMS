@@ -159,6 +159,9 @@ class router implements singleton, routerInterface
 
     public function get($name = NULL)
     {
+        if($name == NULL)
+            return array_merge($_GET, $this->_params);
+        
         return (isset($_GET[$name]) ? trim(addslashes($_GET[$name])) : null);
     }
 

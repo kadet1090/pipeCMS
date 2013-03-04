@@ -1,23 +1,23 @@
 <?php
 class userController extends controller
 {
-    public function login()
+    public function login($params = array(), $data = array())
     {
         view::$robots = "none";
         if(!self::$user->isLogged)
         {
-            if(self::$router->post('submit') != null)
+            if(isset($data['submit']))
             {
                 $model = new userModel();
 
-                if(self::$router->post('login') == '') throw new messageException(language::get('error'), language::get('errUsernameNotSet'), array('url' => array('user', 'login')));
-                if(self::$router->post('password') == '') throw new messageException(language::get('error'), language::get('errPassNotSet'), array('url' => array('user', 'login')));
+                if($data['login'] == '') throw new messageException(language::get('error'), language::get('errUsernameNotSet'), array('url' => array('user', 'login')));
+                if($data['password'] == '') throw new messageException(language::get('error'), language::get('errPassNotSet'), array('url' => array('user', 'login')));
 
 
-                $user = $model->getPassword(self::$router->post('login'));
+                $user = $model->getPassword($data['login']);
                 if($user)
                 {
-                    if(pass(self::$router->post('password')) == $user->password)
+                    if(pass($data['password']) == $user->password)
                     {
                         if(!$user->banned)
                         {
@@ -45,7 +45,7 @@ class userController extends controller
             throw new messageException(language::get('error'), language::get('errAlreadyLoggedIn'), array('url' => array('index', 'index')));
     }
     
-    public function logout()
+    public function logout($params = array(), $data = array())
     {
         view::$robots = "none";
         if(self::$user->isLogged)
@@ -58,44 +58,44 @@ class userController extends controller
         }
     }
     
-    public function register()
+    public function register($params = array(), $data = array())
     {
         view::$robots = "all";
         if(!self::$user->isLogged)
         {
             $captha = new captha();
             $model = new userModel();
-            if(self::$router->post('submit') != null)
+            if(isset($data['submit']))
             {
-                if(self::$router->post('login') == '')  throw new messageException(language::get('error'), language::get('errUsernameNotSet'),  array('url' => array('user', 'register')));
-                if(self::$router->post('mail') == '')   throw new messageException(language::get('error'), language::get('errMailNotSet'),            array('url' => array('user', 'register')));
-                //if(self::$router->post('fullname') == '') throw new messageException(language::get('error'), language::get('errFullnameNotSet'),  array('url' => array('user', 'register')));
-                if(self::$router->post('password') == '') throw new messageException(language::get('error'), language::get('errPasswordNotSet'),  array('url' => array('user', 'register')));
-                if(self::$router->post('repassword') == '') throw new messageException(language::get('error'), language::get('errRepasswordNotSet'),array('url' => array('user', 'register')));
-                //if(self::$router->post('sex') == '') throw new messageException(language::get('error'), language::get('errSexNotSet'),            array('url' => array('user', 'register')));
+                if($data['login'] == '')  throw new messageException(language::get('error'), language::get('errUsernameNotSet'),  array('url' => array('user', 'register')));
+                if($data['mail'] == '')   throw new messageException(language::get('error'), language::get('errMailNotSet'),            array('url' => array('user', 'register')));
+                //if($data['fullname'] == '') throw new messageException(language::get('error'), language::get('errFullnameNotSet'),  array('url' => array('user', 'register')));
+                if($data['password'] == '') throw new messageException(language::get('error'), language::get('errPasswordNotSet'),  array('url' => array('user', 'register')));
+                if($data['repassword'] == '') throw new messageException(language::get('error'), language::get('errRepasswordNotSet'),array('url' => array('user', 'register')));
+                //if($data['sex'] == '') throw new messageException(language::get('error'), language::get('errSexNotSet'),            array('url' => array('user', 'register')));
                 
-                if(self::$router->post('day') == ''    || self::$router->post('day') > 31 || self::$router->post('day') < 1)            throw new messageException(language::get('error'), language::get('errWrongBirthDay'),  array('url' => array('user', 'register')));
-                if(self::$router->post('month') == ''  || self::$router->post('month') > 12 || self::$router->post('month') < 1)  throw new messageException(language::get('error'), language::get('errWrongBirthMonth'),array('url' => array('user', 'register')));
-                if(self::$router->post('year') == ''   || self::$router->post('year') > date('Y')-9 || self::$router->post('year') < date('Y')-99) throw new messageException(language::get('error'), language::get('errWrongBirthYear'), array('url' => array('user', 'register')));
-                if(!preg_match('/^[a-zA-Z0-9\_\-]*$/s', self::$router->post('login'))) throw new messageException(language::get('error'), language::get('errBadLogin'),  array('url' => array('user', 'register')));
-                if(!preg_match('/^[a-zA-Z0-9\_\-\.]*@[a-z\_\-]*\.[a-z]{2,3}/', self::$router->post('mail'))) throw new messageException(language::get('error'), language::get('errWrongMail'), array('url' => array('user', 'register')));
-                if(self::$router->post('repassword') != self::$router->post('password')) throw new messageException(language::get('error'), language::get('errPassNotMatch'), array('url' => array('user', 'register')));
+                if($data['day'] == ''    || $data['day'] > 31 || $data['day'] < 1)            throw new messageException(language::get('error'), language::get('errWrongBirthDay'),  array('url' => array('user', 'register')));
+                if($data['month'] == ''  || $data['month'] > 12 || $data['month'] < 1)  throw new messageException(language::get('error'), language::get('errWrongBirthMonth'),array('url' => array('user', 'register')));
+                if($data['year'] == ''   || $data['year'] > date('Y')-9 || $data['year'] < date('Y')-99) throw new messageException(language::get('error'), language::get('errWrongBirthYear'), array('url' => array('user', 'register')));
+                if(!preg_match('/^[a-zA-Z0-9\_\-]*$/s', $data['login'])) throw new messageException(language::get('error'), language::get('errBadLogin'),  array('url' => array('user', 'register')));
+                if(!preg_match('/^[a-zA-Z0-9\_\-\.]*@[a-z\_\-]*\.[a-z]{2,3}/', $data['mail'])) throw new messageException(language::get('error'), language::get('errWrongMail'), array('url' => array('user', 'register')));
+                if($data['repassword'] != $data['password']) throw new messageException(language::get('error'), language::get('errPassNotMatch'), array('url' => array('user', 'register')));
                 
-                if($model->userExist(self::$router->post('login'))) throw new messageException(language::get('error'), language::get('errUserAlreadyExist'), array('url' => array('user', 'register')));
-                if($model->mailUsed(self::$router->post('mail'))) throw new messageException(language::get('error'), language::get('errUsedMail'), array('url' => array('user', 'register')));
+                if($model->userExist($data['login'])) throw new messageException(language::get('error'), language::get('errUserAlreadyExist'), array('url' => array('user', 'register')));
+                if($model->mailUsed($data['mail'])) throw new messageException(language::get('error'), language::get('errUsedMail'), array('url' => array('user', 'register')));
                 
-                if(!$captha->check(self::$router->post("captha"))) throw new messageException(language::get('error'), language::get('capthaNotValid'), array('url' => array('user', 'register')));
+                if(!$captha->check($data["captha"])) throw new messageException(language::get('error'), language::get('capthaNotValid'), array('url' => array('user', 'register')));
                 
                 /*login, password, mail, fullname, sex, place, desc, twitter, xmpp, gg, url, groups, register_date, br_date, additional_fields*/
                 $model->register(
-                        self::$router->post('login')      , pass(self::$router->post('password')),
-                        self::$router->post('mail')       , self::$router->post('fullname'),
-                        self::$router->post('sex')        , self::$router->post('place'),
-                        self::$router->post('desc')       , self::$router->post('twitter'),
-                        self::$router->post('xmpp')       , self::$router->post('gg'),
-                        self::$router->post('url')        , '|'.self::$config->defaultGroupID.'|',
-                        date("Y-m-d")                     , self::$router->post('year').'-'.self::$router->post('month').'-'.self::$router->post('day'),
-                        serialize(array_grep(self::$router->post(), '/^add_(.*)$/si'))
+                        $data['login']      , pass($data['password']),
+                        $data['mail']       , $data['fullname'],
+                        $data['sex']        , $data['place'],
+                        $data['desc']       , $data['twitter'],
+                        $data['xmpp']       , $data['gg'],
+                        $data['url']        , '|'.self::$config->defaultGroupID.'|',
+                        date("Y-m-d")                     , $data['year'].'-'.$data['month'].'-'.$data['day'],
+                        serialize(array_grep($data, '/^add_(.*)$/si'))
                         );
                 
                 throw new messageException(language::get('success'), language::get('registerSuccess'), array('url' => array('index', 'index')));
@@ -112,7 +112,7 @@ class userController extends controller
             throw new messageException(language::get('error'), language::get('errAlreadyLoggedIn'), array('url' => array('user', 'register')));
     }
     
-    public function profile()
+    public function profile($params = array(), $data = array())
     {
         view::$robots = "none";
         if(self::$user->hasPermission('user/profile'))
@@ -122,7 +122,7 @@ class userController extends controller
             $view->fields = $userModel->getAdditionalFields();
             if(self::$router->match('profile'))
             {
-                $user = $userModel->getUserData(self::$router->id);
+                $user = $userModel->getUserData($params['id']);
                 if(!$user) throw new messageException(language::get('error'), language::get('errUserNotExists'));
                 $view->user = $user;
                 return $view;
@@ -135,7 +135,7 @@ class userController extends controller
             throw new messageException(language::get('error'), language::get('errNoPermission'), array('url' => array('index', 'index')));
     }
     
-    public function delete()
+    public function delete($params = array(), $data = array())
     {
         view::$robots = "none";
         if(self::$router->match('profile'))
@@ -143,7 +143,7 @@ class userController extends controller
             if(self::$user->hasPermission("user/delete"))
             {
                 $userModel = new userModel();
-                $user = $userModel->delete(self::$router->id);
+                $user = $userModel->delete($params['id']);
                 if(!$user) throw new messageException(language::get('success'), language::get('userDeleted'));
             }
             else
@@ -152,7 +152,7 @@ class userController extends controller
         else throw new messageException(language::get('error'), language::get('errWrongURL'));
     }
     
-    public function ban()
+    public function ban($params = array(), $data = array())
     {
         view::$robots = "none";
         if(self::$router->match('profile'))
@@ -160,8 +160,8 @@ class userController extends controller
             if(self::$user->hasPermission("user/ban"))
             {
                 $userModel = new userModel();
-                $user = $userModel->ban(self::$router->id);
-                $userModel->updateLastActivity(0, self::$router->id);
+                $user = $userModel->ban($params['id']);
+                $userModel->updateLastActivity(0, $params['id']);
                 if(!$user) throw new messageException(language::get('success'), language::get('userBanned'));
             }
             else
@@ -170,7 +170,7 @@ class userController extends controller
         else throw new messageException(language::get('error'), language::get('errWrongURL'));
     }
     
-    public function unban()
+    public function unban($params = array(), $data = array())
     {
         view::$robots = "none";
         if(self::$router->match('profile'))
@@ -178,7 +178,7 @@ class userController extends controller
             if(self::$user->hasPermission("user/unban"))
             {
                 $userModel = new userModel();
-                $user = $userModel->unban(self::$router->id);
+                $user = $userModel->unban($params['id']);
                 if(!$user) throw new messageException(language::get('success'), language::get('userUnbanned'));
             }
             else
@@ -187,48 +187,48 @@ class userController extends controller
         else throw new messageException(language::get('error'), language::get('errWrongURL'));
     }
     
-    public function edit()
+    public function edit($params = array(), $data = array())
     {
         view::$robots = "none";
         if(self::$user->isLogged)
         {
-            if(self::$router->post('submit'))
+            if(isset($data['submit']))
             {
                 $model = new userModel();
                 
-                if(self::$router->post('mail') == '')        throw new messageException(language::get('error'), language::get('errMailNotSet'));
+                if($data['mail'] == '')        throw new messageException(language::get('error'), language::get('errMailNotSet'));
                 
-                if(self::$router->post('day') != ''   && self::$router->post('day') > 31 || self::$router->post('day') < 1) throw new messageException(language::get('error'), language::get('errWrongBirthDay'));
-                if(self::$router->post('month') != '' && self::$router->post('month') > 12 || self::$router->post('month') < 1) throw new messageException(language::get('error'), language::get('errWrongBirthMonth'));
-                if(self::$router->post('year') != ''  && self::$router->post('year') > date('Y')-9 || self::$router->post('year') < date('Y')-99)throw new messageException(language::get('error'), language::get('errWrongBirthYear'));
+                if($data['day'] != ''   && $data['day'] > 31 || $data['day'] < 1) throw new messageException(language::get('error'), language::get('errWrongBirthDay'));
+                if($data['month'] != '' && $data['month'] > 12 || $data['month'] < 1) throw new messageException(language::get('error'), language::get('errWrongBirthMonth'));
+                if($data['year'] != ''  && $data['year'] > date('Y')-9 || $data['year'] < date('Y')-99)throw new messageException(language::get('error'), language::get('errWrongBirthYear'));
                 
-                if(!isMail(self::$router->post('mail'))) throw new messageException(language::get('error'), language::get('errWrongMail'));
-                $mail = $model->mailUsed(self::$router->post('mail'));
-                if($mail && $mail->id != self::$router->id)        throw new messageException(language::get('error'), language::get('errUsedMail'));
+                if(!isMail($data['mail'])) throw new messageException(language::get('error'), language::get('errWrongMail'));
+                $mail = $model->mailUsed($data['mail']);
+                if($mail && $mail->id != $params['id'])        throw new messageException(language::get('error'), language::get('errUsedMail'));
                             
-                $this->_uploadAvatar(self::$router->login);
+                $this->_uploadAvatar($params['login']);
                 
                 /*login, mail, fullname, sex, place, desc, twitter, xmpp, gg, url, groups, register_date, br_date, additional_fields*/
-                $model->edit(self::$router->id,
-                    self::$router->post('mail')        , self::$router->post('fullname'),
-                    self::$router->post('sex')         , self::$router->post('place'),
-                    self::$router->post('desc')        , self::$router->post('twitter'),
-                    self::$router->post('xmpp')        , self::$router->post('gg'),
-                    self::$router->post('url')         , date("Y-m-d"), 
-                    self::$router->post('year').'-'.self::$router->post('month').'-'.self::$router->post('day'),
-                    serialize(array_grep(self::$router->post(), '/^add_(.*)$/si'))
+                $model->edit($params['id'],
+                    $data['mail']        , $data['fullname'],
+                    $data['sex']         , $data['place'],
+                    $data['desc']        , $data['twitter'],
+                    $data['xmpp']        , $data['gg'],
+                    $data['url']         , date("Y-m-d"), 
+                    $data['year'].'-'.$data['month'].'-'.$data['day'],
+                    serialize(array_grep($data, '/^add_(.*)$/si'))
                 );
                 
-                throw new messageException(language::get('success'), language::get('userEditSuccess'), array('url' => array('user', 'profile', self::$router->login, self::$router->id)));
+                throw new messageException(language::get('success'), language::get('userEditSuccess'), array('url' => array('user', 'profile', $params['login'], $params['id'])));
             }
             else
             {
                 $userModel = new userModel();
-                if(self::$router->match('profile') && self::$router->id != self::$user->id)
+                if(self::$router->match('profile') && $params['id'] != self::$user->id)
                 {
                     if(self::$user->hasPermission("user/edit"))
                     {
-                        $user = $userModel->getUserData(self::$router->id);
+                        $user = $userModel->getUserData($params['id']);
                         if(!$user) throw new messageException(language::get('error'), language::get('errUserNotExists'));
 
                         $view = new HTMLview( 'user/profile-edit.tpl');
@@ -252,13 +252,13 @@ class userController extends controller
             throw new messageException(language::get('error'), language::get('errNotLoggedIn'), array('url' => array('user', 'login')));
     }
     
-    public function addGroup()
+    public function addGroup($params = array(), $data = array())
     {
         view::$robots = "none";
         if(self::$user->isLogged)
         {
             $model = new userModel();
-            $group = $model->getGroup(self::$router->id);
+            $group = $model->getGroup($params['id']);
             
             if(self::$router->match("category"))
             {
@@ -266,7 +266,7 @@ class userController extends controller
                 {
                     $user = $model->getUser(self::$user->id);
                     $groups = explode(",", $user->groups);
-                    $groups[] = '|'.self::$router->id.'|';
+                    $groups[] = '|'.$params['id'].'|';
                     $model->setGroups(implode(",", array_unique($groups)), self::$user->id);
                 }
             }
@@ -274,10 +274,10 @@ class userController extends controller
             {
                 if(self::$user->hasPermission("user/addGroup") || self::$user->id == $group->admin)
                 {
-                    $user = $model->getUser(self::$router->id);
+                    $user = $model->getUser($params['id']);
                     $groups = explode(",", $user->groups);
-                    $groups[] = '|'.self::$router->id.'|';
-                    $model->setGroups(implode(",", array_unique($groups)), self::$router->id);
+                    $groups[] = '|'.$params['id'].'|';
+                    $model->setGroups(implode(",", array_unique($groups)), $params['id']);
                 }
                 else
                     throw new messageException(language::get('error'), language::get('errNoPermission'));
@@ -289,17 +289,17 @@ class userController extends controller
             throw new messageException(language::get('error'), language::get('errNotLoggedIn'), array('url' => array('user', 'login')));
     }
     
-    public function removeGroup()
+    public function removeGroup($params = array(), $data = array())
     {
         view::$robots = "none";
         if(self::$user->isLogged)
         {
             $model = new userModel();
             
-            if(self::$router->id == self::$config->defaultGroupID)
+            if($params['id'] == self::$config->defaultGroupID)
                 throw new messageException(language::get('error'), language::get('errCantRemoveDefaultGroup'));
             
-            $group = $model->getGroup(self::$router->id);
+            $group = $model->getGroup($params['id']);
             
             if(self::$router->match("category"))
             {
@@ -308,7 +308,7 @@ class userController extends controller
             elseif(self::$router->match("addGroup"))
             {
                 if(self::$user->hasPermission("user/removeGroup") || self::$user->id == $group->admin)
-                    $user = $model->getUser(self::$router->userId);
+                    $user = $model->getUser($params['userId']);
                 else
                     throw new messageException(language::get('error'), language::get('errNoPermission'));
             }
@@ -316,14 +316,14 @@ class userController extends controller
                 throw new messageException(language::get('error'), language::get('errWrongUrl'));
             
             $groups = explode(",", $user->groups);
-            unset($groups[array_search('|'.self::$router->id.'|', $groups)]);
+            unset($groups[array_search('|'.$params['id'].'|', $groups)]);
             $model->setGroups(implode(",", array_unique($groups)), $user->id);
         }
         else
             throw new messageException(language::get('error'), language::get('errNotLoggedIn'), array('url' => array('user', 'login')));
     }
     
-    public function setMainGroup()
+    public function setMainGroup($params = array(), $data = array())
     {
         view::$robots = "none";
         if(self::$user->isLogged)
@@ -334,7 +334,7 @@ class userController extends controller
             {
                 if(self::$user->hasPermission("user/mainGroupChange"))
                 {
-                    $user = $model->setMainGroup(self::$router->id, self::$router->userId);
+                    $user = $model->setMainGroup($params['id'], $params['userId']);
                     throw new messageException(language::get('success'), language::get('mainGroupChanged'));
                 }
                 else
@@ -347,8 +347,8 @@ class userController extends controller
             throw new messageException(language::get('error'), language::get('errNotLoggedIn'), array('url' => array('user', 'login')));
     }
     
-    public function joinGroup()     { return $this->addGroup(); }
-    public function leaveGroup()    { return $this->removeGroup(); }
+    public function joinGroup($params = array(), $data = array())     { return $this->addGroup($params = array(), $data = array()); }
+    public function leaveGroup($params = array(), $data = array())    { return $this->removeGroup($params = array(), $data = array()); }
     
     private function _uploadAvatar($username)
     {
@@ -371,14 +371,14 @@ class userController extends controller
             if(imagesx($image) > 100 || imagesy($image) > 100) throw new messageException(language::get('error'), language::get('errTooBigImg'));
 
             imagesavealpha($image, true);
-            imagepng($image, 'usersData/avatars/'.self::$router->login.'.png');
+            imagepng($image, 'usersData/avatars/'.$username.'.png');
         }
         catch (frameworkException $e)
         {
             switch($e->getCode())
             {
                 case uploader::UPLOAD_ERROR:
-                    $msg = language::get('errUpload');
+                    return false;
                     break;
                 case uploader::WRONG_TYPE:
                     $msg = language::get('errWrongType');

@@ -75,7 +75,7 @@ class frontController extends controller {
     protected function _initLanguage()
     {
         language::$langName = 'pl';
-        language::$langsDir = 'languages';
+        language::$langsDir = '../languages';
         language::load();
     }
     

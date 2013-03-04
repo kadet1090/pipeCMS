@@ -4,7 +4,7 @@ class helperController extends controller
     public function userSelect()
     {
         controller::$view = new HTMLview("helpers/pattern.tpl");
-        if(self::$router->page != null) $page = self::$router->page;        else $page = 1;
+        if($params['page'] != null) $page = $params['page'];        else $page = 1;
         if($page > 1)
         {
             view::addTitleChunk(language::get('page'));

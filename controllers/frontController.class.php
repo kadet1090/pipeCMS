@@ -49,7 +49,7 @@ class frontController extends controller {
         {
             try {
                 $controller         = new $controllerName();
-                $pattern->page      = $controller->$action(); 
+                $pattern->page      = $controller->$action(self::$router->get(), self::$router->post()); 
             } catch(messageException $e) {
                 $message            = new HTMLview('message.tpl');
                 $message->message   = $e;
@@ -71,7 +71,14 @@ class frontController extends controller {
     
     protected function _initLanguage()
     {
-        language::$langName = 'pl';
+        language::$langName = isset($_COOKIE['lang']) ? $_COOKIE['lang'] : self::$config->defaultLanguage;
+        
+        if(isset($_GET['lang']))
+        {
+            setcookie('lang', $_GET['lang']);
+            language::$langName = $_GET['lang'];
+        }
+        
         language::$langsDir = 'languages';
         language::load();
     }
@@ -90,12 +97,12 @@ class frontController extends controller {
         self::$router->loadFromConfig(new config(new xml(self::$configDir.'router.config.xml')));
         
         # get url parameter from GET
-        $uRI = self::$router->get('q') != null ? 
-                self::$router->get('q') : 
-                array('index', 'index');
+        $URI = self::$router->get('q') != null ? 
+               self::$router->get('q') : 
+               array('index', 'index');
         
         # set URI and decode it
-        self::$router->setURI($uRI);
+        self::$router->setURI($URI);
         self::$router->decodeURI();
     }
     

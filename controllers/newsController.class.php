@@ -1,25 +1,23 @@
 <?php
 class newsController extends controller
 {
-    public function page($page = null)
+    public function page($params = array(), $data = array())
     {
         view::addTitleChunk(language::get('news'));
         view::$robots = "all";
         
         $newsModel = new newsModel(); // tworzenie modelu danych
         
-        if(self::$router->match('page') || $page != null)
+        if(isset($params['page']))
         {
-            if(empty($page)) $page = self::$router->page;
-            
-            if($page > 1)
+            if($params['page'] > 1)
             {
                 view::addTitleChunk(language::get('page'));
-                view::addTitleChunk($page);
+                view::addTitleChunk($params['page']);
             }
             
             $view = new HTMLview('news/all.tpl'); //tworzenie bufora treści
-            $news = $newsModel->getLimited(($page - 1)  * (int)self::$config->newsPerPage, (int)self::$config->newsPerPage, language::getLang());
+            $news = $newsModel->getLimited(($params['page'] - 1)  * (int)self::$config->newsPerPage, (int)self::$config->newsPerPage, language::getLang());
             if(empty($news))        throw new messageException(language::get('info'), language::get('noNews'), array('text' => ''));
 
             $newsCount = $newsModel->getNewsCount();
@@ -27,12 +25,12 @@ class newsController extends controller
             $view->newsCount = $newsCount;
             
             $pageCount = ceil($newsCount / self::$config->newsPerPage);
-            $sp = ($page - 3 > 0 ? $page - 3 : 1);
+            $sp = ($params['page'] - 3 > 0 ? $params['page'] - 3 : 1);
             $ep = ceil($sp + ($pageCount < 7 ? $pageCount : 7));
             
             
             $view->startPage = ($sp > 0 ? $sp : 1);
-            $view->currentPage = $page;
+            $view->currentPage = $params['page'];
             $view->endPage = $ep;
             
             return $view; // zwracanie bufora treści do strony
@@ -40,12 +38,12 @@ class newsController extends controller
         else throw new messageException(language::get('error'), language::get('errWrongURL'));
     }
     
-    public function index()
+    public function index($params = array(), $data = array())
     {
-            return $this->page(1);
+            return $this->page(array('page' => 1));
     }
     
-    public function show()
+    public function show($params = array(), $data = array())
     {        
         view::addTitleChunk(language::get('news'));
         view::$robots = "all";
@@ -53,13 +51,13 @@ class newsController extends controller
         if(!self::$router->match('news'))  throw new messageException(language::get('error'), language::get('errWrongURL'));
         
         $newsModel = new newsModel();
-        $news = $newsModel->get(self::$router->id);
-        $newsModel->increaseViews(self::$router->id);
+        $news = $newsModel->get($params['id']);
+        $newsModel->increaseViews($params['id']);
         
         if($news)
         {
             view::addTitleChunk($news->title);
-            $view = new HTMLview( 'news/news.tpl');
+            $view = new HTMLview('news/news.tpl');
             $news->content = BBcode::parse($news->content);
             
             $view->news = $news;
@@ -69,7 +67,7 @@ class newsController extends controller
             throw new messageException(language::get('error'), language::get('errNewsNotExist'));
     }
     
-    public function add()
+    public function add($params = array(), $data = array())
     {
         view::addTitleChunk(language::get('news'));
         view::addTitleChunk(language::get('add'));
@@ -80,12 +78,12 @@ class newsController extends controller
         {
             if(self::$user->hasPermission('news/add'))
             {
-                if(self::$router->post('preview') != null)
+                if(isset($data['preview']))
                 {
                     return $this->_preview();
                     
                 }
-                elseif(self::$router->post('submit') == null)
+                elseif(!isset($data['submit']))
                 {
                     $categories = $newsModel->getCategories();
                     $view = new HTMLview( 'news/add-form.tpl');
@@ -97,13 +95,13 @@ class newsController extends controller
                 }
                 else
                 {
-                    $_SESSION['backup'] = serialize(self::$router->post());
+                    $_SESSION['backup'] = serialize($data);
                     
-                    if(self::$router->post('title') == null)            throw new messageException(language::get('error'), language::get('errTitleNotSet'));
-                    if(self::$router->post('content') == null)            throw new messageException(language::get('error'), language::get('errContentNotSet'));
-                    if(self::$router->post('category') == null)    throw new messageException(language::get('error'), language::get('errCategoryNotSet'));
+                    if(!isset($data['title']))       throw new messageException(language::get('error'), language::get('errTitleNotSet'));
+                    if(!isset($data['content']))     throw new messageException(language::get('error'), language::get('errContentNotSet'));
+                    if(!isset($data['category']))    throw new messageException(language::get('error'), language::get('errCategoryNotSet'));
                     
-                    $newsModel->add(htmlspecialchars(self::$router->post('title')), (self::$router->post('html') != NULL ? self::$router->post('content') : htmlspecialchars(self::$router->post('content'))), language::getLang(), self::$user->id, time(), self::$router->post('category'));
+                    $newsModel->add(htmlspecialchars($data['title']), (isset($data['html']) ? $data['content'] : htmlspecialchars($data['content'])), language::getLang(), self::$user->id, time(), $data['category']);
                     throw new messageException(language::get('success'), language::get('addNewsSuccess'), array('url' => array('index', 'index')));
                 }
             }
@@ -114,7 +112,7 @@ class newsController extends controller
             throw new messageException(language::get('error'), language::get('errNotLoggedIn'), array('url' => array('index', 'index')));
     }
     
-    public function edit()
+    public function edit($params = array(), $data = array())
     {
         view::addTitleChunk(language::get('news'));
         view::addTitleChunk(language::get('edit'));
@@ -126,11 +124,11 @@ class newsController extends controller
             {
                 $newsModel = new newsModel();
 
-                if(self::$router->post('submit') == null)
+                if(!isset($data['submit']))
                 {
                     $categories = $newsModel->getCategories();
                     $view = new HTMLview( 'news/edit-form.tpl');
-                    $news = $newsModel->get(self::$router->id);
+                    $news = $newsModel->get($params['id']);
                     
                     if(!$news)
                         throw new messageException(language::get('error'), language::get('errNewsNotExist'));
@@ -141,11 +139,11 @@ class newsController extends controller
                 }
                 else
                 {
-                    if(self::$router->post('title') == null)throw new messageException(language::get('error'), language::get('errTitleNotSet'), array('url' => array('news', 'edit', self::$router->name, self::$router->id)));
-                    if(self::$router->post('content') == null)throw new messageException(language::get('error'), language::get('errContentNotSet'), array('url' => array('news', 'edit', self::$router->name, self::$router->id)));
-                    if(self::$router->post('category') == null)throw new messageException(language::get('error'), language::get('errCategoryNotSet'), array('url' => array('news', 'edit', self::$router->name, self::$router->id)));
+                    if(!isset($data['title']))throw new messageException(language::get('error'), language::get('errTitleNotSet'), array('url' => array('news', 'edit', $params['name'], $params['id'])));
+                    if(!isset($data['content']))throw new messageException(language::get('error'), language::get('errContentNotSet'), array('url' => array('news', 'edit', $params['name'], $params['id'])));
+                    if(!isset($data['category']))throw new messageException(language::get('error'), language::get('errCategoryNotSet'), array('url' => array('news', 'edit', $params['name'], $params['id'])));
 
-                    $newsModel->edit(self::$router->id, self::$router->post('title'), (self::$router->post('html') != NULL ? self::$router->post('content') : htmlspecialchars(self::$router->post('content'))), self::$router->post('category'));
+                    $newsModel->edit($params['id'], $data['title'], (isset($data['html']) ? $data['content'] : htmlspecialchars($data['content'])), $data['category']);
                     throw new messageException(language::get('success'), language::get('editNewsSuccess'), array('url' => array('index', 'index')));
                 }
             }
@@ -156,7 +154,7 @@ class newsController extends controller
             throw new messageException(language::get('error'), language::get('errWrongURL'), array('url' => array('index', 'index')));
     }
     
-    public function delete()
+    public function delete($params = array(), $data = array())
     {
         view::addTitleChunk(language::get('news'));
         view::addTitleChunk(language::get('delete'));
@@ -169,7 +167,7 @@ class newsController extends controller
                 if(self::$user->hasPermission('news/delete'))
                 {
                     $newsModel = new newsModel();
-                    $newsModel->delete(self::$router->id);
+                    $newsModel->delete($params['id']);
                     throw new messageException(language::get('success'), language::get('deleteNewsSuccess'), array('url' => array('index', 'index')));
                 }
                 else
@@ -182,7 +180,7 @@ class newsController extends controller
             throw new messageException(language::get('error'), language::get('errWrongURL'), array('url' => array('index', 'index')));
     }
     
-    public function category()
+    public function category($params = array(), $data = array())
     {
         view::addTitleChunk(language::get('news'));
         view::addTitleChunk(language::get('category'));
@@ -192,14 +190,14 @@ class newsController extends controller
         {
             $newsModel = new newsModel();
             
-            if(self::$router->page != null) $page = self::$router->page;
+            if($params['page'] != null) $page = $params['page'];
             else $page = 1;
             
             $view = new HTMLview( 'news/all.tpl'); //tworzenie bufora treści
-            $news = $newsModel->getLimitedFromCategory(($page - 1)  * (int)self::$config->newsPerPage,(int)self::$config->newsPerPage, language::getLang(), self::$router->id);
+            $news = $newsModel->getLimitedFromCategory(($page - 1)  * (int)self::$config->newsPerPage,(int)self::$config->newsPerPage, language::getLang(), $params['id']);
             //if(empty($news))throw new messageException(language::get('info'), language::get('noNews'), array('text' => ''));
             
-            $category = $newsModel->getCategory(self::$router->id);
+            $category = $newsModel->getCategory($params['id']);
             if(!$category)
                 throw new messageException(language::get('error'), language::get('errCategoryNotExist'));
             
@@ -207,9 +205,9 @@ class newsController extends controller
             $view->category = $category;
             $view->title = $category->name;
             $view->news = (is_array($news) ? $news : array($news)); //...wartości
-            $view->newsCount = $newsModel->getNewsCountFromCategory(self::$router->id);
+            $view->newsCount = $newsModel->getNewsCountFromCategory($params['id']);
             
-            $pageCount = ceil($newsModel->getNewsCountFromCategory(self::$router->id) / self::$config->newsPerPage);
+            $pageCount = ceil($newsModel->getNewsCountFromCategory($params['id']) / self::$config->newsPerPage);
             $sp = ($page - 3 > 0 ? $page - 3 : 1);
             $ep = ceil($sp + ($pageCount < 7 ? $pageCount : 7));
             
@@ -229,21 +227,21 @@ class newsController extends controller
             throw new messageException(language::get('error'), language::get('errWrongURL'), array('url' => array('index', 'index')));
     }
     
-    protected function _preview()
+    protected function _preview($params = array(), $data = array())
     {
         $newsModel = new newsModel();
-        $category = $newsModel->getCategory(self::$router->post('category'));
+        $category = $newsModel->getCategory($data['category']);
         $news = new stdClass();
 
-        $_SESSION['backup'] = serialize(self::$router->post());
+        $_SESSION['backup'] = serialize($data);
 
         $news->added = time();
         $news->views = 0;
-        $news->content = BBcode::parse((self::$router->post('html') == NULL ? stripslashes(self::$router->post('content')) : htmlspecialchars(self::$router->post('content'))));
-        $news->title = self::$router->post('title');
+        $news->content = BBcode::parse((!isset($data['html']) ? stripslashes($data['content']) : htmlspecialchars($data['content'])));
+        $news->title = $data['title'];
         $news->author = self::$user->id;
         $news->authorName = self::$user->login;
-        $news->category = self::$router->post('category');
+        $news->category = $data['category'];
         $news->categoryName = $category->name;
 
         $view = new HTMLview( 'news/preview.tpl');
