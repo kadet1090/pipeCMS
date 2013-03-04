@@ -33,10 +33,10 @@ class user
         $cat = strstr($permission, '/', true);
         $perm = substr(strstr($permission, '/'), 1);
         
-        if(isset($this->_permission[$cat][$perm]))
-            return $this->_permission[$cat][$perm];
-        elseif(isset($this->_permission[$cat]['all']))
-            return $this->_permission[$cat]['all'];
+        if(isset($this->_permissions[$cat][$perm]))
+            return $this->_permissions[$cat][$perm];
+        elseif(isset($this->_permissions[$cat]['all']))
+            return $this->_permissions[$cat]['all'];
         elseif(isset($this->_permissions['all']['all']))
             return $this->_permissions['all']['all'];
         else return false;
