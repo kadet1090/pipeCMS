@@ -66,7 +66,7 @@ class frontController extends controller {
         $pattern->sql   = dataBaseConnection::$ns;
 
         # print our page
-        echo $pattern;
+        echo $pattern->render();
     }
     
     protected function _initLanguage()

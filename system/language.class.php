@@ -29,5 +29,9 @@ class language
         return self::$langName;
     }
     
+    static public function available() 
+    {
+        return array_values(str_replace('.ini', '', array_diff(scandir(self::$langsDir), array('.', '..'))));
+    }
 }
 ?>

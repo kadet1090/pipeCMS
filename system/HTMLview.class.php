@@ -28,14 +28,20 @@ class HTMLview extends view
         $router = controller::$router;
         $currentUser = controller::$user;
         
-        ob_start();
-            include (self::$templateDir.DIRECTORY_SEPARATOR.$this->_templateFileName);
-        return ob_get_clean();
+        try {
+            ob_start();
+                include (self::$templateDir.DIRECTORY_SEPARATOR.$this->_templateFileName);
+            return ob_get_clean();
+        } catch (messageException $msg) {
+            return controller::message($msg->getTitle(), $msg->getContent());
+        } catch (Exception $e) { 
+            return (string)$e;
+        }
     }
     
     public function __toString()
     {
-        return $this->render();
+        return (string)$this->render();
     }
 }
 ?>

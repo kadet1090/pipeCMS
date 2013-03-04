@@ -39,7 +39,7 @@ class controller
         return $view;
     }
     
-    public function message($messageTitle, $messageContent, $nextPage = array())
+    public static function message($messageTitle, $messageContent, $nextPage = array())
     {
         $view = new HTMLview('message.tpl');
         $view->message = new message($messageTitle, $messageContent, $nextPage);
