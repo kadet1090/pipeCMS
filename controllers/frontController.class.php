@@ -119,20 +119,25 @@ class frontController extends controller {
     {
         self::$user = new user();
         
-        if(isset($_SESSION['userid'])) // Is user logged in?
-        {
-            $userModel = new userModel;
-            self::$user = $userModel->getUserData($_SESSION['userid']);
-
-            if(self::$user->banned) // User banned?
-            {
-                session_destroy(); // Logout him...
-                throw new messageException(language::get("error"), language::get("youHaveBeenBanned"), array("url" => array("index"))); // and pring massage
-            }
-
-            $userModel->updateLastActivity(time(), $_SESSION['userid']);
-            self::$user->isLogged = true;
+        if(isset($_SESSION['userid'])) {
+            $id = $_SESSION['userid'];
+        } elseif(autologin::get()) {
+            $id = autologin::get();
+        } else {
+            return;
         }
+        
+        $userModel = new userModel;
+        self::$user = $userModel->getUserData($id);
+
+        if(self::$user->banned) // User banned?
+        {
+            session_destroy(); // Logout him...
+            throw new messageException(language::get("error"), language::get("youHaveBeenBanned"), array("url" => array("index"))); // and pring massage
+        }
+
+        $userModel->updateLastActivity(time(), $id);
+        self::$user->isLogged = true;
     }
 }
 

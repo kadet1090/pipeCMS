@@ -76,7 +76,13 @@ class userModel extends dataBaseModel
             $groups[$id] = "`id` = '".addslashes($val)."'";
         }
         $SQL .= implode(' OR ', $groups);
-        return $this->proccessSQL($SQL, array(), false, 'stdClass');
+        $res = $this->proccessSQL($SQL, array(), false, 'stdClass');
+        $ret = array();
+        foreach($res as $group) {
+            $ret[$group->id] = $group;
+        }
+        
+        return $ret;
     }
     
     public function getAdditionalFields()

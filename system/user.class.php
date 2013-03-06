@@ -59,5 +59,9 @@ class user
     {
         return $this->hasPermission('acp');
     }
+    
+    public function inGroup($id) {
+        return isset($this->groups[$id]);
+    }
 }
 ?>

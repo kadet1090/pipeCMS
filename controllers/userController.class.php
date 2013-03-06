@@ -24,6 +24,10 @@ class userController extends controller
                             $user->isLogged = true;
                             $_SESSION['userid'] = $user->id;
                             self::$user = $model->getUserData($user->id);
+                            
+                            if(isset($data['remember']) && $data['remember'])
+                                autologin::set($user->id, 60 * 60 * 24 * 30);
+                            
                             throw new messageException(language::get('success'), language::get('loginSuccess'), array('url' => array('index', 'index')));
                         }
                         else        
@@ -54,6 +58,9 @@ class userController extends controller
             $userModel->updateLastActivity(0, self::$user->id);
             session_destroy();
             self::$user = new user();
+            
+            autologin::off();
+            
             throw new messageException(language::get('success'), language::get('logoutSuccess'), array('url' => array('index', 'index')));
         }
     }
@@ -255,35 +262,39 @@ class userController extends controller
     public function addGroup($params = array(), $data = array())
     {
         view::$robots = "none";
+        
         if(self::$user->isLogged)
         {
             $model = new userModel();
-            $group = $model->getGroup($params['id']);
+            
+            $group = $model->getGroup($params['id'], '%|'.$params['id'].'|%');
             
             if(self::$router->match("category"))
             {
-                if($group->type == "open")
-                {
-                    $user = $model->getUser(self::$user->id);
-                    $groups = explode(",", $user->groups);
-                    $groups[] = '|'.$params['id'].'|';
-                    $model->setGroups(implode(",", array_unique($groups)), self::$user->id);
-                }
+                $user = self::$user;
             }
             elseif(self::$router->match("addGroup"))
             {
                 if(self::$user->hasPermission("user/addGroup") || self::$user->id == $group->admin)
-                {
-                    $user = $model->getUser($params['id']);
-                    $groups = explode(",", $user->groups);
-                    $groups[] = '|'.$params['id'].'|';
-                    $model->setGroups(implode(",", array_unique($groups)), $params['id']);
-                }
+                    $user = $model->getUserData($params['userId']);
                 else
                     throw new messageException(language::get('error'), language::get('errNoPermission'));
             }
             else
                 throw new messageException(language::get('error'), language::get('errWrongUrl'));
+
+            if(isset($user->groups[$group->id]))
+                throw new messageException(language::get('error'), language::get('errUserAlreadyInGroup'));
+            $groups = array_keys($user->groups);
+            $groups[] = $group->id;
+            
+            $model->setGroups('|'.implode("|,|", array_unique($groups)).'|', $user->id);
+            
+            if($user->main_group == $group->id) {
+                $model->setMainGroup($params['id'], $params['userId']);
+            }
+            
+            return self::message(language::get('success'), language::get('userAddedToGroup'));
         }
         else
             throw new messageException(language::get('error'), language::get('errNotLoggedIn'), array('url' => array('user', 'login')));
@@ -292,6 +303,7 @@ class userController extends controller
     public function removeGroup($params = array(), $data = array())
     {
         view::$robots = "none";
+        
         if(self::$user->isLogged)
         {
             $model = new userModel();
@@ -299,7 +311,7 @@ class userController extends controller
             if($params['id'] == self::$config->defaultGroupID)
                 throw new messageException(language::get('error'), language::get('errCantRemoveDefaultGroup'));
             
-            $group = $model->getGroup($params['id']);
+            $group = $model->getGroup($params['id'], '%|'.$params['id'].'|%');
             
             if(self::$router->match("category"))
             {
@@ -308,16 +320,25 @@ class userController extends controller
             elseif(self::$router->match("addGroup"))
             {
                 if(self::$user->hasPermission("user/removeGroup") || self::$user->id == $group->admin)
-                    $user = $model->getUser($params['userId']);
+                    $user = $model->getUserData($params['userId']);
                 else
                     throw new messageException(language::get('error'), language::get('errNoPermission'));
             }
             else
                 throw new messageException(language::get('error'), language::get('errWrongUrl'));
+
+            if(!isset($user->groups[$group->id]))
+                throw new messageException(language::get('error'), language::get('errUserNotInGroup'));
+            $groups = $user->groups;
+            unset($groups[$group->id]);
             
-            $groups = explode(",", $user->groups);
-            unset($groups[array_search('|'.$params['id'].'|', $groups)]);
-            $model->setGroups(implode(",", array_unique($groups)), $user->id);
+            $model->setGroups('|'.implode("|,|", array_unique(array_keys($groups))).'|', $user->id);
+            
+            if($user->main_group == $group->id) {
+                $model->setMainGroup(self::$config->defaultGroupID, $params['userId']);
+            }
+            
+            return self::message(language::get('success'), language::get('userRemovedFromGroup'));
         }
         else
             throw new messageException(language::get('error'), language::get('errNotLoggedIn'), array('url' => array('user', 'login')));
@@ -334,7 +355,7 @@ class userController extends controller
             {
                 if(self::$user->hasPermission("user/mainGroupChange"))
                 {
-                    $user = $model->setMainGroup($params['id'], $params['userId']);
+                    $model->setMainGroup($params['id'], $params['userId']);
                     throw new messageException(language::get('success'), language::get('mainGroupChanged'));
                 }
                 else
@@ -347,8 +368,8 @@ class userController extends controller
             throw new messageException(language::get('error'), language::get('errNotLoggedIn'), array('url' => array('user', 'login')));
     }
     
-    public function joinGroup($params = array(), $data = array())     { return $this->addGroup($params = array(), $data = array()); }
-    public function leaveGroup($params = array(), $data = array())    { return $this->removeGroup($params = array(), $data = array()); }
+    public function joinGroup($params = array(), $data = array())     { return $this->addGroup($params, $data); }
+    public function leaveGroup($params = array(), $data = array())    { return $this->removeGroup($params, $data); }
     
     private function _uploadAvatar($username)
     {
