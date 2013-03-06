@@ -74,6 +74,8 @@ class userController extends controller
             $model = new userModel();
             if(isset($data['submit']))
             {
+                backup::save('user_register', $data);
+                
                 if($data['login'] == '')  throw new messageException(language::get('error'), language::get('errUsernameNotSet'),  array('url' => array('user', 'register')));
                 if($data['mail'] == '')   throw new messageException(language::get('error'), language::get('errMailNotSet'),            array('url' => array('user', 'register')));
                 //if($data['fullname'] == '') throw new messageException(language::get('error'), language::get('errFullnameNotSet'),  array('url' => array('user', 'register')));
@@ -112,6 +114,9 @@ class userController extends controller
                 $view = new HTMLview( 'user/register-form.tpl');
                 $view->captha = $captha->generate();
                 $view->fields = $model->getAdditionalFields();
+                
+                backup::load('user_register');
+                
                 return $view;
             }
         }

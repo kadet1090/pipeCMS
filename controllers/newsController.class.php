@@ -80,6 +80,7 @@ class newsController extends controller
             {
                 if(isset($data['preview']))
                 {
+                    backup::save('news_new', $data);
                     return $this->_preview($params, $data);
                 }
                 elseif(!isset($data['submit']))
@@ -87,8 +88,7 @@ class newsController extends controller
                     $categories = $newsModel->getCategories();
                     $view = new HTMLview('news/add-form.tpl');
                     
-                    if(!empty($_SESSION['backup'])) $view->backup = unserialize($_SESSION['backup']);
-                    else $view->backup = array();
+                    backup::load('news_new');
                     
                     $view->categories = (is_array($categories) ? $categories : array($categories));
                     unset($_SESSION['backup']);
@@ -96,6 +96,7 @@ class newsController extends controller
                 }
                 else
                 {
+                    backup::save('news_new', $data);
                     $_SESSION['backup'] = serialize($data);
                     
                     if(!isset($data['title']))       throw new messageException(language::get('error'), language::get('errTitleNotSet'));
@@ -127,7 +128,7 @@ class newsController extends controller
 
                 if(isset($data['preview']))
                 {
-                    $_SESSION['backup'] = serialize($data);
+                    backup::save('news_'.$params['id'], $data);
                     return $this->_preview($params, $data);
                 }
                 elseif(!isset($data['submit']))
@@ -139,10 +140,7 @@ class newsController extends controller
                     if(!$news)
                         throw new messageException(language::get('error'), language::get('errNewsNotExist'));
                     
-                    if(!empty($_SESSION['backup'])) $view->backup = unserialize($_SESSION['backup']);
-                    else $view->backup = array();
-                    
-                    $_SESSION['backup'] = null;
+                    backup::load('news_'.$params['id']);
                     
                     $view->news = $news;
                     $view->categories = $categories;
@@ -150,7 +148,7 @@ class newsController extends controller
                 }
                 else
                 {
-                    $_SESSION['backup'] = serialize($data);
+                    backup::save('news_'.$params['id'], $data);
                     
                     if(!isset($data['title']))throw new messageException(language::get('error'), language::get('errTitleNotSet'), array('url' => array('news', 'edit', $params['name'], $params['id'])));
                     if(!isset($data['content']))throw new messageException(language::get('error'), language::get('errContentNotSet'), array('url' => array('news', 'edit', $params['name'], $params['id'])));
