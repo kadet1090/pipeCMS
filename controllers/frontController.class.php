@@ -25,6 +25,9 @@ class frontController extends controller {
         $this->_getUser();
         
         BBcode::loadBBcode(new xml(self::$configDir.'BBcode.xml'));
+
+        if(file_exists(view::$templateDir.'/functions.php'))
+            include view::$templateDir.'/functions.php';
     }
     
     public function work($startTime)

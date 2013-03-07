@@ -170,7 +170,7 @@ class dataBaseConnection
             }
             
             $prepared->execute();
-            
+
             self::$ns++;
             return $prepared;
         }

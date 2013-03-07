@@ -6,6 +6,7 @@ abstract class view
     
     static public $templateDir;
     protected $_templateFileName;
+    protected $_fallBackDir;
     
     static $robots;
     static protected $_title;
@@ -18,7 +19,7 @@ abstract class view
         return $this;
     }
     
-    public function __construct($tmpFN = '') 
+    public function __construct($tmpFN = '', $fallBackDir = null)
     {
         $this->_templateFileName = $tmpFN;
     }
