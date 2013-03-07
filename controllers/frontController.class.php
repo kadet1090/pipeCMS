@@ -16,6 +16,8 @@ class frontController extends controller {
      * @var string
      */
     public static $configDir = 'cfg/';
+
+    private $_pluginManager;
     
     public function __construct() {
         $this->_loadConfig();
@@ -23,7 +25,10 @@ class frontController extends controller {
         $this->_prepareRouter();
         $this->_prepareDBConnection();
         $this->_getUser();
-        
+
+        $this->_pluginManager = new pluginManager();
+        $this->_pluginManager->loadPlugins();
+
         BBcode::loadBBcode(new xml(self::$configDir.'BBcode.xml'));
 
         if(file_exists(view::$templateDir.'/functions.php'))

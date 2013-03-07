@@ -2,87 +2,85 @@
 include 'file.class.php';
 require 'interfaces/classMap.interface.php';
 require 'interfaces/singleton.interface.php';
-/** @author kadet {@link mailto:kadet1090@gmail.com napisz do mnie!}
-  * @license  http://creativecommons.org/licenses/by-nc-sa/3.0/pl/{@link}
-  * @name classMap
-  * @package bootLoad
-  **/
 
 /** klasa do obsługi map klas
-  * @author kadet {@link mailto:kadet@pog.ugu.pl napisz do mnie!}
-  * @copyright
-  * @access public
-  * @license {@link http://creativecommons.org/licenses/by-nc-sa/3.0/pl/ CC 3.0}
-  * @link nextra.xaa.pl
-  * @name classMap
-  * @version 1.0
-  * @package bootLoad
-  **/
-class classMap implements singleton, classMapInterface
+ * @author kadet {@link mailto:kadet@pog.ugu.pl napisz do mnie!}
+ * @copyright
+ * @access public
+ * @license {@link http://creativecommons.org/licenses/by-nc-sa/3.0/pl/ CC 3.0}
+ * @link nextra.xaa.pl
+ * @name classMap
+ * @version 1.1
+ * @package bootLoad
+ **/
+class classMap
 {
-
     /** przechowuje mapę plików
      * @access public
      * @var array
      */
-    public $map;
+    public $map = array();
 
-    /** przechowuje instancję obiektu
-     * @access protected
-     * @staticvar classMap
-     */
-    protected static $instance;
+    private $_pattern = '$2';
 
-    /** pobiera instancję obiektu
-     * @static
-     * @access public
-     * @return classMap
-     */
-    public static function  getInstance()
-    {
-        if(self::$instance == null)
-            self::$instance = new classMap();
-        return self::$instance;
-    }
-
-    /** blokada konstruktora
-     * @access protected
-     */
-    protected function  __construct()   {   }
     /** pobiera mapę plików i zapisuje ją do zmiennej mapy
      * @access public
-     * @param string $directory
+     * @param string $sDirectory
      * @return arrray
      */
     public function getMap()
     {
-        if(!isset($this->map))
+        $directories = func_get_args();
+
+        foreach($directories as $directory)
         {
-            $directories = func_get_args();
-            foreach($directories as $directory)
+            $map = array();
+
+            $pattern = $this->_pattern;
+
+            if(is_array($directory))
             {
-                $it = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($directory), RecursiveIteratorIterator::SELF_FIRST);
-                foreach($it as $file)
-                {
-                    if($file->isDir() || strstr($file->getPath(), ".svn"))
-                        continue;
-                    else
-                    {
-                        if(strstr($file->getFilename(), '.class.php') != false)
-                            $map[strStrBefore($file->getFilename(), '.class.php')] = $file->getPath().DIRECTORY_SEPARATOR.$file->getFilename();
-                        elseif(strstr($file->getFilename(), '.interface.php') != false)
-                            $map[strStrBefore($file->getFilename(), '.interface.php').'Interface'] = $file->getPath().DIRECTORY_SEPARATOR.$file->getFilename();
-                        else
-                            continue;
-                    }
-                }
+                $pattern = $directory[1];
+                $directory = $directory[0];
             }
-            var_dump($map);
-            $this->map = $map;
-            return $map;
+
+            $directory = substr($directory, -1) == '/' ?
+                substr($directory, 0, strlen($directory) - 1) :
+                $directory;
+
+            # regex that checks file path
+            $regex = str_replace(array('/', '.', '*'), array('\/', '\.', '(.*?)'), $directory).'\/(.*?\/)*'.'(.*?)\.(plugin|interface|class)\.php';
+            $regex = '/^'.$regex.'$/';
+
+            # get base directory
+            $directory = strstr($directory, '*') !== false ? strstr($directory, '*', true) : $directory;
+
+            # skip if dir not exists
+            if(!file_exists($directory)) continue;
+
+            # create iterator
+            $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($directory, RecursiveDirectoryIterator::SKIP_DOTS | RecursiveDirectoryIterator::UNIX_PATHS), RecursiveIteratorIterator::SELF_FIRST);
+            foreach($iterator as $file)
+            {
+                $path = $file->getPathname();
+
+                # skip invalid dirs
+                if(!preg_match($regex, $file->getPathname())) continue;
+                if(strpos($file->getPath(), '.svn') !== false) continue;
+
+                # add to map
+                if(strpos($file->getFilename(), '.plugin.php') !== false)
+                    $map[preg_replace($regex, $pattern, $file->getPathname())."Plugin"] = $file->getPathname();
+                if(strpos($file->getFilename(), '.interface.php') !== false)
+                    $map[preg_replace($regex, $pattern, $file->getPathname())."Interface"] = $file->getPathname();
+                if(strpos($file->getFilename(), '.class.php') !== false)
+                    $map[preg_replace($regex, $pattern, $file->getPathname())] = $file->getPathname();
+            }
+
+            $this->map = array_merge($this->map, $map);
         }
-        else
-            return $this->map;
+        asort($this->map);
+        return $this->map;
     }
 
     /** Zapisuje mapę do wskazanego pliku
@@ -107,6 +105,7 @@ class classMap implements singleton, classMapInterface
     {
         $file = new file((string)$fileName, file::READ);
         $this->map = unserialize($file->read());
+        return $this->map;
     }
 }
 ?>

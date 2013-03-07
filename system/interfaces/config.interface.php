@@ -8,7 +8,7 @@
  *
  * @author Admin
  */
-interface config
+interface configInterface
 {
     public function load($file, $cType = null);
     public function setType($cType);

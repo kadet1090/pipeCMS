@@ -9,7 +9,7 @@
     require './system/classMap.class.php';
     require './system/autoloader.class.php';
     //-------------------------------------------------------------------------------------//
-    $map = classMap::getInstance();
+    $map = new classMap();
     $map->loadMapFromFile('cfg'.DIRECTORY_SEPARATOR.'map.txt');
     //-------------------------------------------------------------------------------------//
     $loader = new autoloader('./', array('usePrefix' => false, 'usePostfix' => false), $map);

@@ -2,7 +2,9 @@
 require './system/classMap.class.php';
 require './system/functions.php';
 
-$map = classMap::getInstance();
-$map->getMap("./system/", './models/', './controllers/');
+$map = new classMap();
+var_dump($map->getMap("./system/", './models/', './controllers/'));
 $map->saveMapToFile('./cfg/map.txt');
+
+var_dump($map->getMap('./plugins/*/'));
 ?>
