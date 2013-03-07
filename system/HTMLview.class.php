@@ -44,5 +44,15 @@ class HTMLview extends view
     {
         return (string)$this->render();
     }
+
+    public static function addJs($body = null, $src = null)
+    {
+        self::$additionalJS[] = (object)array('body' => $body, 'src' => $src);
+    }
+
+    public static function addCss($body = null, $src = null)
+    {
+        self::$additionalCSS[] = (object)array('body' => $body, 'src' => $src);
+    }
 }
 ?>

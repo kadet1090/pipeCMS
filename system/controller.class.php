@@ -24,10 +24,7 @@ class controller
      * @var router 
      */
     public static $router;
-    
-    public static $plugins = array(
-        "syntax"    => "plugins/syntax/"
-    );
+
     
     static protected $_instance;
     static $language;

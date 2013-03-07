@@ -1,10 +1,10 @@
 <?php
 abstract class plugin implements pluginInterface
 {
-    public $directory;
+    public static $directory;
 
-    public function __construct()
+    public function __construct($dir)
     {
-        $this->directory = __DIR__;
+        self::$directory = $dir;
     }
 }

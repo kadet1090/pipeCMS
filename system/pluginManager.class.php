@@ -5,20 +5,20 @@ class pluginManager
 
     public function loadPlugins($dir = './plugins/') {
         $map = new classMap();
-        $plugins = array_keys($map->loadMapFromFile('./cfg/plugins.txt'));
+        $plugins = $map->loadMapFromFile('./cfg/plugins.txt');
 
         $pluginLoader = new autoloader('./', array(), $map);
         $pluginLoader->ragister();
 
-        foreach($plugins as $plugin) {
-            $this->loadPlugin(str_replace('Plugin', '', $plugin));
+        foreach($plugins as $plugin => $path) {
+            $this->loadPlugin(str_replace('Plugin', '', $plugin), $path);
         }
     }
 
-    public function loadPlugin($name) {
+    public function loadPlugin($name, $path) {
         $class = $name.'Plugin';
 
-        $this->_plugins[$name] = new $class;
+        $this->_plugins[$name] = new $class(dirname($path));
         $this->_plugins[$name]->init();
     }
 }
