@@ -17,7 +17,7 @@ class cookie {
     public static function get($name) {
         if(!isset(self::$_decrypted[$name]))
             self::$_decrypted[$name] = (isset($_COOKIE[$name]) ? self::_decrypt($_COOKIE[$name], self::$pass) : null);
-        
+
         return self::$_decrypted[$name];
     }
     
@@ -33,5 +33,3 @@ class cookie {
         return rtrim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, md5($key), base64_decode($content), MCRYPT_MODE_CBC, md5(md5($key))), "\0");
     }
 }
-
-?>

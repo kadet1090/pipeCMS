@@ -13,9 +13,9 @@ class dataBaseModel extends model
     public function processResult(PDOStatement $result, $object = false, $DAOname = '')
     {
         if(empty($DAOname))
-            $oname = $this->_defaultDAOname;
+            $DAOname = $this->_defaultDAOname;
         if(!class_exists($DAOname))
-            $oname = 'stdClass';
+            $DAOname = 'stdDao';
         
         $res = array();
         if(preg_match('/^[^A-Z_]*SELECT[^A-Z_]/i', $result->queryString))
@@ -23,7 +23,7 @@ class dataBaseModel extends model
             if($result->rowCount() > 1 || !$object)
             {
                 while($row = $result->fetchObject($DAOname))
-                $res[] = $row;
+                    $res[] = $row;
             }
             else
                 $res = $result->fetchObject($DAOname);

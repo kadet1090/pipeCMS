@@ -1,24 +1,8 @@
 <?php
-class user
-{ 
-    protected $_varibles = array();
+class user extends stdDao
+{
     public $isLogged = false;
-    
-    public function __get($name)
-    {
-        return (isset($this->_varibles[$name]) ? $this->_varibles[$name] : null);
-    }
-    
-    public function __isset($name)
-    {
-        return isset($this->_varibles[$name]) && !empty($this->_varibles[$name]);
-    }
-    
-    public function __set($name, $mValue)
-    {
-        $this->_varibles[$name] = $mValue;
-    }
-    
+
     public function hasPermission($permission)
     {
         if(empty($permission))

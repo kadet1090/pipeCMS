@@ -26,11 +26,11 @@ class userModel extends dataBaseModel
             WHERE `%p%users_groups`.`id` = `%p%users`.`main_group` AND `%p%users`.`groups` LIKE :3
             LIMIT :1, :2',
 
-        'getGroup'      => array('SELECT *, (SELECT COUNT(*) FROM `%p%users` WHERE `groups` LIKE :2) AS `count` FROM `%p%users_groups` WHERE `id` = :1', true, 'stdClass'),
+        'getGroup'      => array('SELECT *, (SELECT COUNT(*) FROM `%p%users` WHERE `groups` LIKE :2) AS `count` FROM `%p%users_groups` WHERE `id` = :1', true, 'stdDao'),
         'setGroups'     => 'UPDATE `%p%users` SET `groups` = :1 WHERE `id` = :2',
         'setMainGroup'  => 'UPDATE `%p%users` SET `main_group` = :1 WHERE `id` = :2',
         'updateLastActivity'    => 'UPDATE `%p%users` SET `last_activity` = :1 WHERE `id` = :2',
-        '_getAdditionalFields'  => array('SELECT * FROM `%p%additional_fields`', false, 'stdClass'),
+        '_getAdditionalFields'  => array('SELECT * FROM `%p%additional_fields`', false, 'stdDao'),
         '_setAdditionalField'   => '',
     );
     
@@ -53,7 +53,6 @@ class userModel extends dataBaseModel
         $userData->_permissions = getPermissions($userData->permissions, $userData->_permissions);
         
         $userData->groups = $groups;
-        $userData->additional_fields = unserialize($userData->additional_fields);
         
         return $userData;
     }
@@ -76,7 +75,7 @@ class userModel extends dataBaseModel
             $groups[$id] = "`id` = '".addslashes($val)."'";
         }
         $SQL .= implode(' OR ', $groups);
-        $res = $this->proccessSQL($SQL, array(), false, 'stdClass');
+        $res = $this->proccessSQL($SQL, array(), false, 'stdDao');
         $ret = array();
         foreach($res as $group) {
             $ret[$group->id] = $group;
@@ -92,7 +91,6 @@ class userModel extends dataBaseModel
 
         foreach($res as $row => $field)
         {
-            $res[$row]->lang = unserialize($field->lang);
             if($field->type == 'enum' || $field->type == 'radio' || $field->type == 'multi')
             {
                 $res[$row]->value = array_combine(explode(',', preg_replace('/[^a-zA-Z0-9\_\-\.\,]/s', '', $field->value)), explode(', ', $field->value));

@@ -12,7 +12,7 @@
 abstract class model
 {
     protected $_data = array();
-    protected $_defaultDAOname = 'stdClass';
+    protected $_defaultDAOname = 'stdDao';
     
     public function __get($name)
     {

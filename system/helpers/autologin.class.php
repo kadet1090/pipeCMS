@@ -16,7 +16,7 @@ class autologin
         
         $data = cookie::get('autologin');
         $data = explode(';', $data, 4);
-        
+
         if($_SERVER['REMOTE_ADDR'] != $data[2]) return false;
         if($_SERVER['HTTP_USER_AGENT'] != $data[3]) return false;
         

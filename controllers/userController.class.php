@@ -104,7 +104,7 @@ class userController extends controller
                         $data['xmpp']       , $data['gg'],
                         $data['url']        , '|'.self::$config->defaultGroupID.'|',
                         date("Y-m-d")                     , $data['year'].'-'.$data['month'].'-'.$data['day'],
-                        serialize(array_grep($data, '/^add_(.*)$/si'))
+                        array_grep($data, '/^add_(.*)$/si')
                         );
                 
                 throw new messageException(language::get('success'), language::get('registerSuccess'), array('url' => array('index', 'index')));
@@ -228,7 +228,7 @@ class userController extends controller
                     $data['xmpp']        , $data['gg'],
                     $data['url']         , date("Y-m-d"), 
                     $data['year'].'-'.$data['month'].'-'.$data['day'],
-                    serialize(array_grep($data, '/^add_(.*)$/si'))
+                    array_grep($data, '/^add_(.*)$/si')
                 );
                 
                 throw new messageException(language::get('success'), language::get('userEditSuccess'), array('url' => array('user', 'profile', $params['login'], $params['id'])));

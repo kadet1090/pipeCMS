@@ -165,6 +165,8 @@ class dataBaseConnection
             foreach($arguments as $num => $value) {
                 if(is_numeric($value)) 
                     $prepared->bindValue(':'.($num+1), $value, PDO::PARAM_INT);
+                elseif(is_array($value))
+                    $prepared->bindValue(':'.($num+1), serialize($value));
                 else
                     $prepared->bindValue(':'.($num+1), $value);
             }
