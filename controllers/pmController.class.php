@@ -14,14 +14,14 @@ class pmController extends controller
 {
     public function index($params = array(), $data = array())
     {
-        return $this->page(1);
+        return $this->page(array('page' => 1));
     }
     
     public function page($params = array(), $data = array())
     {
         view::addTitleChunk(language::get("privateMessages"));
         view::$robots = "nofollow";
-        if(self::$router->match("page") || !empty($page))
+        if(self::$router->match("page") || !empty($params['page']))
         {
             if(self::$user->isLogged)
             {

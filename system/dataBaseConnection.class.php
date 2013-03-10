@@ -76,12 +76,11 @@ class dataBaseConnection
             
             $this->_isConnected = true;
         }
-        catch(PDOException $pDOexception)
+        catch(PDOException $exception)
         {
-            echo "test";
-            //self::$log->addToLog('('.$exception->getCode().') '.$exception->getMessage()." : ".$exception->getFile()."[".$exception->getLine()."]", "connectionError");
+            self::$log->addToLog('('.$exception->getCode().') '.$exception->getMessage()." : ".$exception->getFile()."[".$exception->getLine()."]", "connectionError");
             $this->_isConnected = false;
-            /* TODO: show connection error */ print_r($pDOexception);
+            throw $exception;
         }
     }
     
@@ -102,7 +101,7 @@ class dataBaseConnection
         catch(Exception $exception)
         {
             self::$log->addToLog('('.$exception->getCode().') '.$exception->getMessage()." : ".$exception->getFile()."[".$exception->getLine()."]", "connectionError");
-            echo $e;
+            throw $e;
         }    
     }
     
@@ -159,7 +158,7 @@ class dataBaseConnection
     {
         try
         {
-            if(DEBUG_MODE) self::$log->addToLog(trim(str_replace("%p%", $this->prefix, $SQL)), "sql");
+            //if(DEBUG_MODE) self::$log->addToLog(trim(str_replace("%p%", $this->prefix, $SQL)), "sql");
             $prepared = $this->_PDO->prepare(trim(str_replace("%p%", $this->prefix, $SQL)));
             
             foreach($arguments as $num => $value) {

@@ -26,10 +26,10 @@ class frontController extends controller {
         $this->_prepareDBConnection();
         $this->_getUser();
 
+        BBcode::loadBBcode(new xml(self::$configDir.'BBcode.xml'));
+
         $this->_pluginManager = new pluginManager();
         $this->_pluginManager->loadPlugins();
-
-        BBcode::loadBBcode(new xml(self::$configDir.'BBcode.xml'));
 
         if(file_exists(view::$templateDir.'/functions.php'))
             include view::$templateDir.'/functions.php';

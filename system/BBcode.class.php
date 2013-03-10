@@ -1,10 +1,4 @@
 <?php
-
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 /**
  * Description of BBcode
  *
@@ -21,7 +15,9 @@ class BBcode
         'html' => array(),
         'callback' => array()
     );
-    
+
+    protected static $_file;
+
     public static function loadBBcode(xml $BBcode)
     {
         $BBcode->load();
@@ -35,7 +31,8 @@ class BBcode
                     $code['closeTag'] == 'true', 
                     $code['param'] == 'true' ? true : (
                         isset($code['params']) ? explode(', ', $code['params']) : false
-                    )
+                    ),
+                    false
                 );
             }
             else
@@ -46,16 +43,29 @@ class BBcode
                     $code['closeTag'] == 'true', 
                     $code['param'] == 'true' ? true : (
                         isset($code['params']) ? explode(', ', $code['params']) : false
-                    )
+                    ),
+                    false
                 );
             }
         }
-  //      var_dump(self::$_exp, self::$_BBcodeExp);
+        self::$_file = $BBcode;
     }
     
-    public static function addHtml($tag, $html, $close = false, $params = false) {
+    public static function addHtml($tag, $html, $close = false, $params = false, $runtime = true) {
+        if(isset(self::$_file) && !$runtime) {
+            $child = self::$_file->getData()->addChild('BBcode');
+            $child->addAttribute('tag', $tag);
+            $child->addAttribute('closeTag', $close ? 'true' : 'false');
+            $child->addAttribute('html', $html);
+
+            if(is_array($params))
+                $child->addAttribute('params', implode(', ', $params));
+            elseif($params === true)
+                $child->addAttribute('param', 'true');
+        }
+
         $regex = self::_regex($tag, $close, $params);
-       
+
         if($params === true)
             $params = array('param');
         elseif(!is_array($params))
@@ -69,9 +79,21 @@ class BBcode
         self::$_exp['html'][] = $html;
     }
     
-    public static function addCallback($tag, $callback, $close = false, $params = false) {
+    public static function addCallback($tag, $callback, $close = false, $params = false, $runtime = true) {
+        if(isset(self::$_file) && !$runtime) {
+            $child = self::$_file->getData()->addChild('BBcode');
+            $child->addAttribute('tag', $tag);
+            $child->addAttribute('closeTag', $close ? 'true' : 'false');
+            $child->addAttribute('callback', $callback);
+
+            if(is_array($params))
+                $child->addAttribute('params', implode(', ', $params));
+            elseif($params === true)
+                $child->addAttribute('param', 'true');
+        }
+
         $regex = self::_regex($tag, $close, $params);
-       
+
         if($params === true)
             $params = array('param');
         elseif(!is_array($params))
@@ -87,7 +109,7 @@ class BBcode
     private static function _regex($tag, $close, $params) {
         $regex  = '\['.$tag;
 
-        if($params === true) 
+        if($params === true)
             $regex .= '=&quot;(.*?)&quot;';
         elseif(is_array($params))
             foreach($params as $param)
@@ -107,7 +129,7 @@ class BBcode
         
         if(cache::available('BBcode', $md5))
             return cache::get('BBcode', $md5);
-        
+
         $BBcodeString = preg_replace_callback('#\[code(.*?)\](.*?)\[/code\]#si', create_function('$matches', 'return "[code".$matches[1]."]".str_replace("]", "\\]", $matches[2])."[/code]";'), $BBcodeString);
         $BBcodeString = preg_replace_callback('#\[bbcode\](.*?)\[/bbcode\]#si', create_function('$matches', 'return "[bbcode]".str_replace("]", "\\]", $matches[1])."[/bbcode]";'), $BBcodeString);
         $BBcodeString = str_replace('"', '&quot;', $BBcodeString);
@@ -117,13 +139,18 @@ class BBcode
         while(preg_match($pattern, $BBcodeString))
              $BBcodeString = preg_replace(self::$_BBcodeExp["html"], self::$_exp["html"], $BBcodeString);
         
-        foreach(self::$_BBcodeExp['callback'] as $no => $exp) 
+        foreach(self::$_BBcodeExp['callback'] as $no => $exp)
             $BBcodeString = preg_replace_callback($exp, self::$_exp["callback"][$no], $BBcodeString);
         
         $parsed = str_replace(array('\\]', '&quot;'), array(']', '"'), $BBcodeString);
         cache::set('BBcode', $md5, $parsed);
         
         return $parsed;
+    }
+
+    public static function save()
+    {
+        self::$_file->save();
     }
 }
 ?>

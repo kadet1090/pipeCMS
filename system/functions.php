@@ -217,6 +217,8 @@ function getPermissions($permissions, $current) {
 
 // stolen from wordpress
 function is_serialized( $data ) {
+    //return false;
+
     // if it isn't a string, it isn't serialized
     if ( !is_string( $data ) )
         return false;

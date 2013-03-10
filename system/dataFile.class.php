@@ -34,6 +34,10 @@ abstract class dataFile
     {
         $this->_filePath = $filePath;
     }
+
+    public function getData() {
+        return $this->_data;
+    }
     
     public function load() {}
     public function save() {}

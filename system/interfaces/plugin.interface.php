@@ -11,5 +11,5 @@ interface pluginInterface
     public function install();
     public function uninstall();
 
-    public function init();
+    public function init($config);
 }

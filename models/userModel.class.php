@@ -26,11 +26,11 @@ class userModel extends dataBaseModel
             WHERE `%p%users_groups`.`id` = `%p%users`.`main_group` AND `%p%users`.`groups` LIKE :3
             LIMIT :1, :2',
 
-        'getGroup'      => array('SELECT *, (SELECT COUNT(*) FROM `%p%users` WHERE `groups` LIKE :2) AS `count` FROM `%p%users_groups` WHERE `id` = :1', true, 'stdDao'),
+        'getGroup'      => array('SELECT *, (SELECT COUNT(*) FROM `%p%users` WHERE `groups` LIKE :2) AS `count` FROM `%p%users_groups` WHERE `id` = :1', true, 'stdClass'),
         'setGroups'     => 'UPDATE `%p%users` SET `groups` = :1 WHERE `id` = :2',
         'setMainGroup'  => 'UPDATE `%p%users` SET `main_group` = :1 WHERE `id` = :2',
         'updateLastActivity'    => 'UPDATE `%p%users` SET `last_activity` = :1 WHERE `id` = :2',
-        '_getAdditionalFields'  => array('SELECT * FROM `%p%additional_fields`', false, 'stdDao'),
+        '_getAdditionalFields'  => array('SELECT * FROM `%p%additional_fields`', false, 'stdClass'),
         '_setAdditionalField'   => '',
     );
     
@@ -75,7 +75,7 @@ class userModel extends dataBaseModel
             $groups[$id] = "`id` = '".addslashes($val)."'";
         }
         $SQL .= implode(' OR ', $groups);
-        $res = $this->proccessSQL($SQL, array(), false, 'stdDao');
+        $res = $this->proccessSQL($SQL, array(), false, 'stdClass');
         $ret = array();
         foreach($res as $group) {
             $ret[$group->id] = $group;

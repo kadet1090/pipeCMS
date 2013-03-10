@@ -18,7 +18,7 @@ class syntaxPlugin extends plugin
 
     }
 
-    public function init()
+    public function init($config)
     {
         HTMLview::addCss(null, self::$directory.'/css/shCore.css');
         HTMLview::addCss(null, self::$directory.'/css/shThemeDefault.css');
@@ -68,5 +68,7 @@ SyntaxHighlighter.all();
 JS;
 
         HTMLview::addJs(str_replace('%path', self::$directory, $script));
+
+        BBcode::addHtml('code', '<pre class="brush: {param}">{text}</pre>', true, true);
     }
 }

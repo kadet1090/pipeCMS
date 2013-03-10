@@ -3,22 +3,19 @@ class pluginManager
 {
     private $_plugins;
 
-    public function loadPlugins($dir = './plugins/') {
-        $map = new classMap();
-        $plugins = $map->loadMapFromFile('./cfg/plugins.txt');
+    public function loadPlugins() {
+        $model = new pluginsModel();
 
-        $pluginLoader = new autoloader('./', array(), $map);
-        $pluginLoader->ragister();
-
-        foreach($plugins as $plugin => $path) {
-            $this->loadPlugin(str_replace('Plugin', '', $plugin), $path);
+        $plugins = $model->getAll();
+        foreach($plugins as $plugin) {
+            $this->loadPlugin($plugin);
         }
     }
 
-    public function loadPlugin($name, $path) {
-        $class = $name.'Plugin';
+    public function loadPlugin($plugin) {
+        include_once $plugin->dir.'/'.$plugin->file;
 
-        $this->_plugins[$name] = new $class(dirname($path));
-        $this->_plugins[$name]->init();
+        $this->_plugins[$plugin->name] = new $plugin->class($plugin->dir);
+        $this->_plugins[$plugin->name]->init($plugin->config);
     }
 }

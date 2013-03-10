@@ -1,5 +1,5 @@
 <?php
-class user extends stdDao
+class user
 {
     public $isLogged = false;
 
