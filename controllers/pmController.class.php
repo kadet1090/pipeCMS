@@ -21,11 +21,12 @@ class pmController extends controller
     {
         view::addTitleChunk(language::get("privateMessages"));
         view::$robots = "nofollow";
-        if(self::$router->match("page") || !empty($params['page']))
+
+        if(!empty($params['page']))
         {
             if(self::$user->isLogged)
             {
-                if(empty($page)) $page = $params['page'];
+                $page = $params['page'];
                 if($page > 1)
                 {
                    view::addTitleChunk(language::get('page'));
@@ -36,14 +37,16 @@ class pmController extends controller
                 
                 $messages = $model->getLimitedTo(self::$user->id, ($page - 1)  * (int)self::$config->privateMessagesPerPage, (int)self::$config->privateMessagesPerPage);
                 $view = new HTMLview("pm/list.tpl");
-                $messagesCount = $model->getMessagesCount(self::$user->id);
+
                 if($messages)
                 {
-                    $view->messages = (is_array($messages) ? $messages : array($messages)); //...wartości
-                    $view->pages = helperController::pageList($messagesCount, (int)self::$config->privateMessagesPerPage, $page, array("pm","page"));
+                    $view->messages = $messages;
+                    $view->count    = $model->getMessagesCount(self::$user->id);
+                    $view->page     = $page;
                 }
                 else
                     $view->messages = language::get("errNoPrivateMessages");
+
                 return $view;
             }
             else
