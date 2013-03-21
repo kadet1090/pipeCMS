@@ -43,11 +43,6 @@ class frontController extends controller {
         # load menu
         menu::$lang = language::getLang();
 
-        # set panel for user
-        $pattern->userInfo = self::$user->isLogged ? 
-            new HTMLview('user/panel-info.tpl') : 
-            new HTMLview('user/panel-login-form.tpl');
-
         # get required controller and action
         $controllerName = self::$router->controller.'Controller';
         $action = self::$router->action;
@@ -72,6 +67,11 @@ class frontController extends controller {
         # some statistics
         $pattern->gt    = round(microtime(true) - $startTime, 6);
         $pattern->sql   = dataBaseConnection::$ns;
+
+        # set panel for user
+        $pattern->userInfo = self::$user->isLogged ?
+            new HTMLview('user/panel-info.tpl') :
+            new HTMLview('user/panel-login-form.tpl');
 
         # print our page
         echo $pattern->render();

@@ -2,7 +2,6 @@
 require '../system/classMap.class.php';
 require '../system/functions.php';
 
-$map = classMap::getInstance();
+$map = new classMap;
 $map->getMap("./", "../system/", '../models/');
 $map->saveMapToFile('../cfg/acp-map.txt');
-?>

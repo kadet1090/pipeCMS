@@ -22,6 +22,7 @@ abstract class view
     public function __construct($tmpFN = '', $fallBackDir = null)
     {
         $this->_templateFileName = $tmpFN;
+        $this->_fallBackDir = $fallBackDir;
     }
     
     public function assign($name, $mValue)

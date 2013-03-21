@@ -17,10 +17,14 @@ class menu {
                 self::$_menu = $model->getMenu(self::$lang);
             }
 
+
+
             $ret = array();
-            foreach(self::$_menu as $menu) {
-                if($menu->menuID == $id && controller::$user->hasPermission($menu->permission))
+            foreach(self::$_menu as $no => $menu) {
+                if($menu->menuID == $id && controller::$user->hasPermission($menu->permission)) {
                     $ret[] = $menu;
+                    unset(self::$_menu[$no]);
+                }
             }
             self::$_cache[$id] = self::_prepareMenu($ret);
         }

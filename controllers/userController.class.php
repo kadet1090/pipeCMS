@@ -21,10 +21,10 @@ class userController extends controller
                     {
                         if(!$user->banned)
                         {
-                            $user->isLogged = true;
                             $_SESSION['userid'] = $user->id;
                             self::$user = $model->getUserData($user->id);
-                            
+                            self::$user->isLogged = true;
+
                             if(isset($data['remember']) && $data['remember'])
                                 autologin::set($user->id, 60 * 60 * 24 * 30);
                             

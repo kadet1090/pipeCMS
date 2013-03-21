@@ -29,6 +29,9 @@ class HTMLview extends view
             self::$templateDir.DIRECTORY_SEPARATOR.$this->_templateFileName :
             $this->_fallBackDir.DIRECTORY_SEPARATOR.$this->_templateFileName;
 
+        if(!file_exists($path))
+            return 'Error while loading '.$this->_templateFileName.' template.';
+
         try {
             ob_start();
                 include ($path);
