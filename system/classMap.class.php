@@ -104,7 +104,7 @@ class classMap
     public function loadMapFromFile($fileName)
     {
         $file = new file((string)$fileName, file::READ);
-        $this->map = unserialize($file->read());
+        $this->map = array_merge($this->map, unserialize($file->read()));
         return $this->map;
     }
 }

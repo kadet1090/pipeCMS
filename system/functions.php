@@ -243,4 +243,8 @@ function is_serialized( $data ) {
     }
     return false;
 }
+
+function cookies() {
+    echo '<a href="'.language::get('cookies').'">cookies</a>';
+}
 ?>

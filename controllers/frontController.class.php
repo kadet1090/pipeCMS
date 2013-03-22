@@ -33,6 +33,8 @@ class frontController extends controller {
 
         if(file_exists(view::$templateDir.'/functions.php'))
             include view::$templateDir.'/functions.php';
+
+        hookManager::add('pipe_footer', 'cookies');
     }
     
     public function work($startTime)
