@@ -29,9 +29,6 @@ class frontController extends controller {
     
     public function work($startTime)
     {
-        # get required views
-        $pattern    = new HTMLview('pattern.tpl');
-        
         # add "ACP" chunk to title
         view::addTitleChunk("ACP");
         
@@ -50,20 +47,23 @@ class frontController extends controller {
         if(class_exists($controllerName) && $controllerName != __CLASS__)
         {
             try {
-                $controller         = new $controllerName();
-                $pattern->page      = $controller->$action();
+                $controller     = new $controllerName();
+                $page           = $controller->$action();
             } catch(messageException $e) {
-                $message            = new HTMLview('message.tpl');
-                $message->message   = $e;
-                $pattern->page      = $message;
+                $page           = new HTMLview('message.tpl');
+                $page->message  = $e;
             }
         }
         else
         {
-            $controller = new controller();
-            $pattern->page = $controller->getErrorPage(404);
+            $page = $this->getErrorPage(404);
         }
-        
+
+        echo self::$_pattern;
+
+        $pattern = new HTMLview(self::$_pattern);
+        $pattern->page = $page;
+
         # some statistics
         $pattern->gt    = round(microtime(true) - $startTime, 6);
         $pattern->sql   = dataBaseConnection::$ns;

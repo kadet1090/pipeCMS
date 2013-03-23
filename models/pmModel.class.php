@@ -15,6 +15,19 @@ class pmModel extends dataBaseModel
             `%p%users_groups`.`id` = `%p%users`.`main_group` AND 
             `%p%pm`.`receiver` = :1 
         LIMIT :2, :3',
+
+        'getLimitedFrom'=> 'SELECT
+            `%p%pm`.*,
+            `%p%users`.`login`             AS `receiver_login`,
+            `%p%users_groups`.`suffix`     AS `receiver_suffix`,
+            `%p%users_groups`.`prefix`     AS `receiver_prefix`,
+            `%p%users_groups`.`color`      AS `receiver_color`
+        FROM `%p%pm`, `%p%users`, `%p%users_groups`
+        WHERE
+            `%p%users`.`id` = `%p%pm`.`receiver` AND
+            `%p%users_groups`.`id` = `%p%users`.`main_group` AND
+            `%p%pm`.`author` = :1
+        LIMIT :2, :3',
         
         'getMessage' => array('SELECT
             `%p%pm`.*,

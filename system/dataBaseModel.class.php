@@ -69,5 +69,9 @@ class dataBaseModel extends model
     {
         return $this->executePredefinedQuery($name, $arguments);
     }
+
+    public function getFoundCount() {
+        return self::$connection->executeQuery('SELECT FOUND_ROWS()')->fetchColumn();
+    }
 }
 ?>

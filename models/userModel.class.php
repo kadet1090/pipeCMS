@@ -12,16 +12,16 @@ class userModel extends dataBaseModel
         'unban'         => 'UPDATE `%p%users` SET `banned` = \'0\' WHERE `id` = :1',
         'edit'          => 'UPDATE `%p%users` SET  `mail` = :2, `fullname` = :3, `sex` = :4, `place` = :5, `desc` = :6, `twitter` = :7, `xmpp` = :8, `gg` = :9, `url` = :10, `register_date` = :11, `br_date` = :12, `additional_fields` = :13 WHERE `id` = :1',
         
-        'getLimited'    => 'SELECT `%p%users`.*, `%p%users_groups`.`prefix` as `prefix`, `%p%users_groups`.`suffix` as `suffix`, `%p%users_groups`.`color` as `color`
-            FROM `%p%users`, `%p%users_groups` 
+        'getLimited'    => 'SELECT SQL_CALC_FOUND_ROWS `%p%users`.*, `%p%users_groups`.`prefix` as `prefix`, `%p%users_groups`.`suffix` as `suffix`, `%p%users_groups`.`color` as `color`
+            FROM `%p%users`, `%p%users_groups`
             WHERE `%p%users_groups`.`id` = `%p%users`.`main_group`
             LIMIT :1, :2',
-        
+
         'getUser'       => array('SELECT `%p%users`.*, `%p%users_groups`.`prefix` as `prefix`, `%p%users_groups`.`suffix` as `suffix`, `%p%users_groups`.`color` as `color`
-            FROM `%p%users`, `%p%users_groups` 
+            FROM `%p%users`, `%p%users_groups`
             WHERE `%p%users`.`id` = :1 AND `%p%users_groups`.`id` = `%p%users`.`main_group`', true),
-        
-        'getLimitedFromGroup' => 'SELECT `%p%users`.*, `%p%users_groups`.`prefix`, `%p%users_groups`.`suffix`, `%p%users_groups`.`color`, (SELECT COUNT(*) FROM `%p%users` WHERE `groups` LIKE :3) AS `count`
+
+        'getLimitedFromGroup' => 'SELECT SQL_CALC_FOUND_ROWS `%p%users`.*, `%p%users_groups`.`prefix`, `%p%users_groups`.`suffix`, `%p%users_groups`.`color`, (SELECT COUNT(*) FROM `%p%users` WHERE `groups` LIKE :3) AS `count`
             FROM `%p%users`, `%p%users_groups`
             WHERE `%p%users_groups`.`id` = `%p%users`.`main_group` AND `%p%users`.`groups` LIKE :3
             LIMIT :1, :2',
@@ -32,6 +32,10 @@ class userModel extends dataBaseModel
         'updateLastActivity'    => 'UPDATE `%p%users` SET `last_activity` = :1 WHERE `id` = :2',
         '_getAdditionalFields'  => array('SELECT * FROM `%p%additional_fields`', false, 'stdClass'),
         '_setAdditionalField'   => '',
+        'searchLimited' => 'SELECT SQL_CALC_FOUND_ROWS `%p%users`.*, `%p%users_groups`.`prefix`, `%p%users_groups`.`suffix`, `%p%users_groups`.`color`
+            FROM `%p%users`, `%p%users_groups`
+            WHERE `%p%users_groups`.`id` = `%p%users`.`main_group` AND `%p%users`.`login` LIKE :1
+            LIMIT :2, :3'
     );
     
     protected $_defaultDAOname = 'user';

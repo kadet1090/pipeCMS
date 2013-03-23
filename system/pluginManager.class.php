@@ -29,12 +29,22 @@ class pluginManager
         $this->_plugins[$plugin->name] = new $plugin->class($plugin->dir);
         $this->_plugins[$plugin->name]->init($plugin->config);
 
-        if(!file_exists($plugin->dir.'/.classmap') || DEBUG_MODE) {
+        if(!file_exists($plugin->dir.'/.classmap')) {
             $map = new classMap();
             $map->getMap($plugin->dir.'/');
             $map->saveMapToFile($plugin->dir.'/.classmap');
         }
 
         $this->_map->loadMapFromFile($plugin->dir.'/.classmap');
+    }
+
+    public function cleanCache() {
+
+        $model = new pluginsModel();
+        $plugins = $model->getAll();
+        foreach($plugins as $plugin) {
+            if(file_exists($plugin->dir.'/.classmap'))
+                unlink($plugin->dir.'/.classmap');
+        }
     }
 }

@@ -24,11 +24,12 @@ class controller
      * @var router 
      */
     public static $router;
-
     
     static protected $_instance;
     static $language;
-    
+
+    protected static $_pattern = 'pattern.tpl';
+
     public function getErrorPage($errorCode)
     {
         $view = new HTMLview('error'.$errorCode.'.tpl');

@@ -39,9 +39,6 @@ class frontController extends controller {
     
     public function work($startTime)
     {
-        # get required views
-        $pattern    = new HTMLview('pattern.tpl');
-
         # load menu
         menu::$lang = language::getLang();
 
@@ -54,17 +51,23 @@ class frontController extends controller {
         {
             try {
                 $controller         = new $controllerName();
-                $pattern->page      = $controller->$action(self::$router->get(), self::$router->post()); 
+                $page      = $controller->$action(self::$router->get(), self::$router->post());
             } catch(messageException $e) {
-                $message            = new HTMLview('message.tpl');
-                $message->message   = $e;
-                $pattern->page      = $message;
-            } 
+                $page           = new HTMLview('message.tpl');
+                $page->message  = $e;
+            }
         }
         else
         {
-            $pattern->page = $this->getErrorPage(404);
+            $page = $this->getErrorPage(404);
         }
+
+        $pattern = new HTMLview(self::$_pattern);
+        $pattern->page = $page;
+
+        # some statistics
+        $pattern->gt    = round(microtime(true) - $startTime, 6);
+        $pattern->sql   = dataBaseConnection::$ns;
 
         # some statistics
         $pattern->gt    = round(microtime(true) - $startTime, 6);

@@ -14,13 +14,15 @@ class pmController extends controller
 {
     public function index($params = array(), $data = array())
     {
-        return $this->page(array('page' => 1));
+        return $this->inbox();
     }
     
-    public function page($params = array(), $data = array())
+    public function inbox($params = array(), $data = array())
     {
         view::addTitleChunk(language::get("privateMessages"));
         view::$robots = "nofollow";
+
+        if(empty($params['page'])) $params['page'] = 1;
 
         if(!empty($params['page']))
         {
@@ -29,14 +31,55 @@ class pmController extends controller
                 $page = $params['page'];
                 if($page > 1)
                 {
-                   view::addTitleChunk(language::get('page'));
-                   view::addTitleChunk($page);
+                    view::addTitleChunk(language::get('page'));
+                    view::addTitleChunk($page);
                 }
-                
+
                 $model = new pmModel();
-                
+
                 $messages = $model->getLimitedTo(self::$user->id, ($page - 1)  * (int)self::$config->privateMessagesPerPage, (int)self::$config->privateMessagesPerPage);
-                $view = new HTMLview("pm/list.tpl");
+                $view = new HTMLview("pm/inbox.tpl");
+
+                if($messages)
+                {
+                    $view->messages = $messages;
+                    $view->count    = $model->getMessagesCount(self::$user->id);
+                    $view->page     = $page;
+                }
+                else
+                    $view->messages = language::get("errNoPrivateMessages");
+
+                return $view;
+            }
+            else
+                throw new messageException(language::get("error"), language::get("errNotLoggedIn"));
+        }
+        else
+            throw new messageException(language::get("error"), language::get("errWrongUrl"));
+    }
+
+    public function outbox($params = array(), $data = array())
+    {
+        view::addTitleChunk(language::get("privateMessages"));
+        view::$robots = "nofollow";
+
+        if(empty($params['page'])) $params['page'] = 1;
+
+        if(!empty($params['page']))
+        {
+            if(self::$user->isLogged)
+            {
+                $page = $params['page'];
+                if($page > 1)
+                {
+                    view::addTitleChunk(language::get('page'));
+                    view::addTitleChunk($page);
+                }
+
+                $model = new pmModel();
+
+                $messages = $model->getLimitedFrom(self::$user->id, ($page - 1)  * (int)self::$config->privateMessagesPerPage, (int)self::$config->privateMessagesPerPage);
+                $view = new HTMLview("pm/outbox.tpl");
 
                 if($messages)
                 {
@@ -70,6 +113,7 @@ class pmController extends controller
                     if($message->receiver == self::$user->id)
                     {
                         $view = new HTMLview("pm/pm.tpl");
+                        $message->content = BBcode::parse($message->content);
                         $view->message = $message;
                         return $view;
                     }

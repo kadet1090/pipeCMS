@@ -1,10 +1,13 @@
 <?php
 class helperController extends controller
 {
-    public function userSelect()
+    public function __construct() {
+        self::$_pattern = 'simple.tpl';
+    }
+
+    public function userSelect($params, $data)
     {
-        controller::$view = new HTMLview("helpers/pattern.tpl");
-        if($params['page'] != null) $page = $params['page'];        else $page = 1;
+        if(isset($params['page'])) $page = $params['page'];        else $page = 1;
         if($page > 1)
         {
             view::addTitleChunk(language::get('page'));
@@ -12,18 +15,21 @@ class helperController extends controller
         }
 
         $model = new userModel(); // tworzenie modelu danych
-        $usersCount = $model->getUsersCount();
-        $users = $model->getLimited(($page - 1)  * (int)self::$config->usersPerPage, (int)self::$config->usersPerPage);
+
+        if(isset($data['search']))
+            $users = $model->searchLimited(str_replace('*', '%', $data['search']), ($page - 1)  * (int)self::$config->usersPerPage, (int)self::$config->usersPerPage);
+        else
+            $users = $model->getLimited(($page - 1)  * (int)self::$config->usersPerPage, (int)self::$config->usersPerPage);
+
         if(empty($users))        throw new messageException(language::get('info'), language::get('noUsers'));
 
         $view = new HTMLview('helpers/userSelector.tpl'); //tworzenie bufora treści
         $view->title = language::get('users');
         $view->users = (is_array($users) ? $users : array($users)); //...wartości
-        $view->pages = helperController::pageList($usersCount, (int)self::$config->usersPerPage, $page, array("helper", "userSelect", "page"));
+        $view->page = $page;
+        $view->count = $model->getFoundCount();
 
-        return $view; // zwracanie bufora treści do strony        
-        $view = new HTMLview("helpers/userSelctor.tpl");
-        return $view;
+        return $view; // zwracanie bufora treści do strony
     }
     
     public static function pageList($count, $perPage, $currentPage, array $url)
