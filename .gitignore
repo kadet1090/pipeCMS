@@ -7,7 +7,7 @@ test.php
 *.log
 usersData
 data
-/templates/pipe-new/
-/templates/pipe-software/
+templates/pipe-new/
+templates/pipe-software/
 .idea/
 .classmap

@@ -20,18 +20,9 @@ class newsController extends controller
             $news = $newsModel->getLimited(($params['page'] - 1)  * (int)self::$config->newsPerPage, (int)self::$config->newsPerPage, language::getLang());
             if(empty($news))        throw new messageException(language::get('info'), language::get('noNews'), array('text' => ''));
 
-            $newsCount = $newsModel->getNewsCount();
             $view->news = (is_array($news) ? $news : array($news)); //...wartości
-            $view->newsCount = $newsCount;
-            
-            $pageCount = ceil($newsCount / self::$config->newsPerPage);
-            $sp = ($params['page'] - 3 > 0 ? $params['page'] - 3 : 1);
-            $ep = ceil($sp + ($pageCount < 7 ? $pageCount : 7));
-            
-            
-            $view->startPage = ($sp > 0 ? $sp : 1);
-            $view->currentPage = $params['page'];
-            $view->endPage = $ep;
+            $view->count = $newsModel->getNewsCount();
+            $view->page = $params['page'];
             
             return $view; // zwracanie bufora treści do strony
         }
@@ -201,7 +192,7 @@ class newsController extends controller
         {
             $newsModel = new newsModel();
             
-            if($params['page'] != null) $page = $params['page'];
+            if(isset($params['page'])) $page = $params['page'];
             else $page = 1;
             
             $view = new HTMLview( 'news/all.tpl'); //tworzenie bufora treści
@@ -216,15 +207,8 @@ class newsController extends controller
             $view->category = $category;
             $view->title = $category->name;
             $view->news = (is_array($news) ? $news : array($news)); //...wartości
-            $view->newsCount = $newsModel->getNewsCountFromCategory($params['id']);
-            
-            $pageCount = ceil($newsModel->getNewsCountFromCategory($params['id']) / self::$config->newsPerPage);
-            $sp = ($page - 3 > 0 ? $page - 3 : 1);
-            $ep = ceil($sp + ($pageCount < 7 ? $pageCount : 7));
-            
-            $view->startPage = $sp;
-            $view->currentPage = $page;
-            $view->endPage = $ep;
+            $view->count = $newsModel->getNewsCountFromCategory($params['id']);
+            $view->page = $page;
             
             if($page > 1)
             {
@@ -250,10 +234,12 @@ class newsController extends controller
         $news->views = 0;
         $news->content = BBcode::parse((!isset($data['html']) ? stripslashes($data['content']) : htmlspecialchars($data['content'])));
         $news->title = $data['title'];
-        $news->author = self::$user->id;
-        $news->authorName = self::$user->login;
-        $news->category = $data['category'];
-        $news->categoryName = $category->name;
+        $news->author = new stdClass();
+        $news->author->id = self::$user->id;
+        $news->author->login = self::$user->login;
+        $news->category = new stdClass();
+        $news->category->id = $data['category'];
+        $news->category->name = $category->name;
 
         $view = new HTMLview( 'news/preview.tpl');
         $view->news = $news;

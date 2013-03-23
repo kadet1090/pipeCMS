@@ -4,25 +4,25 @@ class newsModel extends dataBaseModel
     protected $_predefinedQueries = array(
         'get' => array('SELECT 
                 `%p%news`.*,
-                `%p%users`.`login`             AS `authorName`,
-                `%p%users_groups`.`suffix`     AS `suffix`,
-                `%p%users_groups`.`prefix`     AS `prefix`,
-                `%p%users_groups`.`color`      AS `color`,
-                `%p%news_categories`.`name`    AS `categoryName`
+                `%p%users`.`login`             AS `author_login`,
+                `%p%users_groups`.`suffix`     AS `author_suffix`,
+                `%p%users_groups`.`prefix`     AS `author_prefix`,
+                `%p%users_groups`.`color`      AS `author_color`,
+                `%p%news_categories`.`name`    AS `category_name`
             FROM `%p%news`, `%p%users`, `%p%users_groups`, `%p%news_categories`
             WHERE 
                 `%p%news_categories`.`id` = `%p%news`.`category` AND 
                 `%p%users`.`id` = `%p%news`.`author` AND
                 `%p%users_groups`.`id` = `%p%users`.`main_group` AND
                 `%p%news`.`id` = :1', true),
-        
-        'getLimited' => 'SELECT 
+
+        'getLimited' => 'SELECT
                 `%p%news`.*,
-                `%p%users`.`login`             AS `authorName`,
-                `%p%users_groups`.`suffix`     AS `suffix`,
-                `%p%users_groups`.`prefix`     AS `prefix`,
-                `%p%users_groups`.`color`      AS `color`,
-                `%p%news_categories`.`name`    AS `categoryName`
+                `%p%users`.`login`             AS `author_login`,
+                `%p%users_groups`.`suffix`     AS `author_suffix`,
+                `%p%users_groups`.`prefix`     AS `author_prefix`,
+                `%p%users_groups`.`color`      AS `author_color`,
+                `%p%news_categories`.`name`    AS `category_name`
             FROM `%p%news`, `%p%users`, `%p%users_groups`, `%p%news_categories`
             WHERE 
                 `%p%news_categories`.`id` = `%p%news`.`category` AND 
@@ -33,11 +33,11 @@ class newsModel extends dataBaseModel
         
         'getLimitedFromCategory' => 'SELECT 
                 `%p%news`.*,
-                `%p%users`.`login`             AS `authorName`,
-                `%p%users_groups`.`suffix`     AS `suffix`,
-                `%p%users_groups`.`prefix`     AS `prefix`,
-                `%p%users_groups`.`color`      AS `color`,
-                `%p%news_categories`.`name`    AS `categoryName`
+                `%p%users`.`login`             AS `author_login`,
+                `%p%users_groups`.`suffix`     AS `author_suffix`,
+                `%p%users_groups`.`prefix`     AS `author_prefix`,
+                `%p%users_groups`.`color`      AS `author_color`,
+                `%p%news_categories`.`name`    AS `category_name`
             FROM `%p%news`, `%p%users`, `%p%users_groups`, `%p%news_categories`
             WHERE 
                 `%p%news_categories`.`id` = `%p%news`.`category` AND 

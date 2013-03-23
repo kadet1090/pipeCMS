@@ -1,5 +1,8 @@
 <?php
-    define("DEBUG_MODE", true);
+    if(isset($_GET['debug']))
+        define("DEBUG_MODE", true);
+    else
+        define("DEBUG_MODE", false);
 
     $startTime = microtime(true); // Czas wystartowania skryptu (potrzebne aby sprawdzić czas wykonywania skryptu)
     date_default_timezone_set('Europe/Warsaw');
