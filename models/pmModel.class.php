@@ -5,10 +5,10 @@ class pmModel extends dataBaseModel
     protected $_predefinedQueries = array(
         'getLimitedTo'=> 'SELECT
             `%p%pm`.*,
-            `%p%users`.`login`             AS `author_login`,
-            `%p%users_groups`.`suffix`     AS `author_suffix`,
-            `%p%users_groups`.`prefix`     AS `author_prefix`,
-            `%p%users_groups`.`color`      AS `author_color`
+            `%p%users`.`login`             AS `author.login`,
+            `%p%users_groups`.`suffix`     AS `author.suffix`,
+            `%p%users_groups`.`prefix`     AS `author.prefix`,
+            `%p%users_groups`.`color`      AS `author.color`
         FROM `%p%pm`, `%p%users`, `%p%users_groups`
         WHERE 
             `%p%users`.`id` = `%p%pm`.`author` AND
@@ -18,10 +18,10 @@ class pmModel extends dataBaseModel
 
         'getLimitedFrom'=> 'SELECT
             `%p%pm`.*,
-            `%p%users`.`login`             AS `receiver_login`,
-            `%p%users_groups`.`suffix`     AS `receiver_suffix`,
-            `%p%users_groups`.`prefix`     AS `receiver_prefix`,
-            `%p%users_groups`.`color`      AS `receiver_color`
+            `%p%users`.`login`             AS `receiver.login`,
+            `%p%users_groups`.`suffix`     AS `receiver.suffix`,
+            `%p%users_groups`.`prefix`     AS `receiver.prefix`,
+            `%p%users_groups`.`color`      AS `receiver.color`
         FROM `%p%pm`, `%p%users`, `%p%users_groups`
         WHERE
             `%p%users`.`id` = `%p%pm`.`receiver` AND
@@ -31,17 +31,18 @@ class pmModel extends dataBaseModel
         
         'getMessage' => array('SELECT
             `%p%pm`.*,
-            `%p%users`.`login`             AS `author_login`,
-            `%p%users_groups`.`suffix`     AS `author_suffix`,
-            `%p%users_groups`.`prefix`     AS `author_prefix`,
-            `%p%users_groups`.`color`      AS `author_color`
+            `%p%users`.`login`             AS `author.login`,
+            `%p%users_groups`.`suffix`     AS `author.suffix`,
+            `%p%users_groups`.`prefix`     AS `author.prefix`,
+            `%p%users_groups`.`color`      AS `author.color`
         FROM `%p%pm`, `%p%users`, `%p%users_groups`
         WHERE 
             `%p%users`.`id` = `%p%pm`.`author` AND
             `%p%users_groups`.`id` = `%p%users`.`main_group` AND 
             `%p%pm`.`id` = :1', true),
         
-        'send' => 'INSERT INTO `%p%pm`(`title`, `content`, `author`, `receiver`, `date`) VALUES(:1, :2, :3, :4, :5)'
+        'send' => 'INSERT INTO `%p%pm`(`title`, `content`, `author`, `receiver`, `date`) VALUES(:1, :2, :3, :4, :5)',
+        'makeRead' => 'UPDATE `%p%pm` SET `read` = 1 WHERE `id` = :1'
     );
     
     public function getMessagesCount($userID)

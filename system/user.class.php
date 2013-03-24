@@ -1,7 +1,8 @@
 <?php
-class user
+class user extends stdDao
 {
     public $isLogged = false;
+    public $id = 0;
 
     public function hasPermission($permission)
     {

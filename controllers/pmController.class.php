@@ -112,6 +112,9 @@ class pmController extends controller
                 {
                     if($message->receiver == self::$user->id)
                     {
+                        if(!$message->read)
+                            $model->makeRead($message->id);
+
                         $view = new HTMLview("pm/pm.tpl");
                         $message->content = BBcode::parse($message->content);
                         $view->message = $message;

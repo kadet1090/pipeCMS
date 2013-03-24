@@ -3,9 +3,9 @@ class stdDao
 {
     public function __set($name, $value)
     {
-        if(strpos($name, '_') !== false) {
-            $var = strstr($name, '_', true);
-            $prop = substr(strstr($name, '_'), 1);
+        if(strpos($name, '.') !== false) {
+            $var = strstr($name, '.', true);
+            $prop = substr(strstr($name, '.'), 1);
 
             if(is_numeric($this->$var)) {
                 $id = $this->$var;

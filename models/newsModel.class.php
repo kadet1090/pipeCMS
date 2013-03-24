@@ -4,10 +4,10 @@ class newsModel extends dataBaseModel
     protected $_predefinedQueries = array(
         'get' => array('SELECT 
                 `%p%news`.*,
-                `%p%users`.`login`             AS `author_login`,
-                `%p%users_groups`.`suffix`     AS `author_suffix`,
-                `%p%users_groups`.`prefix`     AS `author_prefix`,
-                `%p%users_groups`.`color`      AS `author_color`,
+                `%p%users`.`login`             AS `author.login`,
+                `%p%users_groups`.`suffix`     AS `author.suffix`,
+                `%p%users_groups`.`prefix`     AS `author.prefix`,
+                `%p%users_groups`.`color`      AS `author.color`,
                 `%p%news_categories`.`name`    AS `category_name`
             FROM `%p%news`, `%p%users`, `%p%users_groups`, `%p%news_categories`
             WHERE 
@@ -18,11 +18,11 @@ class newsModel extends dataBaseModel
 
         'getLimited' => 'SELECT
                 `%p%news`.*,
-                `%p%users`.`login`             AS `author_login`,
-                `%p%users_groups`.`suffix`     AS `author_suffix`,
-                `%p%users_groups`.`prefix`     AS `author_prefix`,
-                `%p%users_groups`.`color`      AS `author_color`,
-                `%p%news_categories`.`name`    AS `category_name`
+                `%p%users`.`login`             AS `author.login`,
+                `%p%users_groups`.`suffix`     AS `author.suffix`,
+                `%p%users_groups`.`prefix`     AS `author.prefix`,
+                `%p%users_groups`.`color`      AS `author.color`,
+                `%p%news_categories`.`name`    AS `category.name`
             FROM `%p%news`, `%p%users`, `%p%users_groups`, `%p%news_categories`
             WHERE 
                 `%p%news_categories`.`id` = `%p%news`.`category` AND 
@@ -33,11 +33,11 @@ class newsModel extends dataBaseModel
         
         'getLimitedFromCategory' => 'SELECT 
                 `%p%news`.*,
-                `%p%users`.`login`             AS `author_login`,
-                `%p%users_groups`.`suffix`     AS `author_suffix`,
-                `%p%users_groups`.`prefix`     AS `author_prefix`,
-                `%p%users_groups`.`color`      AS `author_color`,
-                `%p%news_categories`.`name`    AS `category_name`
+                `%p%users`.`login`             AS `author.login`,
+                `%p%users_groups`.`suffix`     AS `author.suffix`,
+                `%p%users_groups`.`prefix`     AS `author.prefix`,
+                `%p%users_groups`.`color`      AS `author.color`,
+                `%p%news_categories`.`name`    AS `category.name`
             FROM `%p%news`, `%p%users`, `%p%users_groups`, `%p%news_categories`
             WHERE 
                 `%p%news_categories`.`id` = `%p%news`.`category` AND 
