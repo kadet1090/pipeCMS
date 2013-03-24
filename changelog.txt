@@ -5,7 +5,7 @@
 + exclude paging from controllers, now helper doing it
 + added basic page system
 + extended menu support
-+ optymalization
++ optimization
 + added db prefix support
 * some changes in config file
 * router changes

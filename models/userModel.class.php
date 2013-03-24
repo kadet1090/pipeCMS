@@ -32,9 +32,18 @@ class userModel extends dataBaseModel
         'updateLastActivity'    => 'UPDATE `%p%users` SET `last_activity` = :1 WHERE `id` = :2',
         '_getAdditionalFields'  => array('SELECT * FROM `%p%additional_fields`', false, 'stdClass'),
         '_setAdditionalField'   => '',
-        'searchLimited' => 'SELECT SQL_CALC_FOUND_ROWS `%p%users`.*, `%p%users_groups`.`prefix`, `%p%users_groups`.`suffix`, `%p%users_groups`.`color`
+        'searchLimited' => 'SELECT SQL_CALC_FOUND_ROWS
+                `%p%users`.*,
+                `%p%users_groups`.`prefix`,
+                `%p%users_groups`.`suffix`,
+                `%p%users_groups`.`color`
             FROM `%p%users`, `%p%users_groups`
-            WHERE `%p%users_groups`.`id` = `%p%users`.`main_group` AND `%p%users`.`login` LIKE :1
+            WHERE `%p%users_groups`.`id` = `%p%users`.`main_group` AND (
+                `%p%users`.`login` LIKE :1 COLLATE utf8_general_ci OR
+                `%p%users`.`mail` LIKE :1 COLLATE utf8_general_ci OR
+                `%p%users`.`desc` LIKE :1 COLLATE utf8_general_ci OR
+                `%p%users`.`fullname` LIKE :1 COLLATE utf8_general_ci
+            )
             LIMIT :2, :3'
     );
     

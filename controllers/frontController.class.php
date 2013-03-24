@@ -35,6 +35,9 @@ class frontController extends controller {
             include view::$templateDir.'/functions.php';
 
         hookManager::add('pipe_footer', 'cookies');
+
+        searchController::$providers['news'] = new newsSearchProvider();
+        searchController::$providers['user'] = new userSearchProvider();
     }
     
     public function work($startTime)

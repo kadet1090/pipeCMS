@@ -8,7 +8,7 @@ class newsModel extends dataBaseModel
                 `%p%users_groups`.`suffix`     AS `author.suffix`,
                 `%p%users_groups`.`prefix`     AS `author.prefix`,
                 `%p%users_groups`.`color`      AS `author.color`,
-                `%p%news_categories`.`name`    AS `category_name`
+                `%p%news_categories`.`name`    AS `category.name`
             FROM `%p%news`, `%p%users`, `%p%users_groups`, `%p%news_categories`
             WHERE 
                 `%p%news_categories`.`id` = `%p%news`.`category` AND 
@@ -16,7 +16,7 @@ class newsModel extends dataBaseModel
                 `%p%users_groups`.`id` = `%p%users`.`main_group` AND
                 `%p%news`.`id` = :1', true),
 
-        'getLimited' => 'SELECT
+        'getLimited' => 'SELECT SQL_CALC_FOUND_ROWS
                 `%p%news`.*,
                 `%p%users`.`login`             AS `author.login`,
                 `%p%users_groups`.`suffix`     AS `author.suffix`,
@@ -31,7 +31,7 @@ class newsModel extends dataBaseModel
                 `%p%news`.`lang` = :3
                 ORDER BY `%p%news`.`id` DESC LIMIT :1, :2',
         
-        'getLimitedFromCategory' => 'SELECT 
+        'getLimitedFromCategory' => 'SELECT SQL_CALC_FOUND_ROWS
                 `%p%news`.*,
                 `%p%users`.`login`             AS `author.login`,
                 `%p%users_groups`.`suffix`     AS `author.suffix`,
@@ -52,7 +52,24 @@ class newsModel extends dataBaseModel
         'delete'            => 'DELETE FROM `%p%news` WHERE `id` = :1',
         'getCategories'     => 'SELECT * FROM `%p%news_categories`',
         'getCategory'       => array('SELECT * FROM `%p%news_categories` WHERE `id` = :1', true),
-        'increaseViews'     => 'UPDATE `%p%news` SET `views` = `views`+1 WHERE `id` = :1'
+        'increaseViews'     => 'UPDATE `%p%news` SET `views` = `views`+1 WHERE `id` = :1',
+        'searchLimited'     => 'SELECT SQL_CALC_FOUND_ROWS
+                `%p%news`.*,
+                `%p%users`.`login`             AS `author.login`,
+                `%p%users_groups`.`suffix`     AS `author.suffix`,
+                `%p%users_groups`.`prefix`     AS `author.prefix`,
+                `%p%users_groups`.`color`      AS `author.color`,
+                `%p%news_categories`.`name`    AS `category.name`
+            FROM `%p%news`, `%p%users`, `%p%users_groups`, `%p%news_categories`
+            WHERE
+                `%p%news_categories`.`id` = `%p%news`.`category` AND
+                `%p%users`.`id` = `%p%news`.`author` AND
+                `%p%users_groups`.`id` = `%p%users`.`main_group` AND
+                `%p%news`.`lang` = :2 AND (
+                    `%p%news`.`title` LIKE :1 COLLATE utf8_general_ci OR
+                    `%p%news`.`content` LIKE :1 COLLATE utf8_general_ci
+                )
+                ORDER BY `%p%news`.`id` DESC LIMIT :3, :4'
     );
     
     public function getNewsCount()
