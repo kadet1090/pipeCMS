@@ -12,4 +12,8 @@ abstract class searchProvider implements searchProviderInterface {
     public $configTemplate = '';
 
     public $name = '';
+
+    public function getConfig() {
+        return null;
+    }
 }

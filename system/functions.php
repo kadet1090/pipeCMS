@@ -100,8 +100,8 @@ function nl($text, $br = false)
 }
 function array_diff2($array1, $array2) // aghh PHP SUX!
 {
-    foreach($array1 as $mKey => $mValue)
-        if(array_search($mValue, $array2)) unset($array1[array_search($mValue, $array2)]);
+    foreach($array1 as $mValue)
+        if(array_search($mValue, $array2)) unset($array1[array_search($mValue, $array1)]);
     return $array1;
 }
 
@@ -123,32 +123,30 @@ function substrws($text, $lenght)
     }
     elseif((mb_strlen($text) > $lenght)) 
     {
-        $whitespaceposition = mb_strpos($text, ' ', $lenght) - 1;
-        if($whitespaceposition > 0) 
+        $whitespacePosition = mb_strpos($text, ' ', $lenght) - 1;
+        if($whitespacePosition > 0)
         {
 
-            $chars = count_chars(mb_substr($text, 0, ($whitespaceposition + 1)), 1);
+            $chars = count_chars(mb_substr($text, 0, ($whitespacePosition + 1)), 1);
             if((isset($chars[ord('<')]) ? $chars[ord('<')] : 0) > (isset($chars[ord('>')]) ? $chars[ord('>')] : 0)) 
             {
-                $whitespaceposition = mb_strpos($text, ">", $whitespaceposition);
+                $whitespacePosition = mb_strpos($text, ">", $whitespacePosition);
             }
-            $text = mb_substr($text, 0, ($whitespaceposition + 1));
+            $text = mb_substr($text, 0, ($whitespacePosition + 1));
         }
         // close unclosed html tags
         if(preg_match_all("|(<([\w]+)[^>]*>)|", $text, $buffer)) 
         {        
             if(!empty($buffer[1])) 
             {
-                preg_match_all("|</([a-zA-Z]+)>|", $text, $buffer2);
+                preg_match_all("|</([a-zA-Z0-9\w]+)>|", $text, $buffer2);
                 if(count($buffer[2]) != count($buffer2[1])) 
                 {
-                    $array1 = ($buffer[2]);
-                    $array2 = ($buffer2[1]);
-                    $closing_tags = array_diff2($array1, $array2);
-                    $closing_tags = array_reverse($closing_tags);
-                    foreach($closing_tags as $tag) 
+                    $closingTags = array_reverse(array_diff($buffer[2], $buffer2[1]));
+
+                    foreach($closingTags as $tag)
                     {
-                        if($tag != "br" && $tag != "img")
+                        if($tag != "br" && $tag != "img" && $tag != "hr")
                             $text .= '</'.$tag.'>';
                     }
                 }

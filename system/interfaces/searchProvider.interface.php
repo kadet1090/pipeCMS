@@ -11,7 +11,12 @@ interface searchProviderInterface {
      * @param string $query
      * @param int $page
      * @param array $config
-     * @return array
+     * @return view
      */
     public function getResults($query, $page = 1, $config = array());
+
+    /**
+     * @return view
+     */
+    public function getConfig();
 }

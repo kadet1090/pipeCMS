@@ -13,7 +13,8 @@ class user extends stdDao
             return false;
         
         if(strstr($permission, '/') == false)
-            return isset($this->_permissions[$permission]) && array_search(true, $this->_permissions[$permission]) !== false;
+            return (isset($this->_permissions[$permission]) && array_search(true, $this->_permissions[$permission]) !== false) ||
+                (isset($this->_permissions['all']['all']) && $this->_permissions['all']['all'] !== false);
         
         $cat = strstr($permission, '/', true);
         $perm = substr(strstr($permission, '/'), 1);

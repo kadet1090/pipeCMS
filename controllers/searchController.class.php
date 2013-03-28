@@ -9,11 +9,21 @@ class searchController extends controller
     public function index($params = array(), $data = array())
     {
         $_SESSION['search_data'] = null;
-        return new HTMLview('search/index.tpl');
+        $view = new HTMLview('search/index.tpl');
+
+        $results = array();
+        foreach(self::$providers as $provider) {
+            $result = $provider->getConfig();
+            if(!empty($result)) $results[] = $result;
+        }
+
+        $view->providers = $results;
+        return $view;
     }
 
     public function results($params = array(), $data = array()) {
-        if(!isset($data['query'])) return false;
+        if(!isset($data['query']) || empty($data['query']))
+            throw new messageException(language::get('error'), language::get('errQueryNotSpecified'));
 
         $_SESSION['search_data'] = serialize($data);
 
