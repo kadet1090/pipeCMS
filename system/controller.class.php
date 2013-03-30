@@ -24,7 +24,7 @@ class controller
      * @var router 
      */
     public static $router;
-    
+
     static protected $_instance;
     static $language;
 

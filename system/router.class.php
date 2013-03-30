@@ -65,18 +65,18 @@ class router implements singleton, routerInterface
     }
 
     /** Adds one static url chunk
-     * @static
      * @access public
-     * @param string $routeName
+     * @param $paramName
+     * @param $mParamDefaultValue
+     * @internal param string $routeName
      */
-    public static function addStaticParam($paramName, $mParamDefaultValue)
+    public function addStaticParam($paramName, $mParamDefaultValue)
     {
         $this->_staticParams[$paramName] = $mParamDefaultValue;
     }
 
     /** Decodes URI
      * @access public
-     * @param string $uRL
      * @return array
      */
     public function decodeURI()
@@ -157,17 +157,17 @@ class router implements singleton, routerInterface
         return false;
     }
 
-    public function get($name = NULL)
+    public function get($name = null)
     {
-        if($name == NULL)
+        if($name == null)
             return array_merge($_GET, $this->_params);
         
         return (isset($_GET[$name]) ? trim(addslashes($_GET[$name])) : null);
     }
 
-    public function post($name = NULL)
+    public function post($name = null)
     {
-        if($name == NULL)
+        if($name == null)
             return $_POST;
         else
         {

@@ -163,7 +163,7 @@ function pass($password)
 
 function isMail($mail)
 {
-    return preg_match('/^[a-zA-Z0-9\_\-\.]{1,256}@[a-z\_\-\.]*\.[a-z]{2,4}/', $mail);
+    return preg_match('/^[a-zA-Z0-9_\-\.]{1,256}@[a-z_\-\.]*\.[a-z]{2,4}/', $mail);
 }
 
 /** deletes ele
