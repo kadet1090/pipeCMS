@@ -1,6 +1,8 @@
 <?php
-    if(isset($_GET['debug']))
+    if(isset($_GET['debug'])) {
         define("DEBUG_MODE", true);
+        ini_set("display_errors", "On");
+    }
     else
         define("DEBUG_MODE", false);
 

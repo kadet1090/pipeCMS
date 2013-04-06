@@ -15,6 +15,6 @@
 <?php if($currentUser->hasPermission('comment/add')): ?>
 <form method="POST" action="<?php echo $router->prepareLink('comments', 'add', $type, $id) ?>">
     <textarea id="content" name="content" rows="5"></textarea>
-    <input type="submit" name="submit" class="tick" value="<?php echo _('add'); ?>" />
+    <input type="submit" name="submit" class="tick" value="<?php echo __('add'); ?>" />
 </form>
 <?php endif; ?>

@@ -246,7 +246,7 @@ function cookies() {
     echo '<a href="'.language::get('cookies').'">cookies</a>';
 }
 
-function _($phrase) {
+function __($phrase) {
     return language::get($phrase);
 }
 

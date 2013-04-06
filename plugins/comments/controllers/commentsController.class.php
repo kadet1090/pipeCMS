@@ -11,7 +11,7 @@ class commentsController extends controller
         $id = (int)$params['id'];
         $content = $params['content'];
 
-        if(isset($content->additional_data) && !$content->additional_data['comments']) return false;
+        if(isset($content->additional_data) && isset($content->additional_data['comments']) && !$content->additional_data['comments']) return false;
 
         $model = new commentsModel();
         $comments = $model->getComments($id, $type);
@@ -36,7 +36,7 @@ class commentsController extends controller
         $model = new commentsModel();
         $model->add($type, $id, $data['content'], self::$user->id, time());
 
-        return controller::message(_('success'), _('commentAdded'));
+        return controller::message(__('success'), __('commentAdded'));
     }
 
     public function delete($params, $data)
@@ -50,7 +50,7 @@ class commentsController extends controller
         $model = new commentsModel();
         $model->delete($id);
 
-        return controller::message(_('success'), _('commentDeleted'));
+        return controller::message(__('success'), __('commentDeleted'));
     }
 
     public function edit($params, $data)
@@ -72,10 +72,10 @@ class commentsController extends controller
         }
         else
         {
-            if(empty($data["content"])) throw new messageException(_('error'), _('emptyComment'));
+            if(empty($data["content"])) throw new messageException(__('error'), __('emptyComment'));
             $model->edit($id, $data["content"]);
 
-            return controller::message(_('success'), _('commentEdited'), array('url' => $data["referrer"]));
+            return controller::message(__('success'), __('commentEdited'), array('url' => $data["referrer"]));
         }
     }
 }
