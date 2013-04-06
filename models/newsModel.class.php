@@ -1,19 +1,23 @@
 <?php
 class newsModel extends dataBaseModel
 {
+    public static $bindings  = array(
+        'author' => 'user'
+    );
+
     protected $_predefinedQueries = array(
         'get' => array('SELECT 
                 `%p%news`.*,
-                `%p%users`.`login`             AS `author.login`,
+                `author`.*,
                 `%p%users_groups`.`suffix`     AS `author.suffix`,
                 `%p%users_groups`.`prefix`     AS `author.prefix`,
                 `%p%users_groups`.`color`      AS `author.color`,
                 `%p%news_categories`.`name`    AS `category.name`
-            FROM `%p%news`, `%p%users`, `%p%users_groups`, `%p%news_categories`
+            FROM `%p%news`, `%p%users` as `author`, `%p%users_groups`, `%p%news_categories`
             WHERE 
                 `%p%news_categories`.`id` = `%p%news`.`category` AND 
-                `%p%users`.`id` = `%p%news`.`author` AND
-                `%p%users_groups`.`id` = `%p%users`.`main_group` AND
+                `author`.`id` = `%p%news`.`author` AND
+                `%p%users_groups`.`id` = `author`.`main_group` AND
                 `%p%news`.`id` = :1', true),
 
         'getLimited' => 'SELECT SQL_CALC_FOUND_ROWS

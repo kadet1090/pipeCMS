@@ -25,12 +25,12 @@ class sliderPlugin extends plugin
         if(isset($config["slides"]))
         {
             self::$slides = $config["slides"];
-            hookManager::add('before_index', 'sliderPlugin::before_index');
+            hookManager::add('before_index', array($this, 'beforeIndex'));
         }
     }
 
-    public static function before_index() {
-        $view = new HTMLview('slider/slider.tpl', self::$directory.'/template');
+    public function beforeIndex() {
+        $view = new HTMLview('slider/slider.tpl', $this->directory.'/template');
         $view->slides = self::$slides;
         echo $view;
     }

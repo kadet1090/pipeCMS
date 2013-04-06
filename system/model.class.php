@@ -13,6 +13,8 @@ abstract class model
 {
     protected $_data = array();
     protected $_defaultDAOname = 'stdDao';
+
+    public static $bindings = array();
     
     public function __get($name)
     {

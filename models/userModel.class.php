@@ -12,31 +12,48 @@ class userModel extends dataBaseModel
         'unban'         => 'UPDATE `%p%users` SET `banned` = \'0\' WHERE `id` = :1',
         'edit'          => 'UPDATE `%p%users` SET  `mail` = :2, `fullname` = :3, `sex` = :4, `place` = :5, `desc` = :6, `twitter` = :7, `xmpp` = :8, `gg` = :9, `url` = :10, `register_date` = :11, `br_date` = :12, `additional_fields` = :13 WHERE `id` = :1',
         
-        'getLimited'    => 'SELECT SQL_CALC_FOUND_ROWS `%p%users`.*, `%p%users_groups`.`prefix` as `prefix`, `%p%users_groups`.`suffix` as `suffix`, `%p%users_groups`.`color` as `color`
+        'getLimited'    => 'SELECT SQL_CALC_FOUND_ROWS
+                `%p%users`.*,
+                `%p%users_groups`.`prefix` as `self.prefix`,
+                `%p%users_groups`.`suffix` as `self.suffix`,
+                `%p%users_groups`.`color`  as `self.color`
             FROM `%p%users`, `%p%users_groups`
             WHERE `%p%users_groups`.`id` = `%p%users`.`main_group`
             LIMIT :1, :2',
 
-        'getUser'       => array('SELECT `%p%users`.*, `%p%users_groups`.`prefix` as `prefix`, `%p%users_groups`.`suffix` as `suffix`, `%p%users_groups`.`color` as `color`
+        'getUser'       => array('SELECT
+                `%p%users`.*,
+                `%p%users_groups`.`prefix` as `self.prefix`,
+                `%p%users_groups`.`suffix` as `self.suffix`,
+                `%p%users_groups`.`color`  as `self.color`
             FROM `%p%users`, `%p%users_groups`
-            WHERE `%p%users`.`id` = :1 AND `%p%users_groups`.`id` = `%p%users`.`main_group`', true),
+            WHERE
+                `%p%users`.`id` = :1 AND
+                `%p%users_groups`.`id` = `%p%users`.`main_group`', true),
 
-        'getLimitedFromGroup' => 'SELECT SQL_CALC_FOUND_ROWS `%p%users`.*, `%p%users_groups`.`prefix`, `%p%users_groups`.`suffix`, `%p%users_groups`.`color`, (SELECT COUNT(*) FROM `%p%users` WHERE `groups` LIKE :3) AS `count`
+        'getLimitedFromGroup' => 'SELECT SQL_CALC_FOUND_ROWS
+                `%p%users`.*,
+                `%p%users_groups`.`prefix` as `self.prefix`,
+                `%p%users_groups`.`suffix` as `self.suffix`,
+                `%p%users_groups`.`color`  as `self.color`
+                (SELECT COUNT(*) FROM `%p%users` WHERE `groups` LIKE :3) AS `count`
             FROM `%p%users`, `%p%users_groups`
-            WHERE `%p%users_groups`.`id` = `%p%users`.`main_group` AND `%p%users`.`groups` LIKE :3
+            WHERE
+                `%p%users_groups`.`id` = `%p%users`.`main_group` AND
+                `%p%users`.`groups` LIKE :3
             LIMIT :1, :2',
 
-        'getGroup'      => array('SELECT *, (SELECT COUNT(*) FROM `%p%users` WHERE `groups` LIKE :2) AS `count` FROM `%p%users_groups` WHERE `id` = :1', true, 'stdClass'),
+        'getGroup'      => array('SELECT *, (SELECT COUNT(*) FROM `%p%users` WHERE `groups` LIKE :2) AS `count` FROM `%p%users_groups` WHERE `id` = :1', true, 'stdDao'),
         'setGroups'     => 'UPDATE `%p%users` SET `groups` = :1 WHERE `id` = :2',
         'setMainGroup'  => 'UPDATE `%p%users` SET `main_group` = :1 WHERE `id` = :2',
         'updateLastActivity'    => 'UPDATE `%p%users` SET `last_activity` = :1 WHERE `id` = :2',
-        '_getAdditionalFields'  => array('SELECT * FROM `%p%additional_fields`', false, 'stdClass'),
+        '_getAdditionalFields'  => array('SELECT * FROM `%p%additional_fields`', false, 'stdDao'),
         '_setAdditionalField'   => '',
         'searchLimited' => 'SELECT SQL_CALC_FOUND_ROWS
                 `%p%users`.*,
-                `%p%users_groups`.`prefix`,
-                `%p%users_groups`.`suffix`,
-                `%p%users_groups`.`color`
+                `%p%users_groups`.`prefix` as `self.prefix`,
+                `%p%users_groups`.`suffix` as `self.suffix`,
+                `%p%users_groups`.`color`  as `self.color`
             FROM `%p%users`, `%p%users_groups`
             WHERE `%p%users_groups`.`id` = `%p%users`.`main_group` AND (
                 `%p%users`.`login` LIKE :1 COLLATE utf8_general_ci OR
@@ -88,7 +105,7 @@ class userModel extends dataBaseModel
             $groups[$id] = "`id` = '".addslashes($val)."'";
         }
         $SQL .= implode(' OR ', $groups);
-        $res = $this->proccessSQL($SQL, array(), false, 'stdClass');
+        $res = $this->proccessSQL($SQL, array(), false, 'stdDao');
         $ret = array();
         foreach($res as $group) {
             $ret[$group->id] = $group;

@@ -25,9 +25,9 @@ class HTMLview extends view
         $router = controller::$router;
         $currentUser = controller::$user;
 
-        $path = file_exists(self::$templateDir.DIRECTORY_SEPARATOR.$this->_templateFileName) ?
-            self::$templateDir.DIRECTORY_SEPARATOR.$this->_templateFileName :
-            $this->_fallBackDir.DIRECTORY_SEPARATOR.$this->_templateFileName;
+        $path = file_exists(self::$templateDir.'/'.$this->_templateFileName) ?
+            self::$templateDir.'/'.$this->_templateFileName :
+            $this->_fallBackDir.'/'.$this->_templateFileName;
 
         if(!file_exists($path))
             return 'Error while loading '.$this->_templateFileName.' template.';

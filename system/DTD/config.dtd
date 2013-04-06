@@ -3,18 +3,22 @@
     PUBLIC ID  : -//pipe-software//config//EN
     SYSTEM ID  : ../system/DTD/config.dtd
 -->
-<!ELEMENT config ANY>
-    <!ELEMENT info (keywords, description, title, delimeter, author, charset, footer)>
-	<!ELEMENT keywords (#PCDATA)>
-	<!ELEMENT description (#PCDATA)>
-	<!ELEMENT title (#PCDATA)>
-	<!ELEMENT keywodelimeterrds (#PCDATA)>
-	<!ELEMENT author (#PCDATA)>
-	<!ELEMENT charset (#PCDATA)>
-	<!ELEMENT footer (#PCDATA)>
+<!ELEMENT config (info|path|defaultTemplate|defaultACPTemplate|defaultLanguage|defaultGroupID|newsPerPage|newsLenght|usersPerPage|privateMessagesPerPage|cookieSalt)*>
+    <!ELEMENT info (keywords|description|title|delimeter|author|charset|footer)*>
+        <!ELEMENT keywords (#PCDATA)>
+        <!ELEMENT description (#PCDATA)>
+        <!ELEMENT title (#PCDATA)>
+        <!ELEMENT delimeter (#PCDATA)>
+        <!ELEMENT author (#PCDATA)>
+        <!ELEMENT charset (#PCDATA)>
+    <!ELEMENT footer (#PCDATA)>
     <!ELEMENT path (#PCDATA)>
-    <!ELEMENT tplDir (#PCDATA)>
+    <!ELEMENT defaultTemplate (#PCDATA)>
+    <!ELEMENT defaultACPTemplate (#PCDATA)>
     <!ELEMENT defaultLanguage (#PCDATA)>
     <!ELEMENT defaultGroupID (#PCDATA)>
     <!ELEMENT newsPerPage (#PCDATA)>
+    <!ELEMENT newsLenght (#PCDATA)>
     <!ELEMENT usersPerPage (#PCDATA)>
+    <!ELEMENT privateMessagesPerPage (#PCDATA)>
+    <!ELEMENT cookieSalt (#PCDATA)>

@@ -146,11 +146,11 @@ class newsController extends controller
                     if(!isset($data['category']))throw new messageException(language::get('error'), language::get('errCategoryNotSet'), array('url' => array('news', 'edit', $params['name'], $params['id'])));
 
                     $newsModel->edit($params['id'], $data['title'], (isset($data['html']) ? $data['content'] : htmlspecialchars($data['content'])), $data['category']);
-                    throw new messageException(language::get('success'), language::get('editNewsSuccess'), array('url' => array('index', 'index')));
+                    throw new messageException(language::get('success'), language::get('editNewsSuccess'));
                 }
             }
             else
-                throw new messageException(language::get('error'), language::get('errNoPermission'), array('url' => array('index', 'index')));
+                throw new messageException(language::get('error'), language::get('errNoPermission'));
         }
         else
             throw new messageException(language::get('error'), language::get('errWrongURL'), array('url' => array('index', 'index')));

@@ -44,8 +44,5 @@
             <param name="name"   regEXP="[a-zA-Z\_\-]{1,25}" />
             <param name="userId" regEXP="[0-9]{1,4}" />
         </paramGroup>
-        <paramGroup name="showPage">
-            <param name="page"	regEXP="[0-9]{1,5}" />
-        </paramGroup>
     </regEXPparams>
 </router>

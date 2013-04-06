@@ -72,10 +72,6 @@ class frontController extends controller {
         $pattern->gt    = round(microtime(true) - $startTime, 6);
         $pattern->sql   = dataBaseConnection::$ns;
 
-        # some statistics
-        $pattern->gt    = round(microtime(true) - $startTime, 6);
-        $pattern->sql   = dataBaseConnection::$ns;
-
         # set panel for user
         $pattern->userInfo = self::$user->isLogged ?
             new HTMLview('user/panel-info.tpl') :

@@ -20,11 +20,11 @@ class syntaxPlugin extends plugin
 
     public function init($config)
     {
-        HTMLview::addCss(null, self::$directory.'/css/shCore.css');
-        HTMLview::addCss(null, self::$directory.'/css/shThemeDefault.css');
+        HTMLview::addCss(null, $this->directory.'/css/shCore.css');
+        HTMLview::addCss(null, $this->directory.'/css/shThemeDefault.css');
 
-        HTMLview::addJs(null, self::$directory.'/scripts/shCore.js');
-        HTMLview::addJs(null, self::$directory.'/scripts/shAutoloader.js');
+        HTMLview::addJs(null, $this->directory.'/scripts/shCore.js');
+        HTMLview::addJs(null, $this->directory.'/scripts/shAutoloader.js');
 
         $script = <<<JS
 function path()
@@ -67,7 +67,7 @@ SyntaxHighlighter.autoloader.apply(null, path(
 SyntaxHighlighter.all();
 JS;
 
-        HTMLview::addJs(str_replace('%path', self::$directory, $script));
+        HTMLview::addJs(str_replace('%path', $this->directory, $script));
 
         BBcode::addHtml('code', '<pre class="brush: {param}">{text}</pre>', true, true);
     }

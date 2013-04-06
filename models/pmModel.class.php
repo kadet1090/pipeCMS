@@ -2,43 +2,48 @@
 
 class pmModel extends dataBaseModel
 {
+    public static $bindings = array(
+        'author'    => 'user',
+        'receiver'  => 'user'
+    );
+
     protected $_predefinedQueries = array(
         'getLimitedTo'=> 'SELECT
             `%p%pm`.*,
-            `%p%users`.`login`             AS `author.login`,
+            `author`.*,
             `%p%users_groups`.`suffix`     AS `author.suffix`,
             `%p%users_groups`.`prefix`     AS `author.prefix`,
             `%p%users_groups`.`color`      AS `author.color`
-        FROM `%p%pm`, `%p%users`, `%p%users_groups`
+        FROM `%p%pm`, `%p%users` AS `author`, `%p%users_groups`
         WHERE 
-            `%p%users`.`id` = `%p%pm`.`author` AND
-            `%p%users_groups`.`id` = `%p%users`.`main_group` AND 
+            `author`.`id` = `%p%pm`.`author` AND
+            `%p%users_groups`.`id` = `author`.`main_group` AND
             `%p%pm`.`receiver` = :1 
         LIMIT :2, :3',
 
         'getLimitedFrom'=> 'SELECT
             `%p%pm`.*,
-            `%p%users`.`login`             AS `receiver.login`,
+            `receiver`*,
             `%p%users_groups`.`suffix`     AS `receiver.suffix`,
             `%p%users_groups`.`prefix`     AS `receiver.prefix`,
             `%p%users_groups`.`color`      AS `receiver.color`
-        FROM `%p%pm`, `%p%users`, `%p%users_groups`
+        FROM `%p%pm`, `%p%users` AS `receiver`, `%p%users_groups`
         WHERE
-            `%p%users`.`id` = `%p%pm`.`receiver` AND
-            `%p%users_groups`.`id` = `%p%users`.`main_group` AND
+            `receiver`.`id` = `%p%pm`.`receiver` AND
+            `%p%users_groups`.`id` = `receiver`.`main_group` AND
             `%p%pm`.`author` = :1
         LIMIT :2, :3',
         
         'getMessage' => array('SELECT
             `%p%pm`.*,
-            `%p%users`.`login`             AS `author.login`,
+            `author`.*,
             `%p%users_groups`.`suffix`     AS `author.suffix`,
             `%p%users_groups`.`prefix`     AS `author.prefix`,
             `%p%users_groups`.`color`      AS `author.color`
-        FROM `%p%pm`, `%p%users`, `%p%users_groups`
+        FROM `%p%pm`, `%p%users` AS `author`, `%p%users_groups`
         WHERE 
-            `%p%users`.`id` = `%p%pm`.`author` AND
-            `%p%users_groups`.`id` = `%p%users`.`main_group` AND 
+            `author`.`id` = `%p%pm`.`author` AND
+            `%p%users_groups`.`id` = `author`.`main_group` AND
             `%p%pm`.`id` = :1', true),
         
         'send' => 'INSERT INTO `%p%pm`(`title`, `content`, `author`, `receiver`, `date`) VALUES(:1, :2, :3, :4, :5)',

@@ -11,13 +11,13 @@ class pluginManager
     public function loadPlugins() {
         $model = new pluginsModel();
 
+        $autoloader = new autoloader('./', array(), $this->_map);
+        $autoloader->ragister();
+
         $plugins = $model->getAll();
         foreach($plugins as $plugin) {
             $this->loadPlugin($plugin);
         }
-
-        $autoloader = new autoloader('./', array(), $this->_map);
-        $autoloader->ragister();
     }
 
     public function loadPlugin($plugin) {
@@ -26,9 +26,6 @@ class pluginManager
 
         include_once $plugin->dir.'/'.$plugin->file;
 
-        $this->_plugins[$plugin->name] = new $plugin->class($plugin->dir);
-        $this->_plugins[$plugin->name]->init($plugin->config);
-
         if(!file_exists($plugin->dir.'/.classmap')) {
             $map = new classMap();
             $map->getMap($plugin->dir.'/');
@@ -36,6 +33,9 @@ class pluginManager
         }
 
         $this->_map->loadMapFromFile($plugin->dir.'/.classmap');
+
+        $this->_plugins[$plugin->name] = new $plugin->class($plugin->dir);
+        $this->_plugins[$plugin->name]->init($plugin->config);
     }
 
     public function cleanCache() {

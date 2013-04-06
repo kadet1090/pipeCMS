@@ -245,4 +245,15 @@ function is_serialized( $data ) {
 function cookies() {
     echo '<a href="'.language::get('cookies').'">cookies</a>';
 }
-?>
+
+function _($phrase) {
+    return language::get($phrase);
+}
+
+function getExecutor() {
+    $backtrace = debug_backtrace();
+
+    return isset($backtrace[2]['class']) ?
+        $backtrace[2]['class'] :
+        null;
+}

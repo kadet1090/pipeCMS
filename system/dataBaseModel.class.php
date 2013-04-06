@@ -9,6 +9,10 @@ class dataBaseModel extends model
     
     protected $_predefinedQueries = array(
     );
+
+    public static $tableBindings = array(
+        '%p%users' => 'user'
+    );
     
     public function processResult(PDOStatement $result, $object = false, $DAOname = '')
     {
@@ -16,17 +20,24 @@ class dataBaseModel extends model
             $DAOname = $this->_defaultDAOname;
         if(!class_exists($DAOname))
             $DAOname = 'stdDao';
-        
+
         $res = array();
         if(preg_match('/^[^A-Z_]*SELECT[^A-Z_]/i', $result->queryString))
         {
+            $columns = array();
+            for($i = 0, $count = $result->columnCount(); $i < $count; $i++) {
+                $columns[] = $result->getColumnMeta($i);
+            }
+
+            $result->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, $DAOname, array($columns, get_called_class()));
+
             if($result->rowCount() > 1 || !$object)
             {
-                while($row = $result->fetchObject($DAOname))
+                while($row = $result->fetch())
                     $res[] = $row;
             }
             else
-                $res = $result->fetchObject($DAOname);
+                $res = $result->fetch();
 
             $this->_data[] = $res;
             return $res;
