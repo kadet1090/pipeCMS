@@ -7,6 +7,7 @@ abstract class view
     static public $templateDir;
     protected $_templateFileName;
     protected $_fallBackDir;
+    public $parent;
     
     static $robots;
     static protected $_title;
@@ -27,6 +28,9 @@ abstract class view
     
     public function assign($name, $mValue)
     {
+        if($mValue instanceof view)
+            $mValue->parent = $this;
+
         $this->_data[$name] = $mValue;
         return $this;
     }
@@ -34,6 +38,11 @@ abstract class view
     public function __set($name, $value) 
     {
         $this->assign($name, $value);
+    }
+
+    public function __get($name)
+    {
+        return $this->_data[$name];
     }
     
     public static function addTitleChunk($text)

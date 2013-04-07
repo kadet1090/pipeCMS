@@ -77,6 +77,12 @@ class frontController extends controller {
             new HTMLview('user/panel-info.tpl') :
             new HTMLview('user/panel-login-form.tpl');
 
+        if(self::$user->isLogged) {
+            $notifications = new notificationsModel();
+            $pattern->notifications         = $notifications->getImportantNotifications(self::$user->id);
+            $pattern->notificationCount     = $notifications->getNotificationsCount(self::$user->id);
+        }
+
         # print our page
         echo $pattern->render();
     }
