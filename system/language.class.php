@@ -19,9 +19,9 @@ class language
         self::$_phrases = parse_ini_file(self::$langsDir.DIRECTORY_SEPARATOR.self::$langName.'.ini');
     }
     
-    static public function get($phraseName) 
+    static public function get($phraseName, $args = array())
     {
-        return (isset(self::$_phrases[$phraseName]) ? self::$_phrases[$phraseName] : '#'.$phraseName);
+        return vsprintf(isset(self::$_phrases[$phraseName]) ? self::$_phrases[$phraseName] : '#'.$phraseName, $args);
     }
     
     static public function getLang() 

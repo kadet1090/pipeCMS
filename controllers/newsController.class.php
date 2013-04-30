@@ -3,43 +3,41 @@ class newsController extends controller
 {
     public function page($params = array(), $data = array())
     {
-        view::addTitleChunk(language::get('news'));
+        view::addTitleChunk(__('news'));
         view::$robots = "all";
         
         $newsModel = new newsModel(); // tworzenie modelu danych
         
-        if(isset($params['page']))
-        {
-            if($params['page'] > 1)
-            {
-                view::addTitleChunk(language::get('page'));
-                view::addTitleChunk($params['page']);
-            }
-            
-            $view = new HTMLview('news/all.tpl'); //tworzenie bufora treści
-            $news = $newsModel->getLimited(($params['page'] - 1)  * (int)self::$config->newsPerPage, (int)self::$config->newsPerPage, language::getLang());
-            if(empty($news))        throw new messageException(language::get('info'), language::get('noNews'), array('text' => ''));
+        if(!isset($params['page'])) throw new messageException(__('error'), __('errWrongURL'));
 
-            $view->news = (is_array($news) ? $news : array($news)); //...wartości
-            $view->count = $newsModel->getNewsCount();
-            $view->page = $params['page'];
-            
-            return $view; // zwracanie bufora treści do strony
+        if($params['page'] > 1)
+        {
+            view::addTitleChunk(__('page'));
+            view::addTitleChunk($params['page']);
         }
-        else throw new messageException(language::get('error'), language::get('errWrongURL'));
+
+        $view = new HTMLview('news/all.tpl'); //tworzenie bufora treści
+        $news = $newsModel->getLimited(($params['page'] - 1)  * (int)self::$config->newsPerPage, (int)self::$config->newsPerPage, language::getLang());
+        if(empty($news))        throw new messageException(__('info'), __('noNews'), array('text' => ''));
+
+        $view->news = (is_array($news) ? $news : array($news)); //...wartości
+        $view->count = $newsModel->getNewsCount();
+        $view->page = $params['page'];
+
+        return $view; // zwracanie bufora treści do strony
     }
     
     public function index($params = array(), $data = array())
     {
-            return $this->page(array('page' => 1));
+        return $this->page(array('page' => 1));
     }
     
     public function show($params = array(), $data = array())
     {        
-        view::addTitleChunk(language::get('news'));
+        view::addTitleChunk(__('news'));
         view::$robots = "all";
         
-        if(!self::$router->match('news'))  throw new messageException(language::get('error'), language::get('errWrongURL'));
+        if(!self::$router->match('news'))  throw new messageException(__('error'), __('errWrongURL'));
         
         $newsModel = new newsModel();
         $news = $newsModel->get($params['id']);
@@ -55,137 +53,106 @@ class newsController extends controller
             return $view; // zwracanie bufora treści do strony
         }
         else
-            throw new messageException(language::get('error'), language::get('errNewsNotExist'));
+            throw new messageException(__('error'), __('errNewsNotExist'));
     }
     
     public function add($params = array(), $data = array())
     {
-        view::addTitleChunk(language::get('news'));
-        view::addTitleChunk(language::get('add'));
+        view::addTitleChunk(__('news'));
+        view::addTitleChunk(__('add'));
         view::$robots = "none";
-        
+
+        if(!self::$user->hasPermission('news/add')) // User hasn't permission? KILL HIM, em... throw exception.
+            throw new messageException(__('error'), __('errNoPermission'), array('url' => array('news', 'add')));
+
         $newsModel = new newsModel();
-        if(self::$user->isLogged)
+        if(isset($data['preview']))
         {
-            if(self::$user->hasPermission('news/add'))
-            {
-                if(isset($data['preview']))
-                {
-                    backup::save('news_new', $data);
-                    return $this->_preview($params, $data);
-                }
-                elseif(!isset($data['submit']))
-                {
-                    $categories = $newsModel->getCategories();
-                    $view = new HTMLview('news/add-form.tpl');
-                    
-                    backup::load('news_new');
-                    
-                    $view->categories = (is_array($categories) ? $categories : array($categories));
-                    unset($_SESSION['backup']);
-                    return $view;
-                }
-                else
-                {
-                    backup::save('news_new', $data);
-                    $_SESSION['backup'] = serialize($data);
-                    
-                    if(!isset($data['title']))       throw new messageException(language::get('error'), language::get('errTitleNotSet'));
-                    if(!isset($data['content']))     throw new messageException(language::get('error'), language::get('errContentNotSet'));
-                    if(!isset($data['category']))    throw new messageException(language::get('error'), language::get('errCategoryNotSet'));
-                    
-                    $newsModel->add(htmlspecialchars($data['title']), (isset($data['html']) ? $data['content'] : htmlspecialchars($data['content'])), language::getLang(), self::$user->id, time(), $data['category']);
-                    throw new messageException(language::get('success'), language::get('addNewsSuccess'), array('url' => array('index', 'index')));
-                }
-            }
-            else
-                throw new messageException(language::get('error'), language::get('errNoPermission'), array('url' => array('news', 'add')));
+            backup::save('news_new', $data);
+            return $this->_preview($params, $data);
+        }
+        elseif(!isset($data['submit']))
+        {
+            $categories = $newsModel->getCategories();
+            $view = new HTMLview('news/add-form.tpl');
+
+            backup::load('news_new');
+
+            $view->categories = $categories;
+            unset($_SESSION['backup']); // backup? Now? Who needs it?
+            return $view;
         }
         else
-            throw new messageException(language::get('error'), language::get('errNotLoggedIn'), array('url' => array('index', 'index')));
+        {
+            backup::save('news_new', $data);
+            $_SESSION['backup'] = serialize($data);
+
+            $newsModel->add(htmlspecialchars($data['title']), (isset($data['html']) ? $data['content'] : htmlspecialchars($data['content'])), language::getLang(), self::$user->id, time(), $data['category']);
+            return self::message(__('success'), __('addNewsSuccess'), array('url' => array('index', 'index')));
+        }
     }
     
     public function edit($params = array(), $data = array())
     {
-        view::addTitleChunk(language::get('news'));
-        view::addTitleChunk(language::get('edit'));
+        view::addTitleChunk(__('news'));
+        view::addTitleChunk(__('edit'));
         view::$robots = "none";
-        
-        if(self::$router->match('news'))
+
+        if(!self::$router->match('news'))
+            throw new messageException(__('error'), __('errWrongURL'), array('url' => array('index', 'index')));
+
+        if(!self::$user->hasPermission('news/edit'))
+            throw new messageException(__('error'), __('errNoPermission'));
+
+        $newsModel = new newsModel();
+        if(isset($data['preview']))
         {
-            if(self::$user->hasPermission('news/edit'))
-            {
-                $newsModel = new newsModel();
+            backup::save('news_'.$params['id'], $data);
+            return $this->_preview($params, $data);
+        }
+        elseif(!isset($data['submit']))
+        {
+            $categories = $newsModel->getCategories();
+            $view = new HTMLview('news/edit-form.tpl');
+            $news = $newsModel->get($params['id']);
 
-                if(isset($data['preview']))
-                {
-                    backup::save('news_'.$params['id'], $data);
-                    return $this->_preview($params, $data);
-                }
-                elseif(!isset($data['submit']))
-                {
-                    $categories = $newsModel->getCategories();
-                    $view = new HTMLview('news/edit-form.tpl');
-                    $news = $newsModel->get($params['id']);
-                    
-                    if(!$news)
-                        throw new messageException(language::get('error'), language::get('errNewsNotExist'));
-                    
-                    backup::load('news_'.$params['id']);
-                    
-                    $view->news = $news;
-                    $view->categories = $categories;
-                    return $view;
-                }
-                else
-                {
-                    backup::save('news_'.$params['id'], $data);
-                    
-                    if(!isset($data['title']))throw new messageException(language::get('error'), language::get('errTitleNotSet'), array('url' => array('news', 'edit', $params['name'], $params['id'])));
-                    if(!isset($data['content']))throw new messageException(language::get('error'), language::get('errContentNotSet'), array('url' => array('news', 'edit', $params['name'], $params['id'])));
-                    if(!isset($data['category']))throw new messageException(language::get('error'), language::get('errCategoryNotSet'), array('url' => array('news', 'edit', $params['name'], $params['id'])));
+            if(!$news)
+                throw new messageException(__('error'), __('errNewsNotExist'));
 
-                    $newsModel->edit($params['id'], $data['title'], (isset($data['html']) ? $data['content'] : htmlspecialchars($data['content'])), $data['category']);
-                    throw new messageException(language::get('success'), language::get('editNewsSuccess'));
-                }
-            }
-            else
-                throw new messageException(language::get('error'), language::get('errNoPermission'));
+            backup::load('news_'.$params['id']);
+
+            $view->news = $news;
+            $view->categories = $categories;
+            return $view;
         }
         else
-            throw new messageException(language::get('error'), language::get('errWrongURL'), array('url' => array('index', 'index')));
+        {
+            backup::save('news_'.$params['id'], $data);
+
+            $newsModel->edit($params['id'], $data['title'], (isset($data['html']) ? $data['content'] : htmlspecialchars($data['content'])), $data['category']);
+            return self::message(__('success'), __('editNewsSuccess'), array('url' => array('news', 'show', $params['name'], $params['id'])));
+        }
     }
     
     public function delete($params = array(), $data = array())
     {
-        view::addTitleChunk(language::get('news'));
-        view::addTitleChunk(language::get('delete'));
+        view::addTitleChunk(__('news'));
+        view::addTitleChunk(__('delete'));
         view::$robots = "none";
         
-        if(self::$router->match('news'))
-        {
-            if(self::$user->isLogged)
-            {
-                if(self::$user->hasPermission('news/delete'))
-                {
-                    $newsModel = new newsModel();
-                    $newsModel->delete($params['id']);
-                    throw new messageException(language::get('success'), language::get('deleteNewsSuccess'), array('url' => array('index', 'index')));
-                }
-                else
-                    throw new messageException(language::get('error'), language::get('errNoPermission'), array('url' => array('index', 'index')));
-            }
-            else
-                throw new messageException(language::get('error'), language::get('errNotLoggedIn'), array('url' => array('index', 'index')));
-        }
-        else
-            throw new messageException(language::get('error'), language::get('errWrongURL'), array('url' => array('index', 'index')));
+        if(!self::$router->match('news')) throw new messageException(__('error'), __('errWrongURL'), array('url' => array('index', 'index')));
+        if(!self::$user->isLogged) throw new messageException(__('error'), __('errNotLoggedIn'), array('url' => array('index', 'index')));
+        if(!self::$user->hasPermission('news/delete')) throw new messageException(__('error'), __('errNoPermission'), array('url' => array('index', 'index')));
+
+        $newsModel = new newsModel();
+        $newsModel->delete($params['id']);
+        return self::message(__('success'), __('deleteNewsSuccess'), array('url' => array('index', 'index')));
     }
     
     public function category($params = array(), $data = array())
     {
-        view::addTitleChunk(language::get('news'));
-        view::addTitleChunk(language::get('category'));
+        view::addTitleChunk(__('news'));
+        view::addTitleChunk(__('category'));
         view::$robots = "all";
         
         if(self::$router->match('categoryPage') || self::$router->match('category'))
@@ -197,11 +164,11 @@ class newsController extends controller
             
             $view = new HTMLview( 'news/all.tpl'); //tworzenie bufora treści
             $news = $newsModel->getLimitedFromCategory(($page - 1)  * (int)self::$config->newsPerPage,(int)self::$config->newsPerPage, language::getLang(), $params['id']);
-            //if(empty($news))throw new messageException(language::get('info'), language::get('noNews'), array('text' => ''));
+            //if(empty($news))throw new messageException(__('info'), __('noNews'), array('text' => ''));
             
             $category = $newsModel->getCategory($params['id']);
             if(!$category)
-                throw new messageException(language::get('error'), language::get('errCategoryNotExist'));
+                throw new messageException(__('error'), __('errCategoryNotExist'));
             
             view::addTitleChunk($category->name);
             $view->category = $category;
@@ -212,14 +179,14 @@ class newsController extends controller
             
             if($page > 1)
             {
-                view::addTitleChunk(language::get('page'));
+                view::addTitleChunk(__('page'));
                 view::addTitleChunk($page);
             }
             
             return $view;
         }
         else
-            throw new messageException(language::get('error'), language::get('errWrongURL'), array('url' => array('index', 'index')));
+            throw new messageException(__('error'), __('errWrongURL'), array('url' => array('index', 'index')));
     }
     
     protected function _preview($params = array(), $data = array())

@@ -53,8 +53,12 @@ class frontController extends controller {
         if(class_exists($controllerName) && $controllerName != __CLASS__)
         {
             try {
-                $controller = new $controllerName();
-                $page       = $controller->$action(self::$router->get(), self::$router->post());
+                try {
+                    $controller = new $controllerName();
+                    $page       = $controller->$action(self::$router->get(), self::$router->post());
+                } catch (invalidDataException $e) {
+                    throw new messageException(language::get("error"), language::get($e->getMessage()));
+                }
             } catch(messageException $e) {
                 $page           = new HTMLview('message.tpl');
                 $page->message  = $e;

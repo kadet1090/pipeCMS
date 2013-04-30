@@ -257,3 +257,47 @@ function getExecutor() {
         $backtrace[2]['class'] :
         null;
 }
+
+function join2($glue, $array) {
+    $ret = "";
+    foreach($array as $piece) {
+        if(is_object($piece))
+            $piece = get_class($piece);
+        elseif(is_array($piece))
+            $piece = "array";
+        elseif(is_bool($piece))
+            $piece = $piece ? "true" : "false";
+
+        $ret .= $glue.$piece;
+    }
+
+    return substr($ret, strlen($glue));
+}
+
+function isEmpty($var) {
+    return empty($var);
+}
+
+function isValidDate($date, $delimeter = '-') {
+    $date = explode($delimeter, $date);
+    if($date[0] > date('Y')-9 || $date[0] < date('Y')-99) return false;
+    if($date[1] > 12 || $date[1] < 1) return false;
+    if($date[2] > 31 || $date[1] < 1) return false;
+    return true;
+}
+
+function array_depth(array $array) {
+    $max_depth = 1;
+
+    foreach ($array as $value) {
+        if (is_array($value)) {
+            $depth = array_depth($value) + 1;
+
+            if ($depth > $max_depth) {
+                $max_depth = $depth;
+            }
+        }
+    }
+
+    return $max_depth;
+}

@@ -75,10 +75,61 @@ class newsModel extends dataBaseModel
                 )
                 ORDER BY `%p%news`.`id` DESC LIMIT :3, :4'
     );
+
+    protected $_validationRules = array(
+        'add' => array(
+            0 => array(
+                'type' => 'callback',
+                'func' => 'isEmpty',
+                'error' => 'errTitleNotSet',
+                'negation' => true
+            ),
+            1 => array(
+                'type' => 'callback',
+                'func' => 'isEmpty',
+                'error' => 'errContentNotSet',
+                'negation' => true
+            ),
+            2 => array(
+                'type' => 'regex',
+                'pattern' => '/^[a-zA-Z_]{2,6}$/',
+                'error' => 'errWrongLanguageCode',
+            ),
+            5 => array(
+                'type' => 'callback',
+                'func' => 'newsModel::categoryExists',
+                'error' => 'errWrongCategory',
+            )
+        ),
+        'edit' => array(
+            1 => array(
+                'type' => 'callback',
+                'func' => 'isEmpty',
+                'error' => 'errTitleNotSet',
+                'negation' => true
+            ),
+            2 => array(
+                'type' => 'callback',
+                'func' => 'isEmpty',
+                'error' => 'errContentNotSet',
+                'negation' => true
+            ),
+            3 => array(
+                'type' => 'callback',
+                'func' => 'newsModel::categoryExists',
+                'error' => 'errWrongCategory',
+            )
+        )
+    );
     
     public function getNewsCount()
     {
         return self::$connection->executeQuery('SELECT COUNT(*) FROM `%p%news`')->fetchColumn();
+    }
+
+    public static function categoryExists($id)
+    {
+        return (bool)self::$connection->executeQuery('SELECT `id` FROM `%p%news_categories` WHERE `id` = :1', array($id))->fetchColumn();
     }
     
     public function getNewsCountFromCategory($category)

@@ -6,11 +6,11 @@ class userModel extends dataBaseModel
         'userExist'     => 'SELECT `login` FROM `%p%users` WHERE `login` = :1',
         'userExistID'   => 'SELECT `login` FROM `%p%users` WHERE `id` = :1',
         'mailUsed'      => array('SELECT `id` FROM `%p%users` WHERE `mail` = :1', true),
-        'register'      => 'INSERT INTO `%p%users`(`login`, `password`, `mail`, `fullname`, `sex`, `place`, `desc`, `twitter`, `xmpp`, `gg`, `url`, `groups`, `register_date`, `br_date`, `additional_fields`) VALUES(:1, :2, :3, :4, :5, :6, :7, :8, :9, :10, :11, :12, :13, :14, :15)',
+        'register'      => 'INSERT INTO `%p%users`(`login`, `password`, `mail`, `fullname`, `sex`, `place`, `desc`, `twitter`, `xmpp`, `gg`, `url`, `groups`, `main_group`, `register_date`, `br_date`, `additional_fields`) VALUES(:1, :2, :3, :4, :5, :6, :7, :8, :9, :10, :11, :12, :13, :14, :15, :16)',
         'delete'        => 'DELETE FROM `%p%users` WHERE `id` = :1',
         'ban'           => 'UPDATE `%p%users` SET `banned` = \'1\' WHERE `id` = :1', 
         'unban'         => 'UPDATE `%p%users` SET `banned` = \'0\' WHERE `id` = :1',
-        'edit'          => 'UPDATE `%p%users` SET  `mail` = :2, `fullname` = :3, `sex` = :4, `place` = :5, `desc` = :6, `twitter` = :7, `xmpp` = :8, `gg` = :9, `url` = :10, `register_date` = :11, `br_date` = :12, `additional_fields` = :13 WHERE `id` = :1',
+        'edit'          => 'UPDATE `%p%users` SET  `mail` = :2, `fullname` = :3, `sex` = :4, `place` = :5, `desc` = :6, `twitter` = :7, `xmpp` = :8, `gg` = :9, `url` = :10, `br_date` = :11, `additional_fields` = :12 WHERE `id` = :1',
         
         'getLimited'    => 'SELECT SQL_CALC_FOUND_ROWS
                 `%p%users`.*,
@@ -62,6 +62,63 @@ class userModel extends dataBaseModel
                 `%p%users`.`fullname` LIKE :1 COLLATE utf8_general_ci
             )
             LIMIT :2, :3'
+    );
+
+    protected $_validationRules = array(
+        'register' => array(
+            0 => array(
+                array(
+                    'type' => 'regex',
+                    'pattern' => '/^[a-zA-Z0-9\_\-]*$/s',
+                    'error' => 'errWrongLogin',
+                ),
+                array(
+                    'type' => 'callback',
+                    'func' => 'userModel::userExists',
+                    'error' => 'errLoginAlreadyUsed',
+                    'negation' => true
+                )
+            ),
+            2 => array(
+                array(
+                    'type' => 'callback',
+                    'func' => 'isMail',
+                    'error' => 'errWrongMail',
+                ),
+                array(
+                    'type' => 'callback',
+                    'func' => 'userModel::mailUsed',
+                    'error' => 'errMailAlreadyUsed',
+                    'negation' => true
+                )
+            ),
+            14 => array(
+                'type' => 'callback',
+                'func' => 'isValidDate',
+                'error' => 'errWrongBirthDate'
+            )
+        ),
+        'edit' => array(
+            1 => array(
+                array(
+                    'type' => 'callback',
+                    'func' => 'isMail',
+                    'error' => 'errWrongMail',
+                ),
+                array(
+                    'type' => 'callback',
+                    'func' => 'userModel::mailUsed',
+                    'error' => 'errMailAlreadyUsed',
+                    'params' => array('value', 0),
+                    'negation' => true
+                )
+            ),
+            10 => array(
+                'type' => 'callback',
+                'func' => 'isValidDate',
+                'error' => 'errWrongBirthDate'
+            )
+        )
     );
     
     protected $_defaultDAOname = 'user';
@@ -129,5 +186,13 @@ class userModel extends dataBaseModel
         }
         return $res;
     }
+
+    public static function userExists($id) {
+        return (bool)self::$connection->executeQuery('SELECT `id` FROM `%p%users` WHERE `id` = :1', array($id))->fetchObject();
+    }
+
+    public static function mailUsed($mail, $exclude = -1) {
+        $id = self::$connection->executeQuery('SELECT `id` FROM `%p%users` WHERE `mail` = :1', array($mail))->fetchColumn();
+        return (!empty($id) && $exclude != $id);
+    }
 }
-?>

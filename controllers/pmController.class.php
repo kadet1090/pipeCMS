@@ -150,18 +150,10 @@ class pmController extends controller
             }
             else
             {
-                $model = new userModel();
-                if(!isset($data['title']))            throw new messageException(language::get('error'), language::get('errTitleNotSet'));
-                if(!isset($data['receiver']))            throw new messageException(language::get('error'), language::get('errReceiverNotSet'));
-                if(!isset($data['content']))            throw new messageException(language::get('error'), language::get('errContentNotSet'));
-                if(!preg_match("#[1-9][0-9]*#", $data['receiver'])) throw new messageException(language::get('error'), language::get('errBadReceiverID'));
-                if(self::$user->id == (int)$data['receiver']) throw new messageException(language::get('error'), language::get('errMsgToYourself'));
-                if(!$model->userExistID($data['receiver'])) throw new messageException(language::get('error'), language::get('errUserNotExist'));
-                
                 $model = new pmModel();
                 $model->send($data['title'], $data['content'], self::$user->id, (int)$data['receiver'], time());
-                
-                throw new messageException(language::get("success"), language::get("pwSendSuccess"));
+                notificationsController::push((int)$data['receiver'], 'Nowa prywatna wiadomość', 'info', time());
+                return self::message(language::get("success"), language::get("pwSendSuccess"));
             }
         }
         else

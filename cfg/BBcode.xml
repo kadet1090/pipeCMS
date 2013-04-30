@@ -20,6 +20,9 @@
     <BBcode tag="list" closeTag="true" html="&lt;ul&gt;{text}&lt;/ul&gt;"/>
     <BBcode tag="numlist" closeTag="true" html="&lt;ol&gt;{text}&lt;/ol&gt;"/>
     <BBcode tag="\*" closeTag="true" html="&lt;li&gt;{text}&lt;/li&gt;"/>
+    <BBcode tag="changelog" closeTag="true" html="&lt;ul class=&quot;changelog&quot;&gt;{text}&lt;/ul&gt;"/>
+    <BBcode tag="\+" closeTag="true" html="&lt;li class=&quot;added&quot;&gt;{text}&lt;/li&gt;"/>
+    <BBcode tag="-" closeTag="true" html="&lt;li class=&quot;removed&quot;&gt;{text}&lt;/li&gt;"/>
     <BBcode tag="color" closeTag="true" html="&lt;span style=&quot;color: {param};&quot; &gt;{text}&lt;/span&gt;" param="true"/>
     <BBcode tag="size" closeTag="true" html="&lt;span style=&quot;font-size: {param};&quot; &gt;{text}&lt;/span&gt;" param="true"/>
     <BBcode tag="hr" closeTag="false" html="&lt;hr /&gt;"/>

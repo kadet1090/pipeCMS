@@ -24,18 +24,19 @@ class stdDao
     {
         if(isset($this->_columns[$this->_column]) && getExecutor() == "PDOStatement") {
             $columnData = $this->_columns[$this->_column];
-            if($columnData['name'] != $name) { $this->_column++; $columnData = $this->_columns[$this->_column]; };
+
+            if($columnData['name'] != $name) {
+                $this->_column++;
+                $columnData = $this->_columns[$this->_column];
+            }
 
             if($columnData['table'] != $this->_main && strpos($name, '.') === false) {
                 $name = $columnData['table'].'.'.$name;
             }
 
-            //echo $name." : ".$value." : ".$columnData['name']."<br />";
-
             $this->_column++;
         }
         $name = str_replace('self.', '', $name);
-        //if($this->_main == "cms_news")
 
         if(strpos($name, '.') !== false) {
 

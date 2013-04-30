@@ -4,7 +4,7 @@ abstract class view
 {
     protected $_data = array();
     
-    static public $templateDir;
+    static public $templateDir = "templates";
     protected $_templateFileName;
     protected $_fallBackDir;
     public $parent;

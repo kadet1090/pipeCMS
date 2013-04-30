@@ -23,7 +23,6 @@ class xml extends dataFile implements dataFileInterface
     {
         if(!isset($this->_filePath)) throw new frameworkException('Path to file is not set!', 1101);
         if(!isset($this->_data)) throw new frameworkException('You must set data first!', 1103);
-        file_put_contents($this->_filePath, $this->_data->asXML());
     }
     
     public function count()

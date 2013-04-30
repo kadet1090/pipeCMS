@@ -110,7 +110,7 @@ class BBcode
         $regex  = '\['.$tag;
 
         if($params === true)
-            $regex .= '=&quot;(.*?)&quot;';
+            $regex .= '=(?:&quot;)?(.*?)(?:&quot;)?';
         elseif(is_array($params))
             foreach($params as $param)
                 $regex .= ' '.$param.'=&quot;(.*?)&quot;';

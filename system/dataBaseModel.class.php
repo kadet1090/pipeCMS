@@ -59,12 +59,14 @@ class dataBaseModel extends model
     {
         if(is_array($this->_predefinedQueries[$name])) $query = $this->_predefinedQueries[$name][0];
         else $query = $this->_predefinedQueries[$name];
-        
+
+        $this->isValid($name, $arguments);
+
         foreach($arguments as $argID => $argument)
         {
             if(is_int($argument))
                 $query = str_replace('['.($argID+1).']', $argument, $query);
-            else
+            elseif(is_string($argument))
                 $query = str_replace('['.($argID+1).']', addslashes($argument), $query);
         }
         

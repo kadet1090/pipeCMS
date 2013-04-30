@@ -7,6 +7,28 @@ class pmModel extends dataBaseModel
         'receiver'  => 'user'
     );
 
+    protected $_validationRules = array(
+        'send' => array(
+            0 => array(
+                'type' => 'callback',
+                'func' => 'isEmpty',
+                'error' => 'errTitleNotSet',
+                'negation' => true
+            ),
+            1 => array(
+                'type' => 'callback',
+                'func' => 'isEmpty',
+                'error' => 'errContentNotSet',
+                'negation' => true
+            ),
+            3 => array(
+                'type' => 'callback',
+                'func' => 'userModel::userExists',
+                'error' => 'errWrongReceiver'
+            )
+        )
+    );
+
     protected $_predefinedQueries = array(
         'getLimitedTo'=> 'SELECT
             `%p%pm`.*,
@@ -55,4 +77,3 @@ class pmModel extends dataBaseModel
         return self::$connection->executeQuery('SELECT COUNT(*) FROM `%p%pm` WHERE `receiver` = \''.$userID.'\'')->fetchColumn();
     }
 }
-?>
